@@ -1,6 +1,7 @@
 .App {
 }
 .App-header {
+  height: 5vh;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
@@ -8,6 +9,10 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.sidebar {
+  min-height: 95vh;
 }
 
 /* .App-logo {
