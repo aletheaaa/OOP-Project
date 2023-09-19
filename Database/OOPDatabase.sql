@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS stocks (
  market VARCHAR(64) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS portfolios (
+CREATE TABLE IF NOT EXISTS portfolio (
  portfolio_id INT NOT NULL PRIMARY KEY,
  portfolio_name VARCHAR(64) NOT NULL,
  description VARCHAR(255) NOT NULL,

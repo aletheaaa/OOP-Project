@@ -11,7 +11,7 @@ import lombok.Data;
 public class Portfolio {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer portfolioId;
     private Double capital;
     private String description;
