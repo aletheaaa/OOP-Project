@@ -7,15 +7,13 @@ import Stocks from "./pages/Stocks/index.js";
 import SideNavBar from "./components/SideNavBar";
 import ErrorPage from "./pages/ErrorPage";
 
+const authenticated = false;
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Dashboard />,
     errorElement: <ErrorPage />
-  },
-  {
-    path: "/login",
-    element: <Login />
   },
   {
     path: "/stocks",
@@ -29,8 +27,9 @@ function App() {
   // Then use a conditional to render the appropriate page
   return (
     <div className="App">
-      <div className="App-header">Portfolio Management</div>
-      <div>
+      { authenticated ?
+      <>
+        <div className="App-header">Portfolio Management</div>
         <div className="container-fluid">
           <div className="row">
             <div className="col-1 col-sm-3 col-lg-2 px-0">
@@ -41,7 +40,8 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
+      </>
+      : <Login /> }
     </div>
   );
 }
