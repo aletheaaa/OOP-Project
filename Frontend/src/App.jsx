@@ -1,10 +1,10 @@
 import "./styles/App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard/index.js";
-import Login from "./pages/Login/index.js";
-import Stocks from "./pages/Stocks/index.js";
-import SideNavBar from "./components/SideNavBar";
+import Dashboard from "./pages/Dashboard/index";
+import Login from "./pages/Login/index";
+import Stocks from "./pages/Stocks/index";
+import SideNavBar from "./components/Common/SideNavBar";
 import ErrorPage from "./pages/ErrorPage";
 
 const authenticated = false;

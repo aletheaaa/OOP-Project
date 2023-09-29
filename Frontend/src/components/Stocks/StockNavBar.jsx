@@ -1,5 +1,5 @@
 import React from 'react';
-import NavBarItem from '../NavBarItem';
+import NavBarItem from '../Common/NavBarItem';
 
 export default function StockNavBar() {
   return (

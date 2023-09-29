@@ -1,7 +1,7 @@
 import React from "react";
 import StockNavBar from "../../components/Stocks/StockNavBar";
-import AreaChart from "../../components/AreaChart";
-import DashboardCard from "../../components/DashboardCard";
+import AreaChart from "../../components/Common/AreaChart";
+import DashboardCard from "../../components/Common/DashboardCard";
 import AddStockButton from "../../components/Stocks/AddStockButton";
 
 export default function Stocks() {

@@ -1,7 +1,7 @@
 import React from "react";
-import AreaChart from "../../components/AreaChart";
-import DoughnutChart from "../../components/DoughnutChart";
-import DashboardCard from "../../components/DashboardCard";
+import AreaChart from "../../components/Common/AreaChart";
+import DoughnutChart from "../../components/Common/DoughnutChart";
+import DashboardCard from "../../components/Common/DashboardCard";
 
 export default function Dashboard() {
   return (
