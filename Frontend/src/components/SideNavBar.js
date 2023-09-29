@@ -15,6 +15,7 @@ export default function SideNavBar() {
       </a>
       <nav className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
         <NavBarItem link="/" icon="bi-speedometer2" text="Dashboard" />
+        <NavBarItem link="/portfolios" icon="bi-person-lines-fill" text="Portfolios" />
         <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
         <NavBarItem link="#orders" icon="bi-table" text="Orders" bsToggle="collapse" />
         <ul className="collapse flex-column" id="orders" data-bs-parent="#menu">
@@ -50,7 +51,6 @@ export default function SideNavBar() {
             Product 4
           </a>
         </div>
-        <NavBarItem link="#customers" icon="bi-people" text="Customers" />
       </nav>
       <hr />
       <div className="dropdown pb-4">
