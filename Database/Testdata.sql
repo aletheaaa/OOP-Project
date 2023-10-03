@@ -1,12 +1,4 @@
 
--- Insert User 1
-INSERT INTO users (user_id, first_name, last_name, email, password, role)
-VALUES (1, 'John', 'Doe', 'johndoe@example.com', 'hashed_password_1', 'USER');
-
--- Insert User 2
-INSERT INTO users (user_id, first_name, last_name, email, password, role)
-VALUES (2, 'Jane', 'Smith', 'janesmith@example.com', 'hashed_password_2', 'USER');
-
 
 -- Insert Portfolio for User 1
 INSERT INTO portfolio (portfolio_id, portfolio_name, description, capital, user_id)

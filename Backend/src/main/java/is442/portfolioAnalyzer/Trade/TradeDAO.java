@@ -1,5 +1,9 @@
 package is442.portfolioAnalyzer.Trade;
 
-public class TradeDAO {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TradeDAO extends JpaRepository<Trade, TradeId> {
     
 }
