@@ -8,7 +8,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import 
+import is442.portfolioAnalyzer.Stock.Stock;
+
 
 @Embeddable
 public class TradeId implements Serializable {
