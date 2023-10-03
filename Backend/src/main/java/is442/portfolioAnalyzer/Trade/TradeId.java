@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import is442.portfolioAnalyzer.Stock.Stock;
 
 
+
 @Embeddable
 public class TradeId implements Serializable {
     
@@ -25,36 +26,29 @@ public class TradeId implements Serializable {
 
     private Timestamp purchaseDateTime;
 
-    
-    public Timestamp getPurchaseDateTime() {
-        return purchaseDateTime;
-    }
-
-
     public Portfolio getPortfolio() {
         return portfolio;
     }
-
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
     }
 
-
     public Stock getStock() {
         return stock;
     }
-
 
     public void setStock(Stock stock) {
         this.stock = stock;
     }
 
+    public Timestamp getPurchaseDateTime() {
+        return purchaseDateTime;
+    }
 
     public void setPurchaseDateTime(Timestamp purchaseDateTime) {
         this.purchaseDateTime = purchaseDateTime;
     }
-
 
     @Override
     public int hashCode() {
@@ -65,7 +59,6 @@ public class TradeId implements Serializable {
         result = prime * result + ((purchaseDateTime == null) ? 0 : purchaseDateTime.hashCode());
         return result;
     }
-
 
     @Override
     public boolean equals(Object obj) {
@@ -93,6 +86,20 @@ public class TradeId implements Serializable {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "TradeId [portfolio=" + portfolio + ", stock=" + stock + ", purchaseDateTime=" + purchaseDateTime + "]";
+    }
+
+
+    
+
+    
+
+    
+
+    
 
     
     
