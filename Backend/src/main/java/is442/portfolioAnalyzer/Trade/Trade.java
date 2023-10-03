@@ -14,7 +14,8 @@ import lombok.Data;
 public class Trade {
 
     @EmbeddedId
-    private TradeId idSymbol;
+    private TradeId tradeId;
+    
     private double purchasePrice;
     private Integer purchaseQuantity;
 
