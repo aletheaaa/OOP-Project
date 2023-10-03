@@ -15,9 +15,6 @@ public class Trade {
 
     @EmbeddedId
     private TradeId idSymbol;
-
-    @Column(name = "purchase_date_time")
-    
     private double purchasePrice;
     private Integer purchaseQuantity;
 
