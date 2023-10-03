@@ -16,8 +16,8 @@ public class StockController {
 
     // This method is used to get the stock price of a particular stock symbol From API
     @GetMapping("{symbol}")
-    public ResponseEntity<?> getStockPrice(@PathVariable String symbol) {
-        return ResponseEntity.ok(stockService.getStockPrice(symbol));
+    public ResponseEntity<?> updateStockLatestPrice(@PathVariable String symbol) {
+        return ResponseEntity.ok(stockService.updateStockLatestPrice(symbol));
     }
 
 //    @GetMapping("{symbol}")
