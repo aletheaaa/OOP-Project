@@ -20,7 +20,7 @@ import java.util.List;
 @Table(name="users")
 public class User implements UserDetails { // UserDetails contains methods from user security
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)  // id will automatically be generated. By default, is auto
+    // @GeneratedValue(strategy = GenerationType.AUTO)  // id will automatically be generated. By default, is auto
     private Integer userId;
     private String firstName;
     private String lastName;
