@@ -39,7 +39,7 @@ public class StockService {
         Stock stock = new Stock();
         stock.setStockSymbol(stockSymbol);
         stock.setLastUpdatedPrice(lastUpdatedPrice);
-        stock.setLastUpdatedTimeDate(lastUpdatedTime);
+        stock.setLastUpdatedTime(lastUpdatedTime);
         stockDAO.save(stock);
 
     return ResponseEntity.ok(response);

@@ -20,10 +20,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS stocks (
  stock_symbol VARCHAR(20) NOT NULL PRIMARY KEY,
  stock_name VARCHAR(64) NOT NULL,
- last_updated_time_date DATETIME NOT NULL,
- last_updated_price DOUBLE NOT NULL,
- sector VARCHAR(64) NOT NULL,
- market VARCHAR(64) NOT NULL
+ last_updated_time DATETIME NOT NULL,
+ last_updated_price DOUBLE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS portfolios (
