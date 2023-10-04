@@ -1,12 +1,12 @@
 import React from 'react';
 import NavBarItem from '../Common/NavBarItem';
 
-export default function StockNavBar() {
+function StockNavBar(stockSymbol) {
   return (
     <>
       <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
-          <a className="navbar-brand fw-bold" href="/stocks">StockName</a>
+          <a className="navbar-brand fw-bold" href="/stocks">{ stockSymbol.stockSymbol }</a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -19,13 +19,15 @@ export default function StockNavBar() {
               <NavBarItem link="/stocks/financials" icon="bi bi-cash-coin" text="Financials" />
               <NavBarItem link="/stocks/analytics" icon="bi bi-clipboard-data" text="Analytics" />
             </div>
-            <form className="d-flex" role="search">
+            <div className="d-flex">
               <input className="form-control me-2" type="search" placeholder="Search for Symbol" aria-label="Search" />
-              <button className="btn btn-outline-success" type="submit">Search</button>
-            </form>
+              <button className="btn btn-outline-success" type="button">Search</button>
+            </div>
           </div>
         </div>
       </nav>
     </>
   )
 };
+
+export default StockNavBar;
