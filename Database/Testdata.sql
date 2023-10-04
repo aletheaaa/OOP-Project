@@ -2,11 +2,11 @@
 
 -- Insert Portfolio for User 1
 INSERT INTO portfolio (portfolio_id, portfolio_name, description, capital, user_id)
-VALUES (1, "John's Portfolio", 'Portfolio for John Doe', 10000.00, 1);
+VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 1);
 
 -- Insert Portfolio for User 2
 INSERT INTO portfolio (portfolio_id, portfolio_name, description, capital, user_id)
-VALUES (2, "Jane's Portfolio", 'Portfolio for Jane Smith', 8000.00, 2);
+VALUES (2, 'Jane Portfolio', 'Portfolio for Jane Smith', 8000.00, 2);
 
 
 
