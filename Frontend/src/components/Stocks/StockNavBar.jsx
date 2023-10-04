@@ -1,5 +1,6 @@
 import React from 'react';
 import NavBarItem from '../Common/NavBarItem';
+import StockSearchButton from './StockSearchButton';
 
 function StockNavBar(stockSymbol) {
   return (
@@ -20,8 +21,8 @@ function StockNavBar(stockSymbol) {
               <NavBarItem link="/stocks/analytics" icon="bi bi-clipboard-data" text="Analytics" />
             </div>
             <div className="d-flex">
-              <input className="form-control me-2" type="search" placeholder="Search for Symbol" aria-label="Search" />
-              <button className="btn btn-outline-success" type="button">Search</button>
+              <input type="text" className="form-control me-2" id="stockSymbol" placeholder="Search for Symbol" />
+              <StockSearchButton />
             </div>
           </div>
         </div>
