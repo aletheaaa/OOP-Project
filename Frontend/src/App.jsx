@@ -16,11 +16,7 @@ function App() {
   const token = getToken();
   console.log("token", token);
 
-  if (!token) {
-    return <Login setToken={setToken} />;
-  }
-  
-  return <Router />;
+  return token ? <Router /> : <Login setToken={setToken} />;
 }
 
 export default App;

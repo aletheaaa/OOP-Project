@@ -1,8 +1,8 @@
-
+select * from users;
 
 -- Insert Portfolio for User 1
 INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id)
-VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 1);
+VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 54);
 
 -- Insert Portfolio for User 2
 -- INSERT INTO portfolio (portfolio_id, portfolio_name, description, capital, user_id)
@@ -11,10 +11,10 @@ VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 1);
 
 
 -- Insert Stock Data
-INSERT INTO stocks (stock_symbol, last_updated_time, last_updated_price)
+INSERT INTO stocks (stock_symbol, stock_name, last_updated_time, last_updated_price)
 VALUES
-  ('AAPL', '2023-10-03', 145.67),
-  ('GOOGL', '2023-10-03', 2750.12);
+  ('AAPL', 'Apple Inc.', '2023-10-03', 145.67),
+  ('GOOGL', 'Alphabet Inc.', '2023-10-03', 2750.12);
   -- Add more stocks as needed
   ;
 
@@ -33,9 +33,11 @@ VALUES (1, 'Tech Stocks', 'Investment in technology sector', 50000.00, 1);
 
 
 INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id) 
-VALUES (2, 'Real Estate', 'Real estate investments', 75000.00, 1);
+VALUES (2, 'Real Estate', 'Real estate investments', 75000.00, 54);
 
 -- Insert Test Portfolios for User 2
 INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id) 
-VALUES (3, 'Med Stocks', 'Investment in medical sector', 90000.00, 2);
+VALUES (3, 'Med Stocks', 'Investment in medical sector', 90000.00, 54);
+
+select * from portfolios;
 

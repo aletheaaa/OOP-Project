@@ -22,6 +22,10 @@ const router = createBrowserRouter([
         element: <Stocks />,
       },
       {
+        path: "/stocks/:stockSymbol",
+        element: <Stocks />,
+      },
+      {
         path: "/portfolios/:portfolioId",
         element: <Portfolios />,
       }
