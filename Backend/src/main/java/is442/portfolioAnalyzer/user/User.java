@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import is442.portfolioAnalyzer.config.ApplicationConfig;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,8 +22,11 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)  // id will automatically be generated. By default, is auto
     private Integer userId;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "email")
     private String email;
     private String password;
 
@@ -35,6 +38,12 @@ public class User implements UserDetails { // UserDetails contains methods from 
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+
+
+    public String getEmail() {
+        return email;
+    }
+
     @Override
     public String getPassword() {
         return password;
@@ -43,6 +52,16 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Override
     public String getUsername() {
         return email;
+    }
+
+
+    public String getLastname() {
+        return lastName;
+    }
+
+
+    public String getFirstname() {
+        return firstName;
     }
 
     @Override
