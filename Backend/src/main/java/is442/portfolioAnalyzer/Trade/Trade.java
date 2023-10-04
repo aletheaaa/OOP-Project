@@ -1,6 +1,6 @@
 package is442.portfolioAnalyzer.Trade;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import is442.portfolioAnalyzer.Stock.Stock;

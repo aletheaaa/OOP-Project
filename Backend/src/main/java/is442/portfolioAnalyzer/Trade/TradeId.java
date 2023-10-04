@@ -1,7 +1,7 @@
 package is442.portfolioAnalyzer.Trade;
 
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
