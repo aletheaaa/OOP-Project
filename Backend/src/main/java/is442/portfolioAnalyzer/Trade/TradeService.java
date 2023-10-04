@@ -12,6 +12,7 @@ public class TradeService {
     TradeDAO tradeDAO;
 
     public List<Trade> getAllTrades(){
+        System.out.println("In service");
         return tradeDAO.findAll();
     }
 }

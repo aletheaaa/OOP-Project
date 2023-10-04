@@ -16,6 +16,7 @@ public class TradeController {
 
     @GetMapping("allTrades")
     public List<Trade> getAllTrades(){
+        System.out.println("In controller");
         return tradeService.getAllTrades();
     }
 }
