@@ -4,11 +4,14 @@ import is442.portfolioAnalyzer.config.JwtService;
 import is442.portfolioAnalyzer.user.Role;
 import is442.portfolioAnalyzer.user.User;
 import is442.portfolioAnalyzer.user.UserRepository;
+import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +47,8 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByEmail(request.getEmail())
-                // TODO: Add  error handling
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + request.getEmail()));
+
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)

@@ -3,6 +3,7 @@ package is442.portfolioAnalyzer.config;
 // This class will handle all the application config such as Bean etc
 
 import is442.portfolioAnalyzer.user.UserRepository;
+import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Optional;
+
+
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -25,7 +30,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> repository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     // The data access object that is responsible to fetch the user details and encode password etc
