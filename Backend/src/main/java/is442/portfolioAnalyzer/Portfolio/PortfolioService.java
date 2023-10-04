@@ -15,4 +15,7 @@ public class PortfolioService {
         return portfolioDAO.findAll();
     }
     
+        public List<Portfolio> getPortfolioByUser(Integer userid){
+        return portfolioDAO.findByUserId(userid);
+    }
 }
