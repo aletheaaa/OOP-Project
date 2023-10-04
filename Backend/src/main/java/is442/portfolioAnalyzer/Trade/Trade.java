@@ -25,13 +25,4 @@ public class Trade {
     private double purchasePrice;
     private Integer purchaseQuantity;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @MapsId("portfolioId") // Use the name of the property in TradeId
-    // @JoinColumn(name = "portfolio_id")
-    // private Portfolio portfolio;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @MapsId("stockSymbol") // Use the name of the property in TradeId
-    // @JoinColumn(name = "stock_symbol")
-    // private Stock stock;
 }

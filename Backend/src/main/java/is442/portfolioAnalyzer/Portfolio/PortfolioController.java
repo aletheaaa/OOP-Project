@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import is442.portfolioAnalyzer.Trade.*;
+// import is442.portfolioAnalyzer.Trade.TradeService;
+
 import java.util.*;
 
 
@@ -15,6 +19,10 @@ public class PortfolioController {
 
     @Autowired
     PortfolioService portfolioService;
+    @Autowired
+    TradeService tradeService;
+    @Autowired
+    TradeDAO tradeDAO;
 
     @GetMapping("hello")
     public ResponseEntity<String> sayHello() {
@@ -33,6 +41,13 @@ public class PortfolioController {
         return portfolioService.getPortfolioByUser(userid);
     }
 
+    @GetMapping("getTradesByPortfolioId/{portfolioId}")
+    public List<Trade> getTradesByPortfolioId(@PathVariable Integer portfolioId){
+        System.out.println("In controller");
+        return tradeDAO.findByTradeIdPortfolioId(portfolioId);
+        // directly access DAO
+
+    }
     
     
 

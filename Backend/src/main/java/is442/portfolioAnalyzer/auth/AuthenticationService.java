@@ -3,7 +3,7 @@ package is442.portfolioAnalyzer.auth;
 import is442.portfolioAnalyzer.config.JwtService;
 import is442.portfolioAnalyzer.user.Role;
 import is442.portfolioAnalyzer.user.User;
-import is442.portfolioAnalyzer.user.UserRepository;
+import is442.portfolioAnalyzer.user.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    private final UserDTO repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
