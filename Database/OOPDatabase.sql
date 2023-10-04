@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS stocks (
  market VARCHAR(64) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS portfolio (
+CREATE TABLE IF NOT EXISTS portfolios (
  portfolio_id INT NOT NULL PRIMARY KEY,
  portfolio_name VARCHAR(64) NOT NULL,
  description VARCHAR(255) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS trades (
  portfolio_id INT NOT NULL,
  stock_symbol VARCHAR(20) NOT NULL,
  CONSTRAINT trades_pk PRIMARY KEY(purchase_date_time, portfolio_id, stock_symbol),
- CONSTRAINT trades_fk1 FOREIGN KEY(portfolio_id) references portfolio(portfolio_id),
+ CONSTRAINT trades_fk1 FOREIGN KEY(portfolio_id) references portfolios(portfolio_id),
  CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
 );
 
