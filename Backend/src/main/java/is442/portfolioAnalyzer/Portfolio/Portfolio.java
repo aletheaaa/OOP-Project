@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "portfolios")
+
 public class Portfolio {
     
     @Id
@@ -19,5 +20,7 @@ public class Portfolio {
     private String description;
     private String portfolioName;	
     private Integer userId;
+
+    
 
 }
