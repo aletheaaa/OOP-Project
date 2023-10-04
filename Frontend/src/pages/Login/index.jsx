@@ -25,6 +25,7 @@ function Login({ setToken }) {
       .then((response) => {
         console.log(response.data);
         setToken(response.data.token);
+        window.location.reload(); // reload page after logging in to exit login page
       })
       .catch((error) => {
         console.log(error);
