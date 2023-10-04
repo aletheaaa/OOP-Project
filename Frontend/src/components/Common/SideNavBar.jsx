@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBarItem from "./NavBarItem";
+import User from "./User";
 
 // DEV NOTES:
 // - Need to fix sub-menu options for small viewports
@@ -17,85 +18,9 @@ export default function SideNavBar() {
         <NavBarItem link="/" icon="bi-speedometer2" text="Dashboard" />
         <NavBarItem link="/portfolios" icon="bi-person-lines-fill" text="Portfolios" />
         <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
-        <NavBarItem link="#orders" icon="bi-table" text="Orders" bsToggle="collapse" />
-        <ul className="collapse flex-column" id="orders" data-bs-parent="#menu">
-          <li>
-            <a href="#" className="nav-link px-0">
-              {" "}
-              <span className="d-none d-sm-inline">Item</span> 1
-            </a>
-          </li>
-          <li>
-            <a href="#" className="nav-link px-0">
-              {" "}
-              <span className="d-none d-sm-inline">Item</span> 2
-            </a>
-          </li>
-        </ul>
-        <NavBarItem link="#products" icon="bi-grid" text="Products" bsToggle="collapse" />
-        <div className="collapse list-group" id="products" data-bs-parent="#menu">
-          <a
-            href="#"
-            className="list-group-item list-group-item-action active"
-            aria-current="true"
-          >
-            Product 1
-          </a>
-          <a href="#" className="list-group-item list-group-item-action">
-            Product 2
-          </a>
-          <a href="#" className="list-group-item list-group-item-action">
-            Product 3
-          </a>
-          <a href="#" className="list-group-item list-group-item-action">
-            Product 4
-          </a>
-        </div>
       </nav>
       <hr />
-      <div className="dropdown pb-4">
-        <a
-          href="#"
-          className="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-          id="dropdownUser1"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <img
-            src="https://github.com/mdo.png"
-            alt="hugenerd"
-            width="30"
-            height="30"
-            className="rounded-circle"
-          />
-          <span className="d-none d-sm-inline mx-1">User</span>
-        </a>
-        <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
-          <li>
-            <a className="dropdown-item" href="#">
-              New project...
-            </a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Settings
-            </a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Profile
-            </a>
-          </li>
-          <li>
-            <hr className="dropdown-divider" />
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Sign out
-            </a>
-          </li>
-        </ul>
-      </div>
+      <User />
     </div>
   );
 }

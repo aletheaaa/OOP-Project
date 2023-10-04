@@ -8,8 +8,7 @@ import SideNavBar from "./components/Common/SideNavBar";
 import ErrorPage from "./pages/ErrorPage";
 import Portfolios from "./pages/Portfolios/index";
 
-const authenticated = false;
-// const authenticated = true;
+const authenticated = Autheticated();
 
 const router = createBrowserRouter([
   {
@@ -41,7 +40,7 @@ function App() {
               <div className="col-1 col-sm-3 col-lg-2 px-0">
                 <SideNavBar />
               </div>
-              <div className="col ">
+              <div className="App-body col">
                 <RouterProvider router={router} />
               </div>
             </div>
@@ -54,4 +53,9 @@ function App() {
   );
 }
 
+function Autheticated() {
+  return true;
+}
+
 export default App;
+  
