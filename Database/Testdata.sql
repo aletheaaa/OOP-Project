@@ -35,4 +35,7 @@ VALUES (1, 'Tech Stocks', 'Investment in technology sector', 50000.00, 1);
 INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id) 
 VALUES (2, 'Real Estate', 'Real estate investments', 75000.00, 1);
 
+-- Insert Test Portfolios for User 2
+INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id) 
+VALUES (3, 'Med Stocks', 'Investment in medical sector', 90000.00, 2);
 
