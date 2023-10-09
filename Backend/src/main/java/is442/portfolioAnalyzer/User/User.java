@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import is442.portfolioAnalyzer.config.ApplicationConfig;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +31,10 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Column(name = "email")
     private String email;
     private String password;
+
+
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Portfolio> portfolios;
 
     @Enumerated(EnumType.STRING)
     private Role role;
