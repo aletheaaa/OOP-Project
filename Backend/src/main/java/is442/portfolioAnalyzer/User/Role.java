@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.user;
+package is442.portfolioAnalyzer.User;
 
 public enum Role {
     USER,
