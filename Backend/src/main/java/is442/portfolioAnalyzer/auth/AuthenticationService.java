@@ -1,9 +1,9 @@
 package is442.portfolioAnalyzer.auth;
 
 import is442.portfolioAnalyzer.config.JwtService;
-import is442.portfolioAnalyzer.user.Role;
-import is442.portfolioAnalyzer.user.User;
-import is442.portfolioAnalyzer.user.UserDTO;
+import is442.portfolioAnalyzer.User.Role;
+import is442.portfolioAnalyzer.User.User;
+import is442.portfolioAnalyzer.User.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

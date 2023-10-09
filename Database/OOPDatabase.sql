@@ -17,12 +17,6 @@ CREATE TABLE IF NOT EXISTS users (
  role enum('ADMIN','USER') NOT NULL
 );
 
--- CREATE TABLE IF NOT EXISTS stocks (
---  stock_symbol VARCHAR(20) NOT NULL PRIMARY KEY,
---  stock_name VARCHAR(64) NOT NULL,
---  last_updated_time DATETIME NOT NULL,
---  last_updated_price DOUBLE NOT NULL
--- );
 
 CREATE TABLE IF NOT EXISTS portfolios (
  portfolio_name VARCHAR(64) NOT NULL PRIMARY KEY,
@@ -43,5 +37,4 @@ CREATE TABLE IF NOT EXISTS assets (
  monthly_performance VARCHAR(1000) NOT NULL,
  CONSTRAINT trades_pk PRIMARY KEY(portfolio_name, stock_symbol),
  CONSTRAINT trades_fk1 FOREIGN KEY(portfolio_name) references portfolios(portfolio_name)
---  CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
 );
