@@ -1,9 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS OOP;
 USE OOP;
 
-DROP TABLE IF EXISTS trades;
+DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS portfolios;
-DROP TABLE IF EXISTS stocks;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -34,7 +33,8 @@ CREATE TABLE IF NOT EXISTS assets (
  stock_symbol VARCHAR(20) NOT NULL,
  allocation DOUBLE NOT NULL,
  sector VARCHAR(64) NOT NULL,
- monthly_performance VARCHAR(1000) NOT NULL,
- CONSTRAINT trades_pk PRIMARY KEY(portfolio_name, stock_symbol),
- CONSTRAINT trades_fk1 FOREIGN KEY(portfolio_name) references portfolios(portfolio_name)
+ monthly_performance VARCHAR(64) NOT NULL,
+ CONSTRAINT assets_pk PRIMARY KEY(portfolio_name, stock_symbol),
+ CONSTRAINT assets_fk1 FOREIGN KEY(portfolio_name) references portfolios(portfolio_name)
+--  CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
 );

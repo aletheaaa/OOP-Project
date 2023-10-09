@@ -27,7 +27,7 @@ public class Asset {
     private double allocation;
     private double purchasedPrice; //price at time of purchase
 
-    private List <String> monthlyPerformance; //2013-Jan-1000
+    private String monthlyPerformance; //2013-Jan-1000:2013-Feb-2000
 
 
     @ManyToOne(fetch = FetchType.LAZY)
