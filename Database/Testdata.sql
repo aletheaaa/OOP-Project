@@ -13,8 +13,9 @@ VALUES ('JohnPortfolio', 'Portfolio for John Doe', 10000.00, '2021-01', 'Monthly
 
 
 -- Insert Asset for User 1's Portfolio
-INSERT INTO assets (purchased_price,portfolio_name,stock_symbol,allocation,sector,monthly_performance)
-VALUES (50.00, 'JohnPortfolio','AAPL',66.67,'TECHNOLOGY','2021-Jan-1110' );
+INSERT INTO assets (purchased_price, portfolio_name, stock_symbol, allocation, sector, monthly_performance)
+VALUES (50.00, 'JohnPortfolio', 'AAPL', 66.67, 'TECHNOLOGY', JSON_ARRAY('2021-Jan-1110'));
+
 
 -- Insert another Asset for User 1's Portfolio
 INSERT INTO assets (purchased_price,portfolio_name,stock_symbol,allocation,sector,monthly_performance)
