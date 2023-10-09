@@ -11,14 +11,14 @@
      @Autowired
      AssetDAO assetDAO;
 
-     public List<Asset> getAllTrades(){
+     public List<Asset> getAllAssets(){
          System.out.println("In service");
          return assetDAO.findAll();
      }
 
-     public List<Asset> getTradesByPortfolioId(Integer portfolioId){
+     public List<Asset> getAssetsByPortfolioName(String portfolioName){
          System.out.println("In controller");
-         return assetDAO.findByTradeIdPortfolioId(portfolioId);
+         return assetDAO.findByAssetIdPortfolioName(portfolioName);
      }
 
  }

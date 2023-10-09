@@ -1,8 +1,8 @@
 select * from users;
 
 -- Insert Portfolio for User 1
-INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id)
-VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 54);
+INSERT INTO portfolios (portfolio_name, description, capital, start_date, time_period, user_id)
+VALUES ('JohnPortfolio', 'Portfolio for John Doe', 10000.00, '2021-01', 'Monthly', 1);
 
 -- Insert Portfolio for User 2
 -- INSERT INTO portfolio (portfolio_id, portfolio_name, description, capital, user_id)
@@ -10,22 +10,15 @@ VALUES (1, 'John Portfolio', 'Portfolio for John Doe', 10000.00, 54);
 
 
 
--- Insert Stock Data
-INSERT INTO stocks (stock_symbol, stock_name, last_updated_time, last_updated_price)
-VALUES
-  ('AAPL', 'Apple Inc.', '2023-10-03', 145.67),
-  ('GOOGL', 'Alphabet Inc.', '2023-10-03', 2750.12);
-  -- Add more stocks as needed
-  ;
 
 
--- Insert Trade for User 1's Portfolio
-INSERT INTO trades (purchase_date_time, purchase_price, purchase_quantity, portfolio_id, stock_symbol)
-VALUES ('2023-10-03 09:00:00', 50.00, 100, 1, 'AAPL');
+-- Insert Asset for User 1's Portfolio
+INSERT INTO assets (purchased_price,portfolio_name,stock_symbol,allocation,sector,monthly_performance)
+VALUES (50.00, 'JohnPortfolio','AAPL',66.67,'TECHNOLOGY','2021-Jan-1110' );
 
--- Insert another Trade for User 1's Portfolio
-INSERT INTO trades (purchase_date_time, purchase_price, purchase_quantity, portfolio_id, stock_symbol)
-VALUES ('2023-10-04 10:30:00', 55.00, 75, 1, 'GOOGL');
+-- Insert another Asset for User 1's Portfolio
+INSERT INTO assets (purchased_price,portfolio_name,stock_symbol,allocation,sector,monthly_performance)
+VALUES (50.00, 'JohnPortfolio','PFA',66.67,'HEALTHCARE','2022-Feb-1110' );
 
 -- Insert Test Portfolios for User 1
 INSERT INTO portfolios (portfolio_id, portfolio_name, description, capital, user_id) 

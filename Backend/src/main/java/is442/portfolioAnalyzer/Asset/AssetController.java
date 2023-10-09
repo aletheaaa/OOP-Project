@@ -9,22 +9,22 @@
  import java.util.List;
 
  @RestController
- @RequestMapping("trade")
+ @RequestMapping("asset")
  public class AssetController {
 
      @Autowired
      AssetService assetService;
 
-     @GetMapping("allTrades")
-     public List<Asset> getAllTrades(){
+     @GetMapping("allAssets")
+     public List<Asset> getAllAssets(){
          System.out.println("In controller");
-         return assetService.getAllTrades();
+         return assetService.getAllAssets();
      }
 
 
-     @GetMapping("getTradesByPortfolioId/{portfolioId}")
-     public List<Asset> getTradesByPortfolioId(@PathVariable Integer portfolioId){
+     @GetMapping("getAssetsByPortfolioName/{portfolioName}")
+     public List<Asset> getAssetsByPortfolioName(@PathVariable String portfolioName){
          System.out.println("In controller");
-         return assetService.getTradesByPortfolioId(portfolioId);
+         return assetService.getAssetsByPortfolioName(portfolioName);
      }
  }
