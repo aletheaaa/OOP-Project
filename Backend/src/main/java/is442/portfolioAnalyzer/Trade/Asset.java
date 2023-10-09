@@ -13,16 +13,22 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.Data;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "trades")
-public class Trade {
+@Table(name = "assets")
+public class Asset {
 
     @EmbeddedId
-    private TradeId tradeId;
+    private AssetId assetId; //symbol and portfolio name
 
-    private double purchasePrice;
-    private Integer purchaseQuantity;
+    private String sector;
+    private double allocation;
+    private double purchasedPrice; //price at time of purchase
+
+    private List <String> monthlyPerformance; //2013-Jan-1000
+
+
 
 }
