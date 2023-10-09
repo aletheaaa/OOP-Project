@@ -19,12 +19,7 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class AssetId implements Serializable {
-    
 
-    @ManyToOne
-    // @JoinColumn (name = "portfolio_name")
-    private Portfolio portfolio;
-    
     private String portfolioName;
     private String stockSymbol;
 

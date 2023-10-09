@@ -12,8 +12,8 @@ public class PortfolioService {
 
     @Autowired
     PortfolioDAO portfolioDAO;
-    @Autowired
-    TradeDAO tradeDAO;
+    // @Autowired
+    // TradeDAO tradeDAO;
 
     public List<Portfolio> getAllPortfolios(){
         System.out.println("In service");
@@ -25,8 +25,8 @@ public class PortfolioService {
 
       
     }
-      public List<Asset> getTradesByPortfolioId(Integer portfolioId){
-         System.out.println("In controller");
-        return tradeDAO.findByTradeIdPortfolioId(portfolioId);
-    }
+    //   public List<Asset> getTradesByPortfolioId(Integer portfolioId){
+    //      System.out.println("In controller");
+    //     return tradeDAO.findByTradeIdPortfolioId(portfolioId);
+    // }
 }

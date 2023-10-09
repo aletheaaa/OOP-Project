@@ -2,6 +2,7 @@ package is442.portfolioAnalyzer.Portfolio;
 
 // import is442.portfolioAnalyzer.Stock.Stock;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 // import jakarta.persistence.GeneratedValue;
 // import jakarta.persistence.GenerationType;
@@ -20,7 +21,9 @@ public class Portfolio {
     
     @Id
     // @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "portfolio_name")
     private String portfolioName;
+    
     private Double capital;
     private String timePeriod;
     private String startDate;

@@ -30,5 +30,9 @@ public class Asset {
     private List <String> monthlyPerformance; //2013-Jan-1000
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("portfolioName") // Map to portfolioName in the composite primary key
+    @JoinColumn(name = "portfolio_name", referencedColumnName = "portfolio_name")
+    private Portfolio portfolio;
 
 }

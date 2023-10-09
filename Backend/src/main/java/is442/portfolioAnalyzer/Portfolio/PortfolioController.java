@@ -18,10 +18,10 @@ public class PortfolioController {
 
     @Autowired
     PortfolioService portfolioService;
-    @Autowired
-    TradeService tradeService;
-    @Autowired
-    TradeDAO tradeDAO;
+    // @Autowired
+    // TradeService tradeService;
+    // @Autowired
+    // TradeDAO tradeDAO;
 
     @GetMapping("hello")
     public ResponseEntity<String> sayHello() {
@@ -40,13 +40,13 @@ public class PortfolioController {
         return portfolioService.getPortfolioByUser(userid);
     }
 
-    @GetMapping("getTradesByPortfolioId/{portfolioId}")
-    public List<Asset> getTradesByPortfolioId(@PathVariable Integer portfolioId){
-        System.out.println("In controller");
-        return tradeDAO.findByTradeIdPortfolioId(portfolioId);
+    // @GetMapping("getTradesByPortfolioId/{portfolioId}")
+    // public List<Asset> getTradesByPortfolioId(@PathVariable Integer portfolioId){
+    //     System.out.println("In controller");
+    //     return tradeDAO.findByTradeIdPortfolioId(portfolioId);
         // directly access DAO
 
-    }
+    // }
     
     
 
