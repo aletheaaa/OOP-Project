@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS assets (
  stock_symbol VARCHAR(20) NOT NULL,
  allocation DOUBLE NOT NULL,
  sector VARCHAR(64) NOT NULL,
- monthly_performance JSON NOT NULL,
+ monthly_performance VARCHAR(64) NOT NULL,
  CONSTRAINT assets_pk PRIMARY KEY(portfolio_name, stock_symbol),
  CONSTRAINT assets_fk1 FOREIGN KEY(portfolio_name) references portfolios(portfolio_name)
 --  CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
