@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.Trade;
+package is442.portfolioAnalyzer.Asset;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +16,14 @@ public class TradeController {
     TradeService tradeService;
 
     @GetMapping("allTrades")
-    public List<Trade> getAllTrades(){
+    public List<Asset> getAllTrades(){
         System.out.println("In controller");
         return tradeService.getAllTrades();
     }
 
 
     @GetMapping("getTradesByPortfolioId/{portfolioId}")
-    public List<Trade> getTradesByPortfolioId(@PathVariable Integer portfolioId){
+    public List<Asset> getTradesByPortfolioId(@PathVariable Integer portfolioId){
         System.out.println("In controller");
         return tradeService.getTradesByPortfolioId(portfolioId);
     }

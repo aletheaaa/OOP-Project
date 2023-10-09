@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.Trade;
+package is442.portfolioAnalyzer.Asset;
 
 import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import java.io.Serializable;

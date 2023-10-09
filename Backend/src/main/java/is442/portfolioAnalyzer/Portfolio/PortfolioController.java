@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import is442.portfolioAnalyzer.Trade.*;
-// import is442.portfolioAnalyzer.Trade.TradeService;
+import is442.portfolioAnalyzer.Asset.*;
 
 import java.util.*;
 
@@ -42,7 +41,7 @@ public class PortfolioController {
     }
 
     @GetMapping("getTradesByPortfolioId/{portfolioId}")
-    public List<Trade> getTradesByPortfolioId(@PathVariable Integer portfolioId){
+    public List<Asset> getTradesByPortfolioId(@PathVariable Integer portfolioId){
         System.out.println("In controller");
         return tradeDAO.findByTradeIdPortfolioId(portfolioId);
         // directly access DAO

@@ -1,9 +1,9 @@
-package is442.portfolioAnalyzer.Trade;
+package is442.portfolioAnalyzer.Asset;
 
 import java.sql.Timestamp;
 
 import is442.portfolioAnalyzer.Portfolio.Portfolio;
-import is442.portfolioAnalyzer.Stock.Stock;
+// import is442.portfolioAnalyzer.Stock.Stock;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
