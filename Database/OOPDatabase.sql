@@ -25,10 +25,11 @@ CREATE TABLE IF NOT EXISTS stocks (
 );
 
 CREATE TABLE IF NOT EXISTS portfolios (
- portfolio_id INT NOT NULL PRIMARY KEY,
- portfolio_name VARCHAR(64) NOT NULL,
+ portfolio_name VARCHAR(64) NOT NULL PRIMARY KEY,
  description VARCHAR(255) NOT NULL,
  capital DOUBLE NOT NULL,
+ startDate VARCHAR(255) NOT NULL,
+ timePeriod VARCHAR(255) NOT NULL,
  user_id INT NOT NULL,
  CONSTRAINT portfolios_fk1 FOREIGN KEY(user_id) references users(user_id)
 );
