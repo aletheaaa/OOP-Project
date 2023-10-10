@@ -4,7 +4,9 @@ import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +21,12 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class AssetId implements Serializable {
-
+    @Column(name = "portfolio_name")
     private String portfolioName;
     private String stockSymbol;
 
 
-    
+
 
 
 }

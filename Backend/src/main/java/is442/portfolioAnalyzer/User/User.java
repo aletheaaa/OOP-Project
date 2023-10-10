@@ -23,7 +23,7 @@ import java.util.List;
 public class User implements UserDetails { // UserDetails contains methods from user security
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)  // id will automatically be generated. By default, is auto
-    private Integer userId;
+    private Integer id;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")

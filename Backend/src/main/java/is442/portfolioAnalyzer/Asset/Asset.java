@@ -30,9 +30,9 @@ public class Asset {
     private String monthlyPerformance; //2013-Jan-1000:2013-Feb-2000
 
 
-    @ManyToOne
-    @MapsId("portfolioName") // Map to portfolioName in the composite primary key
-    @JoinColumn(name = "portfolio_name", referencedColumnName = "portfolio_name")
-    private Portfolio portfolio;
+////    @ManyToOne
+//    @MapsId("portfolioName") // Map to portfolioName in the composite primary key
+////    @JoinColumn(name = "portfolio_name")
+//    private Portfolio portfolio;
 
 }
