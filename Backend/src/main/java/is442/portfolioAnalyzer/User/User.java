@@ -1,10 +1,7 @@
 package is442.portfolioAnalyzer.User;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 @Table(name="users")
 public class User implements UserDetails { // UserDetails contains methods from user security
     @Id
@@ -31,10 +29,6 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Column(name = "email")
     private String email;
     private String password;
-
-
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    // private List<Portfolio> portfolios;
 
     @Enumerated(EnumType.STRING)
     private Role role;

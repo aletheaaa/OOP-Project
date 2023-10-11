@@ -25,5 +25,7 @@ public class UserController {
             throw new UserNotFoundException("User not found with email: " + email);
         }
     }
+
+
 }
 

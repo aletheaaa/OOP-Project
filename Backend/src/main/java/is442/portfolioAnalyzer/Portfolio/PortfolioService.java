@@ -1,5 +1,9 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.JsonModels.AssetCreation;
+import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.User.User;
+import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +17,84 @@ public class PortfolioService {
     @Autowired
     PortfolioDAO portfolioDAO;
     @Autowired
-    AssetDAO AssetDAO;
+    AssetDAO assetDAO;
 
-    public List<Portfolio> getAllPortfolios(){
+    @Autowired
+    UserServiceImpl userServiceImpl;
+
+    @Autowired
+    AssetService assetService;
+
+    public List<Portfolio> getAllPortfolios() {
         System.out.println("In service");
         return portfolioDAO.findAll();
     }
-    
-        public List<Portfolio> getPortfolioByUser(Integer userid){
+
+    public List<Portfolio> getPortfolioByUser(Integer userid) {
         return portfolioDAO.findByUserId(userid);
 
-      
+
     }
-      public List<Asset> getAssetByPortfolioName(String portfolioName){
-         System.out.println("In controller");
-        return AssetDAO.findByAssetIdPortfolioName(portfolioName);
+
+    public Portfolio getPortfolioByName(String portfolioName) {
+        return portfolioDAO.findByPortfolioName(portfolioName);
+    }
+
+
+    public void createPortfolio(PortfolioCreation portfolioCreation) {
+
+        // PROCESS THE PORTFOLIO CREATION
+        Portfolio portfolio = new Portfolio();
+        // Get the userId add  into portfolio
+        User user = userServiceImpl.getUserById(portfolioCreation.getUserId());
+        portfolio.setUser(user);
+        // Get the portfolioName, capital, timePeriod, description, startDate and add into portfolio
+        portfolio.setPortfolioName(portfolioCreation.getPortfolioName());
+        portfolio.setCapital(portfolioCreation.getCapital());
+        portfolio.setTimePeriod(portfolioCreation.getTimePeriod());
+        portfolio.setDescription(portfolioCreation.getDescription());
+        portfolio.setStartDate(portfolioCreation.getStartDate());
+
+        // Save the portfolio without AssetList into DB first
+        System.out.println("--------------------------------------");
+//        System.out.println(portfolio);
+        portfolioDAO.save(portfolio);
+
+        // Creating the assets
+        List<Asset> assets = new ArrayList<Asset>();
+        // Loop through the asset list and create the assets
+         List<AssetCreation> assetList = portfolioCreation.getAssetList();
+        for (int i = 0; i < assetList.size() ; i++) {
+            Asset asset = new Asset();
+            AssetCreation assetCreation = assetList.get(i);
+              // Create the assetId
+            AssetId assetId = new AssetId();
+            assetId.setPortfolioName(portfolioCreation.getPortfolioName());
+            assetId.setStockSymbol(assetCreation.getSymbol());
+            asset.setAssetId(assetId);
+
+            asset.setSector(assetCreation.getSector());
+            asset.setAllocation(assetCreation.getAllocation());
+
+            if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
+                // Call External API to get the latest price
+                asset.setUnitPrice(assetService.getAssetLatestPrice(assetCreation.getSymbol()));
+                // Add the quantity purchased based on the portfolio capital and asset allocation
+                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(assetCreation.getSymbol()));
+            }
+
+            // TODO - CREATE FUNCTION TO CALCULATE MONTHLY PERFORMANCE
+
+            System.out.println(asset);
+            assetDAO.save(asset);
+            assets.add(asset);
+        }
+
+        // Add the assets into the portfolio
+        portfolio.setAssets(assets);
+
+        // Update the portfolio with the assetList
+        portfolioDAO.save(portfolio);
+
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
     UserDetails getUserByEmail(String email) throws UserNotFoundException;
+
 }
 
 

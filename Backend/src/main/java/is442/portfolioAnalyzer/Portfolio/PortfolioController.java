@@ -1,11 +1,9 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import is442.portfolioAnalyzer.Asset.*;
 
@@ -29,24 +27,36 @@ public class PortfolioController {
     }
 
     @GetMapping("allPortfolios")
-    public List<Portfolio> getAllPortfolios() {
+    public ResponseEntity<List<Portfolio>> getAllPortfolios() {
         // return ResponseEntity.ok("Connect to Portfolio Service!");
         System.out.println("In controller");
-        return portfolioService.getAllPortfolios();
+        return ResponseEntity.ok(portfolioService.getAllPortfolios());
     }
 
     @GetMapping("user/{userid}")
-    public  List<Portfolio> getPortfolioByUser(@PathVariable Integer userid) {
-        return portfolioService.getPortfolioByUser(userid);
+    public ResponseEntity <List<Portfolio>> getPortfolioByUser(@PathVariable Integer userid) {
+        return ResponseEntity.ok(portfolioService.getPortfolioByUser(userid));
     }
 
-    @GetMapping("getAssetsByPortfolioName/{portfolioName}")
-    public List<Asset> getAssetsByPortfolioName(@PathVariable String portfolioName){
-        System.out.println("In controller");
-        return AssetDAO.findByAssetIdPortfolioName(portfolioName);
-        // directly access DAO
-
+    @GetMapping("portfolioName/{portfolioName}")
+    public ResponseEntity<Portfolio> getPortfolioByName(@PathVariable String portfolioName) {
+        Portfolio portfolio = portfolioService.getPortfolioByName(portfolioName);
+        if (portfolio == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(portfolio);
     }
+
+    @PostMapping(value = "createPortfolio",consumes = "application/json")
+    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
+        portfolioService.createPortfolio(portfolioCreation);
+//        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
+
+        String name = portfolioCreation.getPortfolioName();
+
+        return ResponseEntity.ok("Portfolio Created!");
+    }
+
     
     
 

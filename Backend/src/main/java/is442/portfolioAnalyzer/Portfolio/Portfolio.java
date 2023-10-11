@@ -8,7 +8,6 @@ import lombok.Data;
 import is442.portfolioAnalyzer.Asset.*;
 import is442.portfolioAnalyzer.User.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
