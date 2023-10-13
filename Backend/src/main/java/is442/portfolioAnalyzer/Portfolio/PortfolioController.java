@@ -1,7 +1,9 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,10 +54,27 @@ public class PortfolioController {
         portfolioService.createPortfolio(portfolioCreation);
 //        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
 
-        String name = portfolioCreation.getPortfolioName();
+        // String name = portfolioCreation.getPortfolioName();
 
         return ResponseEntity.ok("Portfolio Created!");
     }
+
+    @GetMapping(value = "/getPortfolioDetails/{portfolioName}", produces = "application/json")
+    public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable String portfolioName) {
+        GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioName);
+        System.out.println("In posting controller");
+        if (portfolioDetails != null) {
+            return ResponseEntity.ok(portfolioDetails);
+        } else {
+            // Handle errors and return an appropriate error response.
+            System.out.println("Portfolio not found!");
+            return ResponseEntity.notFound().build();
+
+        }
+        
+    }
+    
+
 
     
     
