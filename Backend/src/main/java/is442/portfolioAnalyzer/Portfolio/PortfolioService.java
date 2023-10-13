@@ -1,10 +1,14 @@
 package is442.portfolioAnalyzer.Portfolio;
 
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
+import is442.portfolioAnalyzer.JsonModels.AssetModel;
+import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
+import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import is442.portfolioAnalyzer.Asset.*;
@@ -96,5 +100,12 @@ public class PortfolioService {
         // Update the portfolio with the assetList
         portfolioDAO.save(portfolio);
 
+    }
+    public GetPortfolioDetails getPortfolioDetails(String portfolioName) {
+        System.out.println("In portfolio posting service");
+        Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+        System.out.println(portfolio.getDescription());
+        AssetModel assetModel = new AssetModel(0, null);
+        return null;
     }
 }
