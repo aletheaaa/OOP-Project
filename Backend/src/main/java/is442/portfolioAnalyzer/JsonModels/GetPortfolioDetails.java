@@ -2,8 +2,10 @@ package is442.portfolioAnalyzer.JsonModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
+import lombok.Data;
 
+import java.util.Map;
+@Data
 public class GetPortfolioDetails {
     @JsonProperty("Assets Allocation")
     private AssetsAllocation assetsAllocation;

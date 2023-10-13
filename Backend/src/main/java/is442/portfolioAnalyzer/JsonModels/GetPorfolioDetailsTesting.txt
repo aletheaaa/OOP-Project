@@ -1,0 +1,55 @@
+        // TESTING SAMPLE DATA
+        // Sample AssetModel instances for Technology and Healthcare
+        AssetModel technologyAsset = new AssetModel(0.5, new ArrayList<>());
+        AssetModel healthcareAsset = new AssetModel(0.4, new ArrayList<>());    
+
+        // Sample Stock instances
+        Stock teslaStock = new Stock("TSLA", 0.5);
+        Stock pfizerStock = new Stock("PFE", 0.4);
+
+        // Add Stock instances to AssetModel
+        technologyAsset.getStocks().add(teslaStock);
+        healthcareAsset.getStocks().add(pfizerStock);
+
+        // // Populate the assets map
+        assetMap.put("Technology", technologyAsset);
+        assetMap.put("Healthcare", healthcareAsset);
+        assetsAllocation.setAssets(assetMap);
+
+        // Populate the PerformanceSummary
+        PerformanceSummary performanceSummary = new PerformanceSummary(
+            1000.0, // InitialBalance
+            2000.0, // FinalBalance
+            1000.0, // NetProfit
+            7.77,   // CAGR
+            0.59,   // SharpeRatio
+            0.42    // SortinoRatio
+        );      
+
+                // Create a sample "performance" map
+        Map<String, Map<String, Double>> performanceMap = new HashMap<>();
+
+        // Sample performance data for 2013
+        Map<String, Double> performance2013 = new HashMap<>();
+        performance2013.put("Jan", 1100.0);
+        performance2013.put("Feb", 1200.0);
+        performance2013.put("Mar", 2100.0);
+
+        // Sample performance data for 2014
+        Map<String, Double> performance2014 = new HashMap<>();
+        performance2014.put("Jan", 1200.0);
+        performance2014.put("Feb", 1300.0);
+        performance2014.put("Mar", 1100.0);
+
+        // Add the performance data to the "performance" map
+        performanceMap.put("2013", performance2013);
+        performanceMap.put("2014", performance2014);
+
+        // Set the "performance" map in GetPortfolioDetails
+        portfolioDetails.setPerformance(performanceMap);
+
+        // Set AssetsAllocation and PerformanceSummary in GetPortfolioDetails
+        portfolioDetails.setAssetsAllocation(assetsAllocation);
+        portfolioDetails.setPerformanceSummary(performanceSummary);
+        
+        return portfolioDetails;

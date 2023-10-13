@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Data
-// @AllArgsConstructor
+@AllArgsConstructor
 public class Stock {
     private String Symbol;
     private double Allocation;
