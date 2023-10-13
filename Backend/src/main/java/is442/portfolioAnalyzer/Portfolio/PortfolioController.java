@@ -52,7 +52,7 @@ public class PortfolioController {
         portfolioService.createPortfolio(portfolioCreation);
 //        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
 
-        String name = portfolioCreation.getPortfolioName();
+        // String name = portfolioCreation.getPortfolioName();
 
         return ResponseEntity.ok("Portfolio Created!");
     }
