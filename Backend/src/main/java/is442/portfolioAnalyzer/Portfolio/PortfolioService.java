@@ -2,6 +2,8 @@ package is442.portfolioAnalyzer.Portfolio;
 
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
+import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
+import is442.portfolioAnalyzer.JsonModels.Stock;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
@@ -103,9 +105,38 @@ public class PortfolioService {
     }
     public GetPortfolioDetails getPortfolioDetails(String portfolioName) {
         System.out.println("In portfolio posting service");
-        Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
-        System.out.println(portfolio.getDescription());
+        
+        //create a GetPortfoilioDetails json model
+        GetPortfolioDetails portfolioDetails = new GetPortfolioDetails();
+
+   
+        // create AssetModel json model
         AssetModel assetModel = new AssetModel(0, null);
+
+        // create AssetAllocation json model
+        AssetsAllocation assetsAllocation = new AssetsAllocation();
+        Map<String, AssetModel> assetMap = new HashMap<>();
+
+        // create PerformanceSummary json model
+        PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
+
+        // get existing portfolio by name
+        Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+
+    
+        // Loop through assets of existing portfolio
+        for (Asset asset : portfolio.getAssets()) {
+            // populate json models less GetPortfolioDetails
+            
+            // Create a list of stocks 
+            List<Stock> stocks = new ArrayList<>(); 
+            
+        }
+        
+        
+        // populate GetPortfoilioDetails 
+        
+        // return GetPortfoilioDetails 
         return null;
     }
 }
