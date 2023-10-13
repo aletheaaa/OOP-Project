@@ -59,7 +59,7 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
-    @PostMapping(value = "/getPortfolioDetails/{portfolioName}", consumes = "application/json")
+    @GetMapping(value = "/getPortfolioDetails/{portfolioName}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable String portfolioName) {
         GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioName);
         System.out.println("In posting controller");
