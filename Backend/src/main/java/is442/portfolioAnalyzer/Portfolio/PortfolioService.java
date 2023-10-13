@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import is442.portfolioAnalyzer.Asset.*;
 
+import java.time.Year;
 import java.util.*;
 
 @Service
@@ -69,11 +71,11 @@ public class PortfolioService {
         // Creating the assets
         List<Asset> assets = new ArrayList<Asset>();
         // Loop through the asset list and create the assets
-         List<AssetCreation> assetList = portfolioCreation.getAssetList();
-        for (int i = 0; i < assetList.size() ; i++) {
+        List<AssetCreation> assetList = portfolioCreation.getAssetList();
+        for (int i = 0; i < assetList.size(); i++) {
             Asset asset = new Asset();
             AssetCreation assetCreation = assetList.get(i);
-              // Create the assetId
+            // Create the assetId
             AssetId assetId = new AssetId();
             assetId.setPortfolioName(portfolioCreation.getPortfolioName());
             assetId.setStockSymbol(assetCreation.getSymbol());
@@ -103,6 +105,103 @@ public class PortfolioService {
         portfolioDAO.save(portfolio);
 
     }
+
+
+//   // Get the net profit of the portfolio based on the portfolioName
+//   public double getNetProfit(String portfolioName) {
+//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+//       List<Asset> assets = portfolio.getAssets();
+//       double totalAssetsValue = 0;
+//       for (int i = 0; i < assets.size(); i++) {
+//           Asset asset = assets.get(i);
+//           totalAssetsValue += asset.getTotalValue();
+//       }
+//       double netProfit = totalAssetsValue - portfolio.getCapital();
+//       return netProfit;
+//
+//   }
+//
+//   // Get portfolio final balance
+//   public double getPortfolioFinalBalance(String portfolioName) {
+//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+//       List<Asset> assets = portfolio.getAssets();
+//       double totalValue = 0;
+//       for (int i = 0; i < assets.size(); i++) {
+//           Asset asset = assets.get(i);
+//           totalValue += asset.getTotalValue();
+//       }
+//       return totalValue;
+//   }
+//
+//   // Get the portfolio's CAGR
+//   public double getCAGR(String portfolioName) {
+//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+//       double finalBalance = getPortfolioFinalBalance(portfolioName);
+//       double initialBalance = portfolio.getCapital();
+//
+//       // Calculate the time period from current
+//       int currentYearvalue = Year.now().getValue();
+//       int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4));
+//       int timePeriod = currentYearvalue - startYearValue;
+//
+//       double CAGR = Math.pow(finalBalance/initialBalance, 1/timePeriod) - 1;
+//       return CAGR * 100; // Convert to percentage
+//   }
+//
+//   // Get SharpeRatio of the portfolio
+//   // The Sharpe Ratio is a measure of the risk-adjusted return of a portfolio.
+//   public double calcSharpeRatio(double expectedReturn, double riskFreeRate, double standardDeviation) {
+//       // Example: 10% expected return
+//       // Example: 3% risk-free rate
+//       // Example: 15% standard deviation
+//       return (expectedReturn - riskFreeRate) / standardDeviation;
+//   }
+//
+//   // Calculate portfolio's standard deviation
+//   public double calcStandardDeviation(double[] stockReturns) {
+//       return Math.sqrt(calcVariance(stockReturns));
+//   }
+//
+//   // Calculate portfolio's variance
+//   public double calcVariance(double[] stockReturns) {
+//       double sum = 0.0;
+//       double mean = calcMean(stockReturns);
+//       for (double stockReturn : stockReturns) {
+//           sum += Math.pow(stockReturn - mean, 2.0);
+//       }
+//       return sum / (stockReturns.length - 1);
+//   }
+//
+//   // Calculate portfolio's mean
+//   public double calcMean(double[] stockReturns) {
+//       double sum = 0.0;
+//       for (double stockReturn : stockReturns) {
+//           sum += stockReturn;
+//       }
+//       return sum / stockReturns.length;
+//   }
+//
+//   // Calculate portfolio's expected return
+//   public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
+//   //The expected return of a portfolio is a weighted sum of the expected returns of its individual assets,
+//   //where the weights represent the proportion of each asset in the portfolio
+//   if (assetReturns.length != weights.length) {
+//       // TODO - Handles exceptions
+//       throw new IllegalArgumentException("Arrays must have the same length.");
+//   }
+//   double expectedReturn = 0;
+//
+//   for (int i = 0; i < assetReturns.length; i++) {
+//       expectedReturn += assetReturns[i] * weights[i];
+//   }
+//   return expectedReturn;
+//   }
+
+
+
+
+
+
     public GetPortfolioDetails getPortfolioDetails(String portfolioName) {
         System.out.println("In portfolio posting service");
         
@@ -195,3 +294,4 @@ public class PortfolioService {
         return portfolioDetails;
     }
 }
+
