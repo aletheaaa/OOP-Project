@@ -49,6 +49,7 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolio);
     }
 
+    //Create portfolio button
     @PostMapping(value = "createPortfolio",consumes = "application/json")
     public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
         portfolioService.createPortfolio(portfolioCreation);
@@ -59,6 +60,7 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
+    
     @GetMapping(value = "/getPortfolioDetails/{portfolioName}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable String portfolioName) {
         GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioName);
