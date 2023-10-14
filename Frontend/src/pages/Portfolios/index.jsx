@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import DashboardCard from "../../components/Common/DashboardCard";
-import AddStockButton from "../../components/Stocks/AddStockButton";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
 export default function Portfolios() {
-  const [stocks, setStocks] = useState([]);
+  const [trades, setTrades] = useState([]);
+  const [userPortfolios, setUserPortfolios] = useState([]);
+  const [chosenPortfolio, setChosenPortfolio] = useState(0);
 
   useEffect(() => {
-    const getStocks = async () => {
-      // const stocksFromServer = await fetchStocks();
-      const stocksFromServer = [
+    const getUserTrades = async () => {
+      // const tradesFromServer = await fetchTrades();
+      const tradesFromServer = [
         {
           name: "AAPL",
           price: 100,
@@ -26,23 +27,71 @@ export default function Portfolios() {
           returns: 200,
         },
       ];
-      setStocks(stocksFromServer);
+      setTrades(tradesFromServer);
     };
-    getStocks();
+    getUserTrades();
+
+    // getting the user's portfolio
+    setUserPortfolios([
+      {
+        portfolioId: "1",
+        name: "Retirement",
+        description: "retirement plan",
+        totalCapital: 1000,
+        Trades: [],
+      },
+      {
+        portfolioId: "2",
+        name: "Retirement 2",
+        description: "retirement plan2",
+        totalCapital: 1000,
+        Trades: [],
+      },
+      {
+        portfolioId: "3",
+        name: "Retirement 3",
+        description: "retirement plan3",
+        totalCapital: 1000,
+        Trades: [],
+      },
+    ]);
+    setChosenPortfolio({
+      portfolioId: "1",
+      name: "Retirement",
+      description: "retirement plan",
+      totalCapital: 1000,
+      Trades: [],
+    });
   }, []);
 
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
-        <div className="d-flex flex-row-reverse">
-          <div className="w-25 d-flex justify-content-end">
+        <div className="row d-flex justify-content-between">
+          <select
+            className="col-2 rounded"
+            onChange={(e) =>
+              setChosenPortfolio(
+                userPortfolios.find(
+                  (portfolio) => portfolio.portfolioId === e.target.value
+                )
+              )
+            }
+          >
+            {userPortfolios.map((portfolio) => {
+              return (
+                <option value={portfolio.portfolioId}>{portfolio.name}</option>
+              );
+            })}
+          </select>
+          <div className="col-2 d-flex justify-content-end">
             <CreatePortfolioButton />
           </div>
         </div>
         <div className="row mb-3 mt-5">
           <div className="col">
-            <h3>Portfolio Name</h3>
-            <div>description strategy etc</div>
+            <h3>{chosenPortfolio.name}</h3>
+            <div>{chosenPortfolio.description}</div>
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
@@ -120,20 +169,22 @@ export default function Portfolios() {
               className="row p-1 fw-medium"
               style={{ backgroundColor: "lightgray" }}
             >
-              <div className="col-5">NASDAQ</div>
+              <div className="col-3">NASDAQ</div>
               <div className="col">PRICE</div>
               <div className="col">QTY</div>
               <div className="col">CAPITAL GAINS</div>
               <div className="col">RETURNS</div>
+              <div className="col">CAPITAL ALLOCATION</div>
             </div>
-            {stocks.map((element) => {
+            {trades.map((element) => {
               return (
                 <div className="row p-1">
-                  <div className="col-5">{element.name}</div>
+                  <div className="col-3">{element.name}</div>
                   <div className="col">{element.price}</div>
                   <div className="col">{element.quantity}</div>
                   <div className="col">{element.capitalGain}</div>
                   <div className="col">{element.returns}</div>
+                  <div className="col">100%</div>
                 </div>
               );
             })}
