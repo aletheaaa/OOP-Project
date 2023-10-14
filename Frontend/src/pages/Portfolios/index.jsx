@@ -7,6 +7,7 @@ export default function Portfolios() {
   const [trades, setTrades] = useState([]);
   const [userPortfolios, setUserPortfolios] = useState([]);
   const [chosenPortfolio, setChosenPortfolio] = useState(0);
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     const getUserTrades = async () => {
@@ -62,6 +63,40 @@ export default function Portfolios() {
       totalCapital: 1000,
       Trades: [],
     });
+
+    // getting the chart data
+    const labels = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: "Actual Performance",
+          data: [8, 7, 6, 7, 9, 7, 9, 6, 9, 7, 8, 9],
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+        },
+        {
+          label: "Index",
+          data: [2, 3, 5, 2, 3, 4, 1, 5, 1, 3, 2, 7],
+          borderColor: "rgb(53, 162, 235)",
+          backgroundColor: "rgba(53, 162, 235, 0.5)",
+        },
+      ],
+    };
+    setChartData(data);
   }, []);
 
   return (
@@ -78,9 +113,11 @@ export default function Portfolios() {
               )
             }
           >
-            {userPortfolios.map((portfolio) => {
+            {userPortfolios.map((portfolio, index) => {
               return (
-                <option value={portfolio.portfolioId}>{portfolio.name}</option>
+                <option value={portfolio.portfolioId} key={index}>
+                  {portfolio.name}
+                </option>
               );
             })}
           </select>
@@ -107,9 +144,7 @@ export default function Portfolios() {
               className="form-select w-25"
               aria-label="Default select example"
             >
-              <option value="quarter" selected>
-                Quarter Returns
-              </option>
+              <option value="quarter">Quarter Returns</option>
               <option value="annual">Annual Returns</option>
             </select>
           </div>
@@ -161,7 +196,9 @@ export default function Portfolios() {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <AreaChart />
+              {chartData &&
+                chartData.datasets &&
+                chartData.datasets.length > 0 && <AreaChart data={chartData} />}
             </div>
           </div>
           <div className="px-5">
@@ -176,9 +213,9 @@ export default function Portfolios() {
               <div className="col">RETURNS</div>
               <div className="col">CAPITAL ALLOCATION</div>
             </div>
-            {trades.map((element) => {
+            {trades.map((element, index) => {
               return (
-                <div className="row p-1">
+                <div className="row p-1" key={index}>
                   <div className="col-3">{element.name}</div>
                   <div className="col">{element.price}</div>
                   <div className="col">{element.quantity}</div>

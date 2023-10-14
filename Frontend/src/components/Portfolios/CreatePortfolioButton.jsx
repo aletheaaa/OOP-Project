@@ -37,11 +37,6 @@ export default function CreatePortfolioButton() {
     setChosenStockAllocation(updatedStockAllocation);
   };
 
-  useEffect(() => {
-    console.log("triggered");
-    console.log(chosenStockAllocation);
-  }, [chosenStockAllocation]);
-
   return (
     <>
       <button

@@ -73,43 +73,11 @@ export const options = {
 //   },
 // };
 
-const labels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Actual Performance",
-      data: [8, 7, 6, 7, 9, 7, 9, 6, 9, 7, 8, 9],
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-    {
-      label: "Index",
-      data: [2, 3, 5, 2, 3, 4, 1, 5, 1, 3, 2, 7],
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-    },
-  ],
-};
-
-export default function AreaChart() {
+export default function AreaChart(data) {
+  console.log("data from are cahrt" + data.data);
   return (
     <div>
-      <Line options={options} data={data} />
+      <Line options={options} data={data.data} />
     </div>
   );
 }
