@@ -1,6 +1,12 @@
 import React from "react";
 
 function User() {
+  const handleLogout = (event) => {
+    event.preventDefault();
+    sessionStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
   return (
     <div className="dropdown pb-4">
       <a
@@ -39,9 +45,9 @@ function User() {
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <a className="dropdown-item" href="#">
+          <button className="dropdown-item" onClick={handleLogout}>
             Sign out  
-          </a>
+          </button>
         </li>
       </ul>
     </div>
