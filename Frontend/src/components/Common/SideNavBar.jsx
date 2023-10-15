@@ -2,7 +2,7 @@ import React from "react";
 import NavBarItem from "./NavBarItem";
 import User from "./User";
 
-export default function SideNavBar() {
+function SideNavBar() {
   return (
     <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 bg-dark text-white fw-bold">
       <a href="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -21,3 +21,5 @@ export default function SideNavBar() {
     </div>
   );
 }
+
+export default SideNavBar;

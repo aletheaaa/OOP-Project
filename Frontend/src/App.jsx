@@ -1,12 +1,8 @@
 import "./styles/App.css";
 import React from "react";
 
-import Router from "./router/Router";
-import Login from "./pages/Login/index";
-
-function setToken(userToken) {
-  sessionStorage.setItem("token", JSON.stringify(userToken));
-}
+import PageRouter from "./router/PageRouter";
+import LoginRouter from "./router/LoginRouter";
 
 function getToken() {
   return sessionStorage.getItem("token");
@@ -16,7 +12,7 @@ function App() {
   const token = getToken();
   console.log("token", token);
 
-  return token ? <Router /> : <Login setToken={setToken} />;
+  return token ? <PageRouter /> : <LoginRouter />;
 }
 
 export default App;
