@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import java.util.List;
@@ -27,12 +28,8 @@ public class Asset {
     private double allocation;
     private double unitPrice; // The average price of each unit
     private double quantityPurchased;
-    private String monthlyPerformance; //2013-Jan-1000:2013-Feb-2000
+    private double totalValue; //The total value of the asset at current time, this is purely for calculation of net profit for portfolio
 
-
-//    @ManyToOne
-//    @MapsId("portfolioName") // Map to portfolioName in the composite primary key
-//    @JoinColumn(name = "portfolio_name")
-//    private Portfolio portfolio;
-
+    @OneToMany
+    private List<AssetMonthlyPrice> monthlyPrices;
 }

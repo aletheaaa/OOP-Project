@@ -1,13 +1,19 @@
  package is442.portfolioAnalyzer.Asset;
 
- import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
- import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.stereotype.Service;
-
  import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
+import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
+
+import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
+import lombok.Data;
+
  @Service
+ @Data
  public class AssetService {
     
      @Autowired
@@ -37,5 +43,37 @@
              return 0;
          }
      }
+
+     //Set all the monthly prices of the asset from api
+    //   public List<AssetMonthlyPrice> updateMonthlyPrices(Asset asset) {
+    //     try {
+    //         String symbol = asset.getAssetId().getStockSymbol();
+    //         ResponseEntity<?> response = externalApiService.getMonthlyStockPrice(symbol);
+
+    //         if (response.getStatusCode().is2xxSuccessful()) {
+    //             TimeSeriesResponse timeSeriesResponse = (TimeSeriesResponse) response.getBody();
+    //             List<StockUnit> stockUnits = timeSeriesResponse.getStockUnits();
+                
+    //             for (StockUnit stockUnit : stockUnits) {
+    //                 String date = stockUnit.getDate();
+    //                 Double closingPrice = stockUnit.getClose();
+
+    //                 AssetMonthlyPrice assetMonthlyPrice = new AssetMonthlyPrice();
+    //                 AssetMonthlyPriceId assetMonthlyPriceId = new AssetMonthlyPriceId();
+    //                 assetMonthlyPriceId.setDate(date); 
+    //                 assetMonthlyPriceId.setStockSymbol(symbol);
+    //                 assetMonthlyPrice.setId(assetMonthlyPriceId);(assetMonthlyPriceId);
+    //                 assetMonthlyPrice.setClosingPrice(closingPrice);
+
+    //                 asset.getMonthlyPrices().add(assetMonthlyPrice);
+    //             }
+                
+    //            return asset.getMonthlyPrices();
+    //         }
+    //     } catch (Exception e) {
+    //         // Handle any exceptions or errors
+    //         e.printStackTrace();
+    //     }
+    // }
 
  }

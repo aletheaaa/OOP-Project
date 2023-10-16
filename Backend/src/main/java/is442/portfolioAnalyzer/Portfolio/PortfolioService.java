@@ -77,6 +77,8 @@ public class PortfolioService {
             AssetCreation assetCreation = assetList.get(i);
             // Create the assetId
             AssetId assetId = new AssetId();
+            String symbol = assetCreation.getSymbol();
+
             assetId.setPortfolioName(portfolioCreation.getPortfolioName());
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
@@ -92,6 +94,8 @@ public class PortfolioService {
             }
 
             // TODO - CREATE FUNCTION TO CALCULATE MONTHLY PERFORMANCE
+           
+
 
             System.out.println(asset);
             assetDAO.save(asset);
