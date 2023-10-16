@@ -87,7 +87,7 @@ public class PortfolioService {
             asset.setSector(assetCreation.getSector());
             asset.setAllocation(assetCreation.getAllocation());
 
-            // TODO - CREATE FUNCTION TO CALCULATE MONTHLY PERFORMANCE
+            // Set Monthly Prices of asset from API
 
             assetService.updateMonthlyPrices(asset, symbol);
 
@@ -96,6 +96,9 @@ public class PortfolioService {
                 asset.setUnitPrice(assetService.getAssetLatestPrice(assetCreation.getSymbol()));
                 // Add the quantity purchased based on the portfolio capital and asset allocation
                 asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(assetCreation.getSymbol()));
+
+                // Calculate the total value of the asset
+                asset.setTotalValue(asset.getUnitPrice() * asset.getQuantityPurchased());
             }
 
            
@@ -114,6 +117,7 @@ public class PortfolioService {
 
     }
 
+    
 
 //   // Get the net profit of the portfolio based on the portfolioName
 //   public double getNetProfit(String portfolioName) {
@@ -205,7 +209,7 @@ public class PortfolioService {
 //   return expectedReturn;
 //   }
 
-
+    
 
 
 
