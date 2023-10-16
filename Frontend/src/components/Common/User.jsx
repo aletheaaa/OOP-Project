@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 function User() {
   const handleLogout = (event) => {
@@ -6,6 +7,9 @@ function User() {
     sessionStorage.removeItem("token");
     window.location.href = "/";
   }
+
+
+  const userName = "HARDCODE" // hardcoded variable for now
 
   return (
     <div className="dropdown pb-4">
@@ -23,7 +27,7 @@ function User() {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">User</span>
+        <span className="d-none d-sm-inline mx-1">{userName}</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
