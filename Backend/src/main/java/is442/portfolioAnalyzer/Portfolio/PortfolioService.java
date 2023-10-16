@@ -79,12 +79,17 @@ public class PortfolioService {
             AssetId assetId = new AssetId();
             String symbol = assetCreation.getSymbol();
 
+
             assetId.setPortfolioName(portfolioCreation.getPortfolioName());
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
 
             asset.setSector(assetCreation.getSector());
             asset.setAllocation(assetCreation.getAllocation());
+
+            // TODO - CREATE FUNCTION TO CALCULATE MONTHLY PERFORMANCE
+
+            assetService.updateMonthlyPrices(asset, symbol);
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                 // Call External API to get the latest price
@@ -93,11 +98,10 @@ public class PortfolioService {
                 asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(assetCreation.getSymbol()));
             }
 
-            // TODO - CREATE FUNCTION TO CALCULATE MONTHLY PERFORMANCE
            
 
 
-            System.out.println(asset);
+            // System.out.println(asset);
             assetDAO.save(asset);
             assets.add(asset);
         }

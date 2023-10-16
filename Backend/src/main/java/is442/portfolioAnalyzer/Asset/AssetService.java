@@ -1,6 +1,8 @@
  package is442.portfolioAnalyzer.Asset;
 
- import java.util.List;
+ import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,10 @@ import lombok.Data;
  @Data
  public class AssetService {
     
+     
+     @Autowired
+     AssetMonthlyPriceDAO assetMonthlyPriceDAO;
+
      @Autowired
      AssetDAO assetDAO;
 
@@ -45,35 +51,45 @@ import lombok.Data;
      }
 
      //Set all the monthly prices of the asset from api
-    //   public List<AssetMonthlyPrice> updateMonthlyPrices(Asset asset) {
-    //     try {
-    //         String symbol = asset.getAssetId().getStockSymbol();
-    //         ResponseEntity<?> response = externalApiService.getMonthlyStockPrice(symbol);
+      public void updateMonthlyPrices(Asset asset, String symbol) {
+        try {
+            ResponseEntity<?> response = externalApiService.getMonthlyStockPrice(symbol);
 
-    //         if (response.getStatusCode().is2xxSuccessful()) {
-    //             TimeSeriesResponse timeSeriesResponse = (TimeSeriesResponse) response.getBody();
-    //             List<StockUnit> stockUnits = timeSeriesResponse.getStockUnits();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                TimeSeriesResponse timeSeriesResponse = (TimeSeriesResponse) response.getBody();
+                List<StockUnit> stockUnits = timeSeriesResponse.getStockUnits();
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM");
                 
-    //             for (StockUnit stockUnit : stockUnits) {
-    //                 String date = stockUnit.getDate();
-    //                 Double closingPrice = stockUnit.getClose();
+                for (StockUnit stockUnit : stockUnits) {
+                    String date = stockUnit.getDate();
+                    // Parse the date and format it as "yyyy-MM"
+                    Date parsedDate = inputFormat.parse(date);
+                    String formattedDate = outputFormat.format(parsedDate);
+                    
+                    Double closingPrice = stockUnit.getClose();
 
-    //                 AssetMonthlyPrice assetMonthlyPrice = new AssetMonthlyPrice();
-    //                 AssetMonthlyPriceId assetMonthlyPriceId = new AssetMonthlyPriceId();
-    //                 assetMonthlyPriceId.setDate(date); 
-    //                 assetMonthlyPriceId.setStockSymbol(symbol);
-    //                 assetMonthlyPrice.setId(assetMonthlyPriceId);(assetMonthlyPriceId);
-    //                 assetMonthlyPrice.setClosingPrice(closingPrice);
+                    AssetMonthlyPrice assetMonthlyPrice = new AssetMonthlyPrice();
+                    AssetMonthlyPriceId assetMonthlyPriceId = new AssetMonthlyPriceId();
+                    assetMonthlyPriceId.setDate(formattedDate); 
+                    assetMonthlyPriceId.setStockSymbol(symbol);
+                    assetMonthlyPrice.setId(assetMonthlyPriceId);
+                    assetMonthlyPrice.setClosingPrice(closingPrice);
+                    assetMonthlyPriceDAO.save(assetMonthlyPrice);
+                    
+                    asset.getMonthlyPrices().add(assetMonthlyPrice);
 
-    //                 asset.getMonthlyPrices().add(assetMonthlyPrice);
-    //             }
+                    
+                }
                 
-    //            return asset.getMonthlyPrices();
-    //         }
-    //     } catch (Exception e) {
-    //         // Handle any exceptions or errors
-    //         e.printStackTrace();
-    //     }
-    // }
+               
+            }
+        } catch (Exception e) {
+            // Handle any exceptions or errors
+            System.out.println("Error in updateMonthlyPrices");
+            e.printStackTrace();
+        }
+       
+    }
 
  }

@@ -15,6 +15,8 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,5 +33,5 @@ public class Asset {
     private double totalValue; //The total value of the asset at current time, this is purely for calculation of net profit for portfolio
 
     @OneToMany
-    private List<AssetMonthlyPrice> monthlyPrices;
+    private List<AssetMonthlyPrice> monthlyPrices = new ArrayList<>();
 }
