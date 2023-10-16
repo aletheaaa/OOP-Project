@@ -74,7 +74,6 @@ export const options = {
 // };
 
 export default function AreaChart(data) {
-  console.log("data from are cahrt" + data.data);
   return (
     <div>
       <Line options={options} data={data.data} />
