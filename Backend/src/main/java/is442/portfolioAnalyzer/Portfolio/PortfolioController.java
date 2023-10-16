@@ -7,13 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import is442.portfolioAnalyzer.Asset.*;
 
 import java.util.*;
 
-
-@RestController
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RequestMapping("portfolio")
+@RestController
 public class PortfolioController {
 
     @Autowired
@@ -50,7 +51,8 @@ public class PortfolioController {
     }
 
     //Create portfolio button
-    @PostMapping(value = "createPortfolio",consumes = "application/json")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "createPortfolio", consumes = "application/json")
     public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
         portfolioService.createPortfolio(portfolioCreation);
 //        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
@@ -60,7 +62,6 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
-    
     @GetMapping(value = "/getPortfolioDetails/{portfolioName}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable String portfolioName) {
         GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioName);
@@ -75,11 +76,5 @@ public class PortfolioController {
         }
         
     }
-    
-
-
-    
-    
-
 }
 

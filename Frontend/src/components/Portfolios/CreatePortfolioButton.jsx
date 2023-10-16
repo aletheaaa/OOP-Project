@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function CreatePortfolioButton() {
   const [validStocks, setValidStocks] = useState([]);
-  const [stock, setStock] = useState("");
+  const [portfolioDetails, setPortfolioDetails] = useState({
+    Capital: 0,
+    TimePeriod: "Monthly",
+    StartDate: "",
+    PortfolioName: "",
+    Description: "",
+    UserId: 1,
+    AssetList: [],
+  });
   const [numStockFields, setNumStockFields] = useState(1);
   const [chosenStockAllocation, setChosenStockAllocation] = useState([
-    { stock: "", allocation: 0, id: 0 },
+    { Symbol: "", Allocation: 0, id: 0, Sector: "" },
   ]);
   const [totalStockAlloc, setTotalStockAlloc] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     setValidStocks(["AAPL", "TSLA"]);
@@ -17,24 +28,133 @@ export default function CreatePortfolioButton() {
     const updatedStockAllocation = [...chosenStockAllocation];
     updatedStockAllocation[index] = {
       ...updatedStockAllocation[index],
-      stock: event.target.value,
+      Symbol: event.target.value,
     };
     setChosenStockAllocation(updatedStockAllocation);
+  };
+
+  const getStockSector = (stock) => {
+    return "Technology";
   };
 
   const handleAllocationChange = (event, index) => {
     const updatedStockAllocation = [...chosenStockAllocation];
     updatedStockAllocation[index] = {
       ...updatedStockAllocation[index],
-      allocation: event.target.value,
+      Allocation: event.target.value,
     };
     setChosenStockAllocation(updatedStockAllocation);
   };
 
-  const removeStockField = (index) => {
-    const updatedStockAllocation = [...chosenStockAllocation];
-    updatedStockAllocation.splice(index, 1);
-    setChosenStockAllocation(updatedStockAllocation);
+  const handleSubmit = () => {
+    console.log("hre");
+    // console.log(portfolioDetails);
+    // console.log(chosenStockAllocation);
+
+    // validation
+    let isValid = true;
+    if (portfolioDetails.PortfolioName.length === 0) {
+      isValid = false;
+      let node = document.getElementById(`name`);
+      node.classList.add("is-invalid");
+    }
+    if (portfolioDetails.Description.length === 0) {
+      isValid = false;
+      let node = document.getElementById(`description`);
+      node.classList.add("is-invalid");
+    }
+    if (portfolioDetails.Capital <= 0) {
+      isValid = false;
+      let node = document.getElementById(`capital`);
+      node.classList.add("is-invalid");
+    }
+    if (portfolioDetails.StartDate.length === 0) {
+      isValid = false;
+      let node = document.getElementById(`startDate`);
+      node.classList.add("is-invalid");
+    }
+    if (chosenStockAllocation === 0) {
+      isValid = false;
+      let node = document.getElementById(`stock-0`);
+      node.classList.add("is-invalid");
+      setErrorMessage("Please add at least one stock.");
+    }
+    if (totalStockAlloc > 100) {
+      isValid = false;
+      setErrorMessage(
+        "Total % of allocation should add up to a maximum of 100."
+      );
+    }
+    chosenStockAllocation.forEach((ele, index) => {
+      if (ele.Symbol.length === 0) {
+        isValid = false;
+        let node = document.getElementById(`stock-${index}`);
+        node.classList.add("is-invalid");
+      }
+      if (ele.Allocation <= 0) {
+        isValid = false;
+        let node = document.getElementById(`allocation-${index}`);
+        node.classList.add("is-invalid");
+      }
+    });
+    if (!isValid) {
+      return;
+    }
+
+    // filtering out id field from chosenStockAllocation
+    const chosenStockAllocationFiltered = chosenStockAllocation.map((ele) => {
+      return {
+        Symbol: ele.Symbol,
+        Allocation: Number(ele.Allocation),
+        Sector: ele.Sector,
+      };
+    });
+    const requestBody = {
+      ...portfolioDetails,
+      AssetList: chosenStockAllocationFiltered,
+    };
+    // send to backend
+    // TODO: to get token from session
+    const token =
+      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2Vyb25lQGdtYWlsLmNvbSIsImlhdCI6MTY5NzQ1MTQ5MiwiZXhwIjoxNjk3NTM3ODkyfQ.GX4EZ0bSidJ5GgzmAavG78e-1MN327K2iUWTdOvEWow";
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // You can set other headers as needed.
+      },
+    };
+    axios
+      .post(
+        "http://localhost:8080/portfolio/createPortfolio",
+        requestBody,
+        config
+      )
+      .then((response) => {
+        console.log("This is the response");
+        console.log(response.data);
+        if (response.status === 200) {
+          setErrorMessage("");
+          setSuccessMessage("Portfolio created successfully.");
+        }
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+
+    return;
+  };
+
+  // function to validate the input fields of the form
+  const validateField = (e, condition, elementId) => {
+    if (condition) {
+      let node = document.getElementById(elementId);
+      node.classList.remove("is-invalid");
+      return true;
+    } else {
+      let node = document.getElementById(elementId);
+      node.classList.add("is-invalid");
+      return false;
+    }
   };
 
   return (
@@ -81,7 +201,30 @@ export default function CreatePortfolioButton() {
                     </label>
                   </div>
                   <div className="col-9">
-                    <input type="text" id="name" className="form-control" />
+                    <input
+                      type="text"
+                      id="name"
+                      className="form-control"
+                      onChange={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          PortfolioName: event.target.value,
+                        });
+                      }}
+                      onBlur={(event) => {
+                        validateField(
+                          event,
+                          event.target.value.length > 0,
+                          `name`
+                        );
+                      }}
+                    />
+                    <div
+                      id="validationServerPortfolioNameFeedback"
+                      class="invalid-feedback"
+                    >
+                      Please enter a unique portfolio name.
+                    </div>
                   </div>
                 </div>
                 {/* description */}
@@ -96,7 +239,26 @@ export default function CreatePortfolioButton() {
                       type="text"
                       id="description"
                       className="form-control"
+                      onChange={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          Description: event.target.value,
+                        });
+                      }}
+                      onBlur={(event) => {
+                        validateField(
+                          event,
+                          event.target.value.length > 0,
+                          `description`
+                        );
+                      }}
                     />
+                    <div
+                      id="validationServerDescriptionFeedback"
+                      class="invalid-feedback"
+                    >
+                      Please enter a description.
+                    </div>
                   </div>
                 </div>
                 {/* Capital */}
@@ -107,7 +269,26 @@ export default function CreatePortfolioButton() {
                     </label>
                   </div>
                   <div className="col-9">
-                    <input type="text" id="capital" className="form-control" />
+                    <input
+                      type="number"
+                      id="capital"
+                      className="form-control"
+                      onChange={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          Capital: Number(event.target.value),
+                        });
+                      }}
+                      onBlur={(event) => {
+                        validateField(event, event.target.value > 0, `capital`);
+                      }}
+                    />
+                    <div
+                      id="validationServerCapitalFeedback"
+                      class="invalid-feedback"
+                    >
+                      Please enter a capital.
+                    </div>
                   </div>
                 </div>
                 {/* timePeriod */}
@@ -118,10 +299,19 @@ export default function CreatePortfolioButton() {
                     </label>
                   </div>
                   <div className="col-9">
-                    <select id="timePeriod" className="form-select">
-                      <option value="1">Monthly</option>
-                      <option value="2">Quarterly</option>
-                      <option value="3">Yearly</option>
+                    <select
+                      id="timePeriod"
+                      className="form-select"
+                      onSelect={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          TimePeriod: event.target.value,
+                        });
+                      }}
+                    >
+                      <option value="Monthly">Monthly</option>
+                      <option value="Quarterly">Quarterly</option>
+                      <option value="Yearly">Yearly</option>
                     </select>
                   </div>
                 </div>
@@ -136,8 +326,28 @@ export default function CreatePortfolioButton() {
                     <input
                       type="text"
                       id="startDate"
+                      placeholder="YYYY-MM"
                       className="form-control"
+                      onChange={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          StartDate: event.target.value,
+                        });
+                      }}
+                      onBlur={(event) => {
+                        validateField(
+                          event,
+                          event.target.value.length > 0,
+                          `startDate`
+                        );
+                      }}
                     />
+                    <div
+                      id="validationServerCapitalFeedback"
+                      class="invalid-feedback"
+                    >
+                      Please enter a valid start date.
+                    </div>
                   </div>
                 </div>
 
@@ -159,47 +369,108 @@ export default function CreatePortfolioButton() {
                             <input
                               type="text"
                               id={`stock-${index}`}
-                              className="form-control"
+                              className={`form-control`}
                               onChange={(event) =>
                                 handleStockChange(event, index)
                               }
-                              placeholder={ele.stock}
+                              placeholder={ele.Symbol}
+                              onBlur={(event) => {
+                                const isValid = validateField(
+                                  event,
+                                  validStocks.includes(
+                                    event.target.value.toUpperCase()
+                                  ),
+                                  `stock-${index}`
+                                );
+                                if (isValid) {
+                                  // setting sector to portfolioDetails to relevant stock
+                                  const sector = getStockSector(
+                                    event.target.value.toUpperCase()
+                                  );
+
+                                  const updatedStockAllocation = [
+                                    ...chosenStockAllocation,
+                                  ];
+                                  updatedStockAllocation.forEach((ele) => {
+                                    if (ele.id === index) {
+                                      ele.Symbol =
+                                        event.target.value.toUpperCase();
+                                      ele.Sector = sector;
+                                    }
+                                  });
+                                  console.log(
+                                    "updated",
+                                    updatedStockAllocation
+                                  );
+                                  setChosenStockAllocation(
+                                    updatedStockAllocation
+                                  );
+                                }
+                              }}
                             />
+                            <div
+                              id="validationServerStockFeedback"
+                              class="invalid-feedback"
+                            >
+                              Please enter a valid stock symbol.
+                            </div>
                           </div>
                           <div className="col">
-                            <input
-                              type="text"
-                              id={`allocation-${index}`}
-                              className="form-control"
-                              onChange={(event) => {
-                                handleAllocationChange(event, index);
-                                setTotalStockAlloc(
-                                  Number(totalStockAlloc) -
-                                    Number(ele.allocation) +
-                                    Number(event.target.value)
-                                );
-                              }}
-                              placeholder={ele.allocation}
-                            />
+                            <div className="input-group">
+                              <input
+                                type="number"
+                                id={`allocation-${index}`}
+                                className="form-control col-4"
+                                onChange={(event) => {
+                                  handleAllocationChange(event, index);
+                                  setTotalStockAlloc(
+                                    Number(totalStockAlloc) -
+                                      Number(ele.Allocation) +
+                                      Number(event.target.value)
+                                  );
+                                }}
+                                placeholder={ele.Allocation}
+                                onBlur={(event) => {
+                                  validateField(
+                                    event,
+                                    event.target.value > 0,
+                                    `allocation-${index}`
+                                  );
+                                }}
+                              />
+                              <span
+                                class="input-group-text col-2"
+                                id="inputGroupPrepend"
+                              >
+                                %
+                              </span>
+                              <div
+                                id="validationServerStockFeedback"
+                                class="invalid-feedback"
+                              >
+                                Allocation should be more than 0%.
+                              </div>
+                            </div>
                           </div>
                           {index !== 0 ? (
-                            <button
-                              className="col-1 btn btn-secondary"
-                              // onClick={() => removeStockField(index)}
-                              onClick={() => {
-                                setChosenStockAllocation(
-                                  chosenStockAllocation.filter(
-                                    (a) => a.id != ele.id
-                                  )
-                                );
-                                setTotalStockAlloc(
-                                  Number(totalStockAlloc) -
-                                    Number(ele.allocation)
-                                );
-                              }}
-                            >
-                              X
-                            </button>
+                            <div className="col-1 d-flex justify-content-center">
+                              <button
+                                className="btn btn-secondary h-75"
+                                onClick={() => {
+                                  setChosenStockAllocation(
+                                    chosenStockAllocation.filter(
+                                      (a) => a.id !== ele.id
+                                    )
+                                  );
+                                  setTotalStockAlloc(
+                                    Number(totalStockAlloc) -
+                                      Number(ele.Allocation)
+                                  );
+                                }}
+                              >
+                                X
+                              </button>
+                            </div>
                           ) : (
                             <div className="col-1"></div>
                           )}
@@ -212,9 +483,22 @@ export default function CreatePortfolioButton() {
 
                 <div className="p-1 d-flex justify-content-between">
                   <span className="fw-bold">Total</span>
-                  <span className="fw-bold w-25 text-center">
+                  <span
+                    className={`fw-bold w-25 text-center rounded ${
+                      totalStockAlloc > 100 ? "text-danger" : ""
+                    }`}
+                  >
                     {totalStockAlloc}
                   </span>
+                </div>
+                <div className="text-end">
+                  {totalStockAlloc > 100 ? (
+                    <span className="text-danger">
+                      Total % of allocation should add up to a maximum of 100.
+                    </span>
+                  ) : (
+                    <></>
+                  )}
                 </div>
                 <div className="row p-1 d-flex justify-content-end mt-4">
                   <button
@@ -222,7 +506,7 @@ export default function CreatePortfolioButton() {
                     onClick={() => {
                       setChosenStockAllocation([
                         ...chosenStockAllocation,
-                        { stock: "", allocation: 0, id: numStockFields },
+                        { Symbol: "", Allocation: 0, id: numStockFields },
                       ]);
                       setNumStockFields(numStockFields + 1);
                     }}
@@ -232,8 +516,16 @@ export default function CreatePortfolioButton() {
                 </div>
               </div>
             </div>
-            <div className="modal-footer d-flex justify-content-center">
-              <button type="button" className="btn btn-success">
+            <div className="text-danger text-center">{errorMessage}</div>
+            <div className="text-success text-center">{successMessage}</div>
+            <div className="modal-footer d-flex justify-content-center border-0">
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  handleSubmit();
+                }}
+              >
                 Create
               </button>
             </div>
