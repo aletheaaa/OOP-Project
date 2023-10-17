@@ -19,7 +19,9 @@ export default function CreatePortfolioButton() {
   const [totalStockAlloc, setTotalStockAlloc] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // TODO: connect to api to get all the valid stock symbols
   useEffect(() => {
     setValidStocks(["AAPL", "TSLA"]);
   }, []);
@@ -33,6 +35,7 @@ export default function CreatePortfolioButton() {
     setChosenStockAllocation(updatedStockAllocation);
   };
 
+  // TODO: to connect to api to get the sector from stock symbol
   const getStockSector = (stock) => {
     console.log("this is stock", stock);
     axios
@@ -117,20 +120,29 @@ export default function CreatePortfolioButton() {
         Sector: ele.Sector,
       };
     });
+    // adding allocation of cash if the total allocation is less than 100
+    if (totalStockAlloc < 100) {
+      chosenStockAllocationFiltered.push({
+        Symbol: "CASHALLOCATION",
+        Allocation: 100 - totalStockAlloc,
+        Sector: "CASH",
+      });
+    }
     const requestBody = {
       ...portfolioDetails,
       AssetList: chosenStockAllocationFiltered,
     };
     // send to backend
-    // TODO: to get token from session
-    const token =
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2Vyb25lQGdtYWlsLmNvbSIsImlhdCI6MTY5NzQ1MTQ5MiwiZXhwIjoxNjk3NTM3ODkyfQ.GX4EZ0bSidJ5GgzmAavG78e-1MN327K2iUWTdOvEWow";
+    let token = sessionStorage.getItem("token");
+    token = token.slice(1, token.length - 1);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json", // You can set other headers as needed.
       },
     };
+    setIsLoading(true);
+    console.log("this is req body", requestBody);
     axios
       .post(
         "http://localhost:8080/portfolio/createPortfolio",
@@ -144,9 +156,12 @@ export default function CreatePortfolioButton() {
           setErrorMessage("");
           setSuccessMessage("Portfolio created successfully.");
         }
+        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e.message);
+        setErrorMessage(e.message);
+        setIsLoading(false);
       });
 
     return;
@@ -523,15 +538,26 @@ export default function CreatePortfolioButton() {
             <div className="text-danger text-center">{errorMessage}</div>
             <div className="text-success text-center">{successMessage}</div>
             <div className="modal-footer d-flex justify-content-center border-0">
-              <button
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  handleSubmit();
-                }}
-              >
-                Create
-              </button>
+              {isLoading ? (
+                <button className="btn btn-success" type="button" disabled>
+                  <span
+                    className="spinner-border spinner-border-sm mr-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>{" "}
+                  Loading...
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={() => {
+                    handleSubmit();
+                  }}
+                >
+                  Create
+                </button>
+              )}
             </div>
           </div>
         </div>
