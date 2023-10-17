@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import DashboardCard from "../../components/Common/DashboardCard";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import DoughnutChart from "../../components/Common/DoughnutChart";
 
 export default function Portfolios() {
@@ -107,6 +108,8 @@ export default function Portfolios() {
     // TODO: get the user's portfolio from backend
     // getting the area line chart data
     const labels = [
+      "November",
+      "December",
       "January",
       "February",
       "March",
@@ -117,21 +120,19 @@ export default function Portfolios() {
       "August",
       "September",
       "October",
-      "November",
-      "December",
     ];
     const data = {
       labels,
       datasets: [
         {
-          label: "Actual Performance",
-          data: [8, 7, 6, 7, 9, 7, 9, 6, 9, 7, 8, 9],
+          label: "TSLA",
+          data: [227.82, 194.70, 108.10, 181.41, 202.77, 194.77, 161.83, 207.52, 179.82, 261.07, 245.01, 251.60],
           borderColor: "rgb(255, 99, 132)",
           backgroundColor: "rgba(255, 99, 132, 0.5)",
         },
         {
           label: "Index",
-          data: [2, 3, 5, 2, 3, 4, 1, 5, 1, 3, 2, 7],
+          data: [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
           borderColor: "rgb(53, 162, 235)",
           backgroundColor: "rgba(53, 162, 235, 0.5)",
         },
@@ -308,6 +309,8 @@ export default function Portfolios() {
           </div>
         </div>
         <div className="shadow mb-5 bg-body rounded pb-3">
+          <PortfolioNavBar name={chosenPortfolio.name} />
+          {/*
           <div
             className="p-3 rounded d-flex justify-content-end"
             style={{ backgroundColor: "lightgrey" }}
@@ -320,57 +323,40 @@ export default function Portfolios() {
               <option value="annual">Annual Returns</option>
             </select>
           </div>
+          */}
+          {/* Dashboard Cards */}
           <div className="row py-2 px-4">
-            <div className="col-12 col-lg-6">
-              <div className="container">
-                <div className="row">
-                  <div className="col-12 mb-4">
-                    <DashboardCard
-                      title="Returns"
-                      value="170.69"
-                      iconClassName="bi-cash-coin"
-                      colorClassName="primary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Loss"
-                      value="170.43"
-                      iconClassName="bi-cash"
-                      colorClassName="secondary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Open"
-                      value="169.34"
-                      iconClassName="bi-coin"
-                      colorClassName="secondary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Placeholder"
-                      value="100,000"
-                      iconClassName="bi-cup-straw"
-                      colorClassName="info"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Placeholder"
-                      value="100,000"
-                      iconClassName="bi-cup-hot"
-                      colorClassName="info"
-                    />
-                  </div>
-                </div>
-              </div>
+            <div className="col-6 col-lg-3 mb-4">
+              <DashboardCard
+                title="Returns"
+                value="170.69"
+                iconClassName="bi-cash-coin"
+                colorClassName="primary"
+              />
             </div>
-            <div className="col-12 col-lg-6">
-              {chartData &&
-                chartData.datasets &&
-                chartData.datasets.length > 0 && <AreaChart data={chartData} />}
+            <div className="col-6 col-lg-3 mb-4">
+              <DashboardCard
+                title="Loss"
+                value="170.43"
+                iconClassName="bi-cash"
+                colorClassName="secondary"
+              />
+            </div>
+            <div className="col-6 col-lg-3 mb-4">
+              <DashboardCard
+                title="Open"
+                value="169.34"
+                iconClassName="bi-coin"
+                colorClassName="info"
+              />
+            </div>
+            <div className="col-6 col-lg-3 mb-4">
+              <DashboardCard
+                title="Close"
+                value="170.69"
+                iconClassName="bi-cash-coin"
+                colorClassName="info"
+              />
             </div>
           </div>
           <div className="row px-5">
@@ -501,6 +487,25 @@ export default function Portfolios() {
                 </div>
               );
             })}
+          </div>
+          <div className="row mt-3 px-5">
+            <div className="col">
+              <div className="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">
+                    Portfolio Growth
+                  </h6>
+                </div>
+                <div class="card-body row">
+                  <div class="chart-area">
+                    {
+                      chartData && chartData.datasets &&
+                      chartData.datasets.length > 0 && <AreaChart data={chartData} />
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
