@@ -35,10 +35,13 @@ public class PortfolioService {
         return portfolioDAO.findAll();
     }
 
-    public List<Portfolio> getPortfolioByUser(Integer userid) {
-        return portfolioDAO.findByUserId(userid);
-
-
+    public List<Integer> getPortfolioByUser(Integer userid) {
+         List<Portfolio> portfolios = portfolioDAO.findByUserId(userid);
+         List<Integer> portfolioIds = new ArrayList<>();
+         for (Portfolio portfolio : portfolios) {
+             portfolioIds.add(portfolio.getPortfolioId());
+         }
+         return portfolioIds;
     }
 
     public Portfolio getPortfolioByName(String portfolioName) {

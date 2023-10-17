@@ -37,7 +37,7 @@ public class PortfolioController {
     }
 
     @GetMapping("user/{userid}")
-    public ResponseEntity <List<Portfolio>> getPortfolioByUser(@PathVariable Integer userid) {
+    public ResponseEntity <List<Integer>> getPortfolioByUser(@PathVariable Integer userid) {
         return ResponseEntity.ok(portfolioService.getPortfolioByUser(userid));
     }
 
