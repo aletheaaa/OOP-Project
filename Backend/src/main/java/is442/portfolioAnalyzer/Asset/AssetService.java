@@ -51,6 +51,34 @@ import lombok.Data;
              return 0;
          }
      }
+    
+        //Get value of asset at that particular month
+        public double getAssetPriceBySymbolAndDate(String symbol, String date) {
+            try {
+                TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
+                // System.out.println(response);
+                List<StockUnit> stockUnits = response.getStockUnits();
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM");
+                
+                for (StockUnit stockUnit : stockUnits) {
+                    String stockUnitDate = stockUnit.getDate();
+                    Date parsedDate = inputFormat.parse(stockUnitDate);
+                    String formattedDate = outputFormat.format(parsedDate);
+                    if (formattedDate.equals(date)) {
+                        return stockUnit.getClose();
+                    }
+                }
+                return 2;
+            } catch (Exception e) {
+                // TODO
+                // throw exception if symbol not found
+                return 0;
+            }
+        }
+
+        
+
 
      //Set all the monthly prices of the asset from api
       public void updateMonthlyPrices(Asset asset, String symbol) {
@@ -92,6 +120,12 @@ import lombok.Data;
             e.printStackTrace();
         }
        
+    }
+
+
+
+    public double getAssetMonthlyPrice(String symbol, String date) {
+        return 0;
     }
 
  }
