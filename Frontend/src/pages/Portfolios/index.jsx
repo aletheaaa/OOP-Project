@@ -16,7 +16,9 @@ export default function Portfolios() {
     asssetAllocationByIndividualStock,
     setAssetAllocationByIndividualStock,
   ] = useState({});
+  const [barChartConfig, setBarChartConfig] = useState("annual");
   const [barChartDataByYear, setBarChartDataByYear] = useState({});
+  const [barChartDataByQuarter, setBarChartDataByQuarter] = useState({});
 
   // Generate random colors
   function randomColor(usedColors) {
@@ -297,6 +299,20 @@ export default function Portfolios() {
         options: options,
         data: data,
       });
+      let data2 = {
+        labels,
+        datasets: [
+          {
+            label: chosenPortfolio.name,
+            data: labels.map(() => Math.floor(Math.random() * 500) + 0),
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },
+        ],
+      };
+      setBarChartDataByQuarter({
+        options: options,
+        data: data2,
+      });
     };
     getPortfolioReturns();
   }, [chosenPortfolio]);
@@ -512,13 +528,6 @@ export default function Portfolios() {
                   <h6 class="m-0 font-weight-bold text-primary">
                     Portfolio Growth
                   </h6>
-                  <select
-                    className="form-select w-25"
-                    aria-label="Default select example"
-                  >
-                    <option value="quarter">Quarter Returns</option>
-                    <option value="annual">Annual Returns</option>
-                  </select>
                 </div>
                 <div class="card-body row">
                   <div class="chart-area">
@@ -543,19 +552,30 @@ export default function Portfolios() {
                   <select
                     className="form-select w-25"
                     aria-label="Default select example"
+                    onChange={(e) => {
+                      console.log("e", e.target.value);
+                      setBarChartConfig(e.target.value);
+                    }}
                   >
-                    <option value="quarter">Quarter Returns</option>
                     <option value="annual">Annual Returns</option>
+                    <option value="quarter">Quarter Returns</option>
                   </select>
                 </div>
                 <div class="card-body row">
                   <div class="chart-area">
-                    {barChartDataByYear &&
-                      barChartDataByYear.data &&
-                      barChartDataByYear.data.datasets &&
-                      barChartDataByYear.data.datasets.length > 0 && (
-                        <BarChart data={barChartDataByYear.data} />
-                      )}
+                    {barChartConfig == "annual"
+                      ? barChartDataByYear &&
+                        barChartDataByYear.data &&
+                        barChartDataByYear.data.datasets &&
+                        barChartDataByYear.data.datasets.length > 0 && (
+                          <BarChart data={barChartDataByYear.data} />
+                        )
+                      : barChartDataByQuarter &&
+                        barChartDataByQuarter.data &&
+                        barChartDataByQuarter.data.datasets &&
+                        barChartDataByQuarter.data.datasets.length > 0 && (
+                          <BarChart data={barChartDataByQuarter.data} />
+                        )}
                   </div>
                 </div>
               </div>
