@@ -92,7 +92,7 @@ public class PortfolioService {
             asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
-            assetService.updateMonthlyPrices(asset, symbol);
+            // assetService.updateMonthlyPrices(asset, symbol);
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                 // Call External API to get the latest price
@@ -121,6 +121,18 @@ public class PortfolioService {
     }
 
     
+    //Get performance of portfolio in that month
+    public double getPortfolioValueByMonth(Integer portfolioId, String date) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        List<Asset> assets = portfolio.getAssets();
+        double value = 0.0;
+        for (Asset asset : assets) {
+            String symbol = asset.getAssetId().getStockSymbol();
+            double price = assetService.getAssetPriceBySymbolAndDate(symbol, date);
+            value += price * asset.getQuantityPurchased();
+        }
+        return value;
+    }
 
 //   // Get the net profit of the portfolio based on the portfolioName
 //   public double getNetProfit(String portfolioName) {
