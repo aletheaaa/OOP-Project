@@ -25,7 +25,7 @@ import java.util.List;
 public class Asset {
 
     @EmbeddedId
-    private AssetId assetId; //symbol and portfolio name
+    private AssetId assetId; //symbol and portfolio id
     private String sector;
     private double allocation;
     private double unitPrice; // The average price of each unit

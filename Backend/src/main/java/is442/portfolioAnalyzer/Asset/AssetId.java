@@ -21,7 +21,7 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class AssetId implements Serializable {
-    @Column(name = "portfolio_name")
-    private String portfolioName;
+    @Column(name = "portfolio_id")
+    private Integer portfolioId;
     private String stockSymbol;
 }

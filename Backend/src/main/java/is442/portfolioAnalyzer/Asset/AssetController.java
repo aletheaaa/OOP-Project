@@ -22,9 +22,11 @@
      }
 
 
-     @GetMapping("getAssetsByPortfolioName/{portfolioName}")
-     public List<Asset> getAssetsByPortfolioName(@PathVariable String portfolioName){
+     
+
+     @GetMapping("getAssetsByPortfolioId/{portfolioId}")
+     public List<Asset> getAssetsByPortfolioId(@PathVariable Integer portfolioId){
          System.out.println("In controller");
-         return assetService.getAssetsByPortfolioName(portfolioName);
+         return assetService.getAssetsByPortfolioId(portfolioId);
      }
  }

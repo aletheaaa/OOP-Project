@@ -32,6 +32,7 @@ public class ExternalApiService {
                 .monthly()
                 .dataType(DataType.JSON)
                 .forSymbol(symbol)
+                .adjusted()
                 .fetchSync();
         // TODO: CATCH EXCEPTIONS
 

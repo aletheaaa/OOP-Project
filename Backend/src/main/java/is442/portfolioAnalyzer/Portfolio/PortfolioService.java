@@ -1,6 +1,5 @@
 package is442.portfolioAnalyzer.Portfolio;
 
-import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
@@ -11,12 +10,10 @@ import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import is442.portfolioAnalyzer.Asset.*;
 
-import java.time.Year;
 import java.util.*;
 
 @Service
@@ -84,7 +81,7 @@ public class PortfolioService {
             String symbol = assetCreation.getSymbol();
 
 
-            assetId.setPortfolioName(portfolioCreation.getPortfolioName());
+            assetId.setPortfolioId(portfolio.getPortfolioId());
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
 
@@ -92,7 +89,6 @@ public class PortfolioService {
             asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
-
             assetService.updateMonthlyPrices(asset, symbol);
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
@@ -218,13 +214,13 @@ public class PortfolioService {
 
 
 
-    public GetPortfolioDetails getPortfolioDetails(String portfolioName) {
+    public GetPortfolioDetails getPortfolioDetails(Integer porfolioId) {
         System.out.println("In portfolio posting service");
-        
+
         //create a GetPortfoilioDetails json model
         GetPortfolioDetails portfolioDetails = new GetPortfolioDetails();
 
-   
+
         // create AssetModel json model
         AssetModel assetModel = new AssetModel(0, null);
 
@@ -235,17 +231,50 @@ public class PortfolioService {
         // create PerformanceSummary json model
         // PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
 
-        // get existing portfolio by name
-        Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
+        // get existing portfolio by portfoloioId
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(porfolioId);
 
-    
+
         // Loop through assets of existing portfolio
+        List<String> sectors = new ArrayList<>();
+        for (Asset asset : portfolio.getAssets()) {
+            // Check if sector already exists in sectors list before adding it
+            if (!sectors.contains(asset.getSector())) {
+                sectors.add(asset.getSector());
+            }
+        }
+        System.out.println(sectors);
+            
+           
+        for (String sector : sectors) {
+            double totalAllocation = 0;
+            List<Stock> stocks = new ArrayList<>(); 
+
+            // code block
+            for (Asset asset : portfolio.getAssets()) {
+                if (asset.getSector().equals(sector)) {
+                    // Get the value of the asset here
+                    Double allocation = asset.getAllocation();
+                    totalAllocation +=  allocation;
+
+                    // Create a list of stocks 
+                    String symbol = asset.getAssetId().getStockSymbol();
+                    stocks.add(new Stock(symbol, allocation));
+                }
+            }
+            // Create an AssetModel instance
+            AssetModel am = new AssetModel(totalAllocation, stocks);
+            System.out.println(am);
+        }
+
+
         for (Asset asset : portfolio.getAssets()) {
             // populate json models less GetPortfolioDetails
             
-            // Create a list of stocks 
-            List<Stock> stocks = new ArrayList<>(); 
+           
 
+
+        
         }
         
         

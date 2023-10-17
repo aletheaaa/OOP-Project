@@ -77,9 +77,9 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
-    @GetMapping(value = "/getPortfolioDetails/{portfolioName}", produces = "application/json")
-    public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable String portfolioName) {
-        GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioName);
+    @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
+    public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable Integer portfolioId) {
+        GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioId);
         System.out.println("In posting controller");
         if (portfolioDetails != null) {
             return ResponseEntity.ok(portfolioDetails);

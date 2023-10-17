@@ -33,9 +33,11 @@ import lombok.Data;
          return assetDAO.findAll();
      }
 
-     public List<Asset> getAssetsByPortfolioName(String portfolioName){
+    
+
+     public List<Asset> getAssetsByPortfolioId(Integer portfolioId ){
          System.out.println("In controller");
-         return assetDAO.findByAssetIdPortfolioName(portfolioName);
+         return assetDAO.findByAssetIdPortfolioId(portfolioId);
      }
 
      public double getAssetLatestPrice(String symbol) {

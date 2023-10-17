@@ -15,7 +15,11 @@ import java.util.List;
 public class Portfolio {
     
     @Id
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Use GenerationType.IDENTITY for auto-generated primary key
+    @Column(name = "portfolio_id") // Name the primary key column
+    private Integer portfolioId;
+
+
     @Column(name = "portfolio_name")
     private String portfolioName;
     
@@ -23,13 +27,14 @@ public class Portfolio {
     private String timePeriod;
     private String startDate;
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "id") // Name of the user_id column in the portfolios table
     private User user;
 
 
     @OneToMany
-    @JoinColumn(name = "portfolio_name", referencedColumnName = "portfolio_name")
+    @JoinColumn(name = "portfolio_id", referencedColumnName = "portfolio_id")
     private List<Asset> assets;
 
 
@@ -37,3 +42,4 @@ public class Portfolio {
     
 
 }
+

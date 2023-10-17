@@ -23,6 +23,7 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)  // id will automatically be generated. By default, is auto
     private Integer id;
+
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -37,6 +38,7 @@ public class User implements UserDetails { // UserDetails contains methods from 
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -7,5 +7,5 @@
 
  @Repository
  public interface AssetDAO extends JpaRepository<Asset, AssetId> {
-     List<Asset> findByAssetIdPortfolioName(String portfolioName);
+     List<Asset> findByAssetIdPortfolioId(Integer portfolioId);
  }
