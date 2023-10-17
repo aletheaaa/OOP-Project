@@ -47,6 +47,9 @@ public class PortfolioService {
     public Portfolio getPortfolioByName(String portfolioName) {
         return portfolioDAO.findByPortfolioName(portfolioName);
     }
+    public Portfolio getPortfolioByNameAndId(String portfolioName, Integer userId) {
+        return portfolioDAO.findByPortfolioNameAndId(portfolioName, userId);
+    }
 
 
     public void createPortfolio(PortfolioCreation portfolioCreation) {

@@ -50,6 +50,20 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolio);
     }
 
+    // Get portfolio by name and userid
+    @GetMapping("portfolio/{portfolioName}/{userId}")
+    public ResponseEntity<Portfolio> getPortfolioByNameAndId(
+        @PathVariable String portfolioName,
+        @PathVariable Integer userId) {
+    Portfolio portfolio = portfolioService.getPortfolioByNameAndId(portfolioName,userId);
+    if (portfolio == null) {
+        return ResponseEntity.notFound().build();
+    }
+    
+    return ResponseEntity.ok(portfolio);
+    }
+
+
     //Create portfolio button
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "createPortfolio", consumes = "application/json")

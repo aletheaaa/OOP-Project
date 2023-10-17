@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import is442.portfolioAnalyzer.Asset.Asset;
 import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import is442.portfolioAnalyzer.config.ApplicationConfig;
 import java.util.Collection;
@@ -29,6 +30,10 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Column(name = "email")
     private String email;
     private String password;
+
+    @OneToMany
+    // @JoinColumn(name = "id", referencedColumnName = "id")
+    private List<Portfolio> portfolios;
 
     @Enumerated(EnumType.STRING)
     private Role role;
