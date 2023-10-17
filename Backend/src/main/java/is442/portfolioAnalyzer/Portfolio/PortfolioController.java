@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Asset.*;
 
 import java.util.*;
@@ -45,9 +45,10 @@ public class PortfolioController {
     public ResponseEntity<Portfolio> getPortfolioByName(@PathVariable String portfolioName) {
         Portfolio portfolio = portfolioService.getPortfolioByName(portfolioName);
         if (portfolio == null) {
-            return ResponseEntity.notFound().build();
+            throw new PortfolioNameNotUniqueException("Portfolio name not found");
         }
         return ResponseEntity.ok(portfolio);
+        
     }
 
     // Get portfolio by name and userid
