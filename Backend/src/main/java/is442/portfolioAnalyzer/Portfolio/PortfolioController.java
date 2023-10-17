@@ -57,9 +57,10 @@ public class PortfolioController {
         @PathVariable Integer userId) {
     Portfolio portfolio = portfolioService.getPortfolioByNameAndId(portfolioName,userId);
     if (portfolio == null) {
+        System.out.println("Cannot find portfolio");
         return ResponseEntity.notFound().build();
     }
-    
+    System.out.println("Portfolio found");
     return ResponseEntity.ok(portfolio);
     }
 
