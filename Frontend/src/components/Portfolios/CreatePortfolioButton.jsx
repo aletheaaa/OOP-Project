@@ -138,7 +138,7 @@ export default function CreatePortfolioButton() {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json", // You can set other headers as needed.
+        "Content-Type": "application/json",
       },
     };
     setIsLoading(true);
