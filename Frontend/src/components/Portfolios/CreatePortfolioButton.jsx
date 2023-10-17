@@ -34,6 +34,14 @@ export default function CreatePortfolioButton() {
   };
 
   const getStockSector = (stock) => {
+    console.log("this is stock", stock);
+    axios
+      .get(
+        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stock}&apikey=${process.env.REACT_APP_API_KEY}`
+      )
+      .then((response) => {
+        console.log("this is response", response);
+      });
     return "Technology";
   };
 
@@ -171,7 +179,7 @@ export default function CreatePortfolioButton() {
       <div
         className="modal fade"
         id="createPortfolio"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="createPortfolio"
         aria-hidden="true"
       >
@@ -196,7 +204,7 @@ export default function CreatePortfolioButton() {
                 {/* portfolio name */}
                 <div className="row p-1">
                   <div className="col-3">
-                    <label for="name" className="col-form-label">
+                    <label htmlFor="name" className="col-form-label">
                       Portfolio Name
                     </label>
                   </div>
@@ -221,7 +229,7 @@ export default function CreatePortfolioButton() {
                     />
                     <div
                       id="validationServerPortfolioNameFeedback"
-                      class="invalid-feedback"
+                      className="invalid-feedback"
                     >
                       Please enter a unique portfolio name.
                     </div>
@@ -230,7 +238,7 @@ export default function CreatePortfolioButton() {
                 {/* description */}
                 <div className="row p-1">
                   <div className="col-3">
-                    <label for="description" className="col-form-label">
+                    <label htmlFor="description" className="col-form-label">
                       Description
                     </label>
                   </div>
@@ -255,7 +263,7 @@ export default function CreatePortfolioButton() {
                     />
                     <div
                       id="validationServerDescriptionFeedback"
-                      class="invalid-feedback"
+                      className="invalid-feedback"
                     >
                       Please enter a description.
                     </div>
@@ -264,7 +272,7 @@ export default function CreatePortfolioButton() {
                 {/* Capital */}
                 <div className="row p-1">
                   <div className="col-3">
-                    <label for="capital" className="col-form-label">
+                    <label htmlFor="capital" className="col-form-label">
                       Capital
                     </label>
                   </div>
@@ -285,7 +293,7 @@ export default function CreatePortfolioButton() {
                     />
                     <div
                       id="validationServerCapitalFeedback"
-                      class="invalid-feedback"
+                      className="invalid-feedback"
                     >
                       Please enter a capital.
                     </div>
@@ -294,7 +302,7 @@ export default function CreatePortfolioButton() {
                 {/* timePeriod */}
                 <div className="row p-1">
                   <div className="col-3">
-                    <label for="timePeriod" className="col-form-label">
+                    <label htmlFor="timePeriod" className="col-form-label">
                       Time Period
                     </label>
                   </div>
@@ -318,7 +326,7 @@ export default function CreatePortfolioButton() {
                 {/* Start Date */}
                 <div className="row p-1">
                   <div className="col-3">
-                    <label for="startDate" className="col-form-label">
+                    <label htmlFor="startDate" className="col-form-label">
                       Start Date
                     </label>
                   </div>
@@ -344,7 +352,7 @@ export default function CreatePortfolioButton() {
                     />
                     <div
                       id="validationServerCapitalFeedback"
-                      class="invalid-feedback"
+                      className="invalid-feedback"
                     >
                       Please enter a valid start date.
                     </div>
@@ -373,7 +381,7 @@ export default function CreatePortfolioButton() {
                               onChange={(event) =>
                                 handleStockChange(event, index)
                               }
-                              placeholder={ele.Symbol}
+                              placeholder={ele.Symbol.toUpperCase()}
                               onBlur={(event) => {
                                 const isValid = validateField(
                                   event,
@@ -398,10 +406,6 @@ export default function CreatePortfolioButton() {
                                       ele.Sector = sector;
                                     }
                                   });
-                                  console.log(
-                                    "updated",
-                                    updatedStockAllocation
-                                  );
                                   setChosenStockAllocation(
                                     updatedStockAllocation
                                   );
@@ -410,7 +414,7 @@ export default function CreatePortfolioButton() {
                             />
                             <div
                               id="validationServerStockFeedback"
-                              class="invalid-feedback"
+                              className="invalid-feedback"
                             >
                               Please enter a valid stock symbol.
                             </div>
@@ -439,14 +443,14 @@ export default function CreatePortfolioButton() {
                                 }}
                               />
                               <span
-                                class="input-group-text col-2"
+                                className="input-group-text col-2"
                                 id="inputGroupPrepend"
                               >
                                 %
                               </span>
                               <div
                                 id="validationServerStockFeedback"
-                                class="invalid-feedback"
+                                className="invalid-feedback"
                               >
                                 Allocation should be more than 0%.
                               </div>
