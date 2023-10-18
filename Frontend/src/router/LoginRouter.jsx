@@ -8,15 +8,19 @@ function setToken(userToken) {
   sessionStorage.setItem("token", JSON.stringify(userToken));
 }
 
+function setId(id) {
+  sessionStorage.setItem("id", JSON.stringify(id));
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login setToken={setToken} />,
-    errorElement: <Login setToken={setToken} />,
+    element: <Login setToken={setToken} setId={setId} />,
+    errorElement: <Login setToken={setToken} setId={setId} />,
   },
   {
     path: "/register",
-    element: <Register setToken={setToken} />,
+    element: <Register setToken={setToken} setId={setId} />,
   }
 ]);
 

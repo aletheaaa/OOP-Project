@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authenticate } from "../../api/authToken";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Alert from "../../components/Common/Alert";
 
-function Login({ setToken }) {
+function Login(props) {
   const [email, setUsername] = useState();
   const [password, setPassword] = useState();
   const [alerts, setAlerts] = useState();
@@ -19,24 +20,19 @@ function Login({ setToken }) {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(`Email: ${email}, Password: ${password}`);
-    axios
-      .post("http://localhost:8080/api/v1/auth/authenticate", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setToken(response.data.token);
-        navigate("/", {replace: true});
-        window.location.reload(); // reload page after logging in to exit login page
-      })
-      .catch((e) => {
-        console.log(e);
-        setAlerts(<Alert color="danger" code={e.code} message={e.message} />);
-    });
+    let authentication = await authenticate(email, password);
+    console.log(authentication);
+    if (authentication.status === "success") {
+      props.setToken(authentication.data.token);
+      props.setId(authentication.data.id);
+      navigate("/", {replace: true});
+      window.location.reload(); // reload page after logging in to exit login page
+    } else {
+      setAlerts(<Alert color="danger" code={authentication.code} message={authentication.message} />);
+    }
   };
 
   const handleRedirect = (event) => {

@@ -1,8 +1,11 @@
 import React from "react";
+
 import NavBarItem from "./NavBarItem";
 import User from "./User";
 
 function SideNavBar() {
+  const userName = "User"; //trying to get username from backend
+
   return (
     <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 bg-dark text-white fw-bold">
       <a href="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -17,7 +20,7 @@ function SideNavBar() {
         <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
       </nav>
       <hr />
-      <User />
+      <User userName={userName} />
     </div>
   );
 }

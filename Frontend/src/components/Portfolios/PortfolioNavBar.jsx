@@ -33,27 +33,22 @@ function PortfolioNavBar(props) {
               <NavBarItem
                 link="/portfolios/1/chart"
                 icon="bi bi-bar-chart"
-                text="Chart"
-              />
-              <NavBarItem
-                link="/portfolios/1/history"
-                icon="bi bi-clock-history"
-                text="History"
-              />
-              <NavBarItem
-                link="/portfolios/1/profile"
-                icon="bi bi-person-circle"
-                text="Profile"
+                text="Metrics"
               />
               <NavBarItem
                 link="/portfolios/1/financials"
                 icon="bi bi-cash-coin"
-                text="Financials"
+                text="Assets"
+              />
+              <NavBarItem
+                link="/portfolios/1/history"
+                icon="bi bi-clock"
+                text="Annual Returns"
               />
               <NavBarItem
                 link="/portfolios/1/analytics"
-                icon="bi bi-clipboard-data"
-                text="Analytics"
+                icon="bi bi-clock-history"
+                text="Rolling Returns"
               />
             </div>
           </div>

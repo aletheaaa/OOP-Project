@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Alert from "../../components/Common/Alert";
 
-function Register({ setToken }) {
+function Register(props) {
   const [email, setUsername] = useState();
   const [password, setPassword] = useState();
   const [alerts, setAlerts] = useState();
@@ -29,7 +29,8 @@ function Register({ setToken }) {
       })
       .then((response) => {
         console.log(response.data);
-        setToken(response.data.token);
+        props.setToken(response.data.token);
+        props.setId(response.data.id);
         navigate("/", {replace: true});
         window.location.reload(); // reload page after logging in to exit register page
       })
