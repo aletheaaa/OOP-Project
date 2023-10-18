@@ -12,8 +12,8 @@ public interface PortfolioDAO extends JpaRepository<Portfolio, Integer>{
 
    Portfolio findByPortfolioName(String portfolioName);
    
-   @Query("SELECT p FROM Portfolio p JOIN p.user u WHERE p.portfolioName = :portfolioName AND u.id = :userId")
-   Portfolio findByPortfolioNameAndId(@Param("portfolioName") String portfolioName, @Param("userId") Integer userId);
+   @Query("SELECT p FROM Portfolio p JOIN p.user u WHERE p.portfolioId = :portfolioId AND u.id = :userId")
+   Portfolio findByPortfolioIds(@Param("portfolioId") Integer portfolioId, @Param("userId") Integer userId);
 
    Portfolio findByPortfolioId(Integer portfolioId);
 }

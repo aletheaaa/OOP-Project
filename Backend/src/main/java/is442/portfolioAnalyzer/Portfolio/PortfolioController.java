@@ -52,11 +52,11 @@ public class PortfolioController {
     }
 
     // Get portfolio by name and userid
-    @GetMapping("portfolio/{portfolioName}/{userId}")
-    public ResponseEntity<Portfolio> getPortfolioByNameAndId(
-        @PathVariable String portfolioName,
+    @GetMapping("{portfolioId}/{userId}")
+    public ResponseEntity<Portfolio> getPortfolioByIds(
+        @PathVariable Integer portfolioId,
         @PathVariable Integer userId) {
-    Portfolio portfolio = portfolioService.getPortfolioByNameAndId(portfolioName,userId);
+    Portfolio portfolio = portfolioService.getPortfolioByIds(portfolioId,userId);
     if (portfolio == null) {
         System.out.println("Cannot find portfolio");
         return ResponseEntity.notFound().build();
