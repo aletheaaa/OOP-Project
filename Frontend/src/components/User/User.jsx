@@ -1,6 +1,9 @@
 import React from "react";
+import { getProfile } from "../../api/user";
 
-function User(props) {
+function User() {
+  const profile = getProfile();
+  
   const handleLogout = (event) => {
     event.preventDefault();
     sessionStorage.removeItem("token");
@@ -24,7 +27,7 @@ function User(props) {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">{props.userName}</span>
+        <span className="d-none d-sm-inline mx-1">{  }</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
@@ -33,14 +36,14 @@ function User(props) {
           </a>
         </li>
         <li>
-          <a className="dropdown-item" href="#">
+          <button className="dropdown-item" onClick={console.log("Settings")}>
             Settings
-          </a>
+          </button>
         </li>
         <li>
-          <a className="dropdown-item" href="#">
+        <button className="dropdown-item" onClick={console.log("Profile")}>
             Profile
-          </a>
+          </button>
         </li>
         <li>
           <hr className="dropdown-divider" />

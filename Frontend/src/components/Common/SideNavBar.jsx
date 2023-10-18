@@ -1,7 +1,7 @@
 import React from "react";
 
 import NavBarItem from "./NavBarItem";
-import User from "./User";
+import User from "../User/User";
 
 function SideNavBar() {
   const userName = "User"; //trying to get username from backend
@@ -20,7 +20,7 @@ function SideNavBar() {
         <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
       </nav>
       <hr />
-      <User userName={userName} />
+      <User />
     </div>
   );
 }
