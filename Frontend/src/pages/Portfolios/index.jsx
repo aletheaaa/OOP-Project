@@ -528,6 +528,17 @@ export default function Portfolios() {
                   <h6 class="m-0 font-weight-bold text-primary">
                     Portfolio Growth
                   </h6>
+                  <select
+                    className="form-select w-25"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      console.log("e", e.target.value);
+                      setBarChartConfig(e.target.value);
+                    }}
+                  >
+                    <option value="annual">Annual Returns</option>
+                    <option value="quarter">Quarter Returns</option>
+                  </select>
                 </div>
                 <div class="card-body row">
                   <div class="chart-area">
