@@ -7,6 +7,7 @@ import Stocks from "../pages/Stocks/index";
 import ErrorPage from "../pages/ErrorPage";
 import Portfolios from "../pages/Portfolios/index";
 import UserSettings from "../pages/User/UserSettings";
+import AccessLogs from "../pages/AccessLogs";
 
 const router = createBrowserRouter([
   {
@@ -34,8 +35,16 @@ const router = createBrowserRouter([
         path: "/settings",
         element: <UserSettings />,
       },
+      {
+        path: "/accessLogs",
+        element: <AccessLogs />,
+      },
     ],
   },
 ]);
 
-export default router;
+function Router() {
+  return <RouterProvider router={router} />;
+}
+
+export default Router;
