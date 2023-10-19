@@ -24,7 +24,31 @@ export async function getProfile() {
   }
 }
 
+// Placeholder until backend is done
+export async function getPortfolios(user) {
+  return [{
+    portfolioId: "1",
+    name: "Safe Retirement",
+    description: "Safe Retirement",
+    totalCapital: 1000,
+  },
+  {
+    portfolioId: "2",
+    name: "Risky Investment",
+    description: "Risky Investment",
+    totalCapital: 1000,
+  },
+  {
+    portfolioId: "3",
+    name: "Sugar Daddy Money",
+    description: "Jaden's Sugar Daddy Money",
+    totalCapital: 1000,
+  }];
+}
+
+
 // Placeholder
+/*
 export async function getPortfolios(user) {
   let URL = PORTFOLIO_URL + user;
   try {
@@ -37,3 +61,4 @@ export async function getPortfolios(user) {
     return error;
   }
 }
+*/

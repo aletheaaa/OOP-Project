@@ -1,13 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "../../api/user";
 import { logout } from "../../api/authenticate";
 
-const profile = await getProfile();
-const email = profile.email;
-const userName = email ? email.slice(0, email.indexOf("@")) : "";
-
-function User() {
+function User(props) {
   const navigate = useNavigate();
 
   const handleLogout = (event) => {
@@ -36,12 +31,12 @@ function User() {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">{userName}</span>
+        <span className="d-none d-sm-inline mx-1">{props.userName}</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
           <a className="dropdown-item" href="#">
-            New project...
+            New Portfolio...
           </a>
         </li>
         <li>
