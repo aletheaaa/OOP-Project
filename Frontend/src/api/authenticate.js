@@ -12,7 +12,8 @@ export function getToken() {
 }
 
 export function setToken(userToken) {
-  sessionStorage.setItem("token", JSON.stringify(userToken));
+  let token = JSON.stringify(userToken).slice(1, -1);
+  sessionStorage.setItem("token", token);
 }
 
 export function getId() {

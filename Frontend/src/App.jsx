@@ -9,7 +9,7 @@ function App() {
   const token = getToken();
   console.log("token", token);
 
-  return token && token.length == 149 ? <PageRouter /> : <Authenticate setToken={setToken} setId={setId} />;
+  return token && token.length == 147 ? <PageRouter /> : <Authenticate setToken={setToken} setId={setId} />;
 }
 
 export default App;

@@ -1,14 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../api/user";
 
 function User() {
-  const profile = getProfile();
-  
+  const profile = getProfile("userone@gmail.com");
+  const navigate = useNavigate();
+
   const handleLogout = (event) => {
     event.preventDefault();
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("id");
     window.location.href = "/";
+  }
+
+  const handleSettingsClick = (event) => {
+    event.preventDefault();
+    navigate("/settings");
   }
 
   return (
@@ -27,7 +34,7 @@ function User() {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">{  }</span>
+        <span className="d-none d-sm-inline mx-1">{ profile.email }</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
@@ -36,13 +43,8 @@ function User() {
           </a>
         </li>
         <li>
-          <button className="dropdown-item" onClick={console.log("Settings")}>
+          <button className="dropdown-item" onClick={handleSettingsClick}>
             Settings
-          </button>
-        </li>
-        <li>
-        <button className="dropdown-item" onClick={console.log("Profile")}>
-            Profile
           </button>
         </li>
         <li>

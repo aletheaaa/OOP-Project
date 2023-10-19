@@ -1,9 +1,8 @@
 import axios from "axios";
 import { getToken } from "./authenticate";
 
-// NOTE: API call always fails (for some reason)
 export async function getProfile(email) {
-  const USER_URL = "http://localhost:8080/users/email/" + email;
+  const USER_URL = `http://localhost:8080/users/email/${email}`;
   const token = getToken();
   const config = {
     headers: { Authorization: `Bearer ${token}` }
@@ -11,11 +10,11 @@ export async function getProfile(email) {
   
   try {
     const response = await axios.get(USER_URL, config);
-    if (response.status == "200") {
-      return response;
+    if (response.status < 400) {
+      console.log(response);
+      return response.data;
     }
   } catch (error) {
-    console.log("[getEmail] Error");
     console.log(error);
     return error;
   }
