@@ -1,17 +1,20 @@
 import axios from "axios";
 import { getToken } from "./authenticate";
 
+const USER_URL = "http://localhost:8080/users/email/";
+const PORTFOLIO_URL = "http://localhost:8080/"; // Placeholder
+const token = getToken();
+
 export async function getProfile(email) {
-  const USER_URL = `http://localhost:8080/users/email/${email}`;
-  const token = getToken();
-  const config = {
+  let URL = USER_URL + email;
+  let config = {
     headers: { Authorization: `Bearer ${token}` }
   }
   
   try {
-    const response = await axios.get(USER_URL, config);
+    const response = await axios.get(URL, config);
     if (response.status < 400) {
-      console.log(response);
+      console.log(response.data);
       return response.data;
     }
   } catch (error) {
@@ -20,19 +23,16 @@ export async function getProfile(email) {
   }
 }
 
-// Prepared the code below for once API endpoints are changed to use userId instead of email
-/*
-export async function getProfile(userId) {
-  let URL = "http://localhost:8080/users/" + userId;
+// Placeholder
+export async function getPortfolios(user) {
+  let URL = PORTFOLIO_URL + user;
   try {
     const response = await axios.get(URL);
-    if (response.status == "200") {
-      return response;
-    }
+    console.log(response.data);
+    return response.data;
   } catch (error) {
-    console.log("[getProfile] Error");
+    console.log("[getPortfolios] Error");
     console.log(error);
     return error;
   }
 }
-*/
