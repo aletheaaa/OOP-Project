@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../api/user";
 import { logout } from "../../api/authenticate";
 
-const profile = await getProfile("userone@gmail.com");
+const profile = await getProfile();
 const email = profile.email;
-const userName = email ? email.slice(0, email.indexOf("@")) : "" ;
+const userName = email ? email.slice(0, email.indexOf("@")) : "";
 
 function User() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ function User() {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">{ userName }</span>
+        <span className="d-none d-sm-inline mx-1">{userName}</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
@@ -54,7 +54,7 @@ function User() {
         </li>
         <li>
           <button className="dropdown-item" onClick={handleLogout}>
-            Sign out  
+            Sign out
           </button>
         </li>
       </ul>
