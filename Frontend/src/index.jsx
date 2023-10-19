@@ -5,14 +5,10 @@ import "bootstrap/dist/js/bootstrap.bundle.min"; // Bootstrap Bundle JS
 import "./styles/index.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Bootstrap Icons
 import App from "./App";
-import { RouterProvider } from "react-router-dom";
-import router from "./router/PageRouter";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
+    <App />
   </React.StrictMode>
 );

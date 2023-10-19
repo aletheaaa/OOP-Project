@@ -12,15 +12,20 @@ const portfolios = await getPortfolios();
 
 function SideNavBar() {
   return (
-    <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 bg-dark text-white fw-bold">
+    <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold">
       <a
         href="/"
         className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
       >
-        <span className="fs-4 d-none d-sm-inline">
+        {/* <span className="fs-4 d-none d-sm-inline">
           <i className="bi-cash-coin"></i>
+        </span> */}
+        <span
+          className="fs-5 d-none d-sm-inline"
+          style={{ letterSpacing: ".2rem" }}
+        >
+          Goldman Sachs
         </span>
-        <span className="fs-5 d-none d-sm-inline ps-3">Goldman Sachs</span>
       </a>
       <nav
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
@@ -42,7 +47,7 @@ function SideNavBar() {
           <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
           */}
       </nav>
-      <CreatePortfolioButton />
+      {/* <CreatePortfolioButton /> */}
       <hr />
       <User userName={userName} />
     </div>

@@ -8,6 +8,7 @@ import { generateDoughnutColors } from "../../utils/chartUtils";
 import { getPortfolioDetailsAPI } from "../../api/portfolio";
 import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
 import { useParams } from "react-router-dom";
+import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
 export default function Portfolios() {
   const [trades, setTrades] = useState([]);
@@ -245,7 +246,10 @@ export default function Portfolios() {
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
-        <div className="row mb-3 mt-5">
+        <div className="d-flex justify-content-end">
+          <CreatePortfolioButton />
+        </div>
+        <div className="row mb-3 mt-3">
           <div className="col">
             <h3>{chosenPortfolio.name}</h3>
             <div>{chosenPortfolio.description}</div>
