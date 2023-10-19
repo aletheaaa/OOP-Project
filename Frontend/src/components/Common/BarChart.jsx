@@ -51,6 +51,5 @@ ChartJS.register(
 // };
 
 export default function BarChart(data) {
-  console.log("datafrom barchart", data);
   return <Bar options={data.options} data={data.data} />;
 }

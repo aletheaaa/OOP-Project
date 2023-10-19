@@ -33,13 +33,9 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <UserSettings />,
-      }
+      },
     ],
   },
 ]);
 
-function Router() {
-  return <RouterProvider router={router} />;
-}
-
-export default Router;
+export default router;

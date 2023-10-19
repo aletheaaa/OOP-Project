@@ -72,3 +72,14 @@ export async function getValidStockSymbolsAPI() {
     return error;
   }
 }
+
+// TODO: to connect to finalied API
+export async function getPortfolioDetailsAPI(portfolioId) {
+  return {
+    portfolioId: "1",
+    name: "Retirement",
+    description: "retirement plan",
+    totalCapital: 1000,
+    Trades: [],
+  };
+}

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import DashboardCard from "../../components/Common/DashboardCard";
-import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import DoughnutChart from "../../components/Common/DoughnutChart";
 import BarChart from "../../components/Common/BarChart";
+import { generateDoughnutColors } from "../../utils/chartUtils";
+import { getPortfolioDetailsAPI } from "../../api/portfolio";
+import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
+import { useParams } from "react-router-dom";
 
 export default function Portfolios() {
   const [trades, setTrades] = useState([]);
-  const [userPortfolios, setUserPortfolios] = useState([]);
   const [chosenPortfolio, setChosenPortfolio] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
@@ -20,94 +22,17 @@ export default function Portfolios() {
   const [barChartDataByYear, setBarChartDataByYear] = useState({});
   const [barChartDataByQuarter, setBarChartDataByQuarter] = useState({});
 
-  // Generate random colors
-  function randomColor(usedColors) {
-    const maxAttempts = 1000;
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const r = Math.floor(Math.random() * 256);
-      const g = Math.floor(Math.random() * 256);
-      const b = Math.floor(Math.random() * 256);
-      const a = 0.2; // Adjust the alpha (transparency) as needed
-      const color = `rgba(${r}, ${g}, ${b}, ${a}`;
-      if (!usedColors.has(color)) {
-        usedColors.add(color);
-        return color;
-      }
-    }
-    return "rgba(0, 0, 0, 0.2)"; // Return a default color if maxAttempts is exceeded
-  }
-
-  // Generate dynamic colors for doughnut chart
-  function generateDoughnutColors(numDataPoints) {
-    const usedColors = new Set();
-    const dynamicBackgroundColors = [];
-    const dynamicBorderColors = [];
-
-    for (let i = 0; i < numDataPoints; i++) {
-      const bgColor = randomColor(usedColors);
-      dynamicBackgroundColors.push(bgColor);
-      dynamicBorderColors.push(bgColor.replace("0.2", "1"));
-    }
-
-    return [dynamicBackgroundColors, dynamicBorderColors];
-  }
+  const { portfolioId } = useParams(); // get portfolioID from url
 
   useEffect(() => {
-    // TODO: get the user's trades from backend
-    const getUserTrades = async () => {
-      // const tradesFromServer = await fetchTrades();
-      const tradesFromServer = [
-        {
-          name: "AAPL",
-          price: 100,
-          quantity: 1,
-          capitalGain: 100,
-          returns: 100,
-        },
-        {
-          name: "TSLA",
-          price: 200,
-          quantity: 2,
-          capitalGain: 200,
-          returns: 200,
-        },
-      ];
-      setTrades(tradesFromServer);
-    };
-    getUserTrades();
-
+    if (!portfolioId) return;
     // TODO: get the user's portfolio from backend
     // getting the user's portfolio
-    setUserPortfolios([
-      {
-        portfolioId: "1",
-        name: "Retirement",
-        description: "retirement plan",
-        totalCapital: 1000,
-        Trades: [],
-      },
-      {
-        portfolioId: "2",
-        name: "Retirement 2",
-        description: "retirement plan2",
-        totalCapital: 1000,
-        Trades: [],
-      },
-      {
-        portfolioId: "3",
-        name: "Retirement 3",
-        description: "retirement plan3",
-        totalCapital: 1000,
-        Trades: [],
-      },
-    ]);
-    setChosenPortfolio({
-      portfolioId: "1",
-      name: "Retirement",
-      description: "retirement plan",
-      totalCapital: 1000,
-      Trades: [],
-    });
+    const getPortfolioDetails = async () => {
+      const portfolioDetails = await getPortfolioDetailsAPI(portfolioId);
+      setChosenPortfolio(portfolioDetails);
+    };
+    getPortfolioDetails();
 
     // TODO: get the user's portfolio from backend
     // getting the area line chart data
@@ -256,7 +181,7 @@ export default function Portfolios() {
       setAssetAllocationByIndividualStock(individualStockDoughnutData);
     };
     getAssetAllocationByIndividualStock();
-  }, []);
+  }, [portfolioId]);
 
   // TODO: to connect to backend
   // get data for bar chart
@@ -320,30 +245,6 @@ export default function Portfolios() {
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
-        <div className="row d-flex justify-content-between">
-          {/* select to toggle between portfolios */}
-          <select
-            className="col-2 rounded"
-            onChange={(e) =>
-              setChosenPortfolio(
-                userPortfolios.find(
-                  (portfolio) => portfolio.portfolioId === e.target.value
-                )
-              )
-            }
-          >
-            {userPortfolios.map((portfolio, index) => {
-              return (
-                <option value={portfolio.portfolioId} key={index}>
-                  {portfolio.name}
-                </option>
-              );
-            })}
-          </select>
-          <div className="col-2 d-flex justify-content-end">
-            <CreatePortfolioButton />
-          </div>
-        </div>
         <div className="row mb-3 mt-5">
           <div className="col">
             <h3>{chosenPortfolio.name}</h3>
@@ -496,30 +397,7 @@ export default function Portfolios() {
             </div>
           </div>
           {/* Trades table */}
-          <table className="px-5 w-75 mx-auto text-center border">
-            <thead style={{ backgroundColor: "lightgray" }}>
-              <tr>
-                <th className="px-3">NASDAQ</th>
-                <th className="px-3">PRICE</th>
-                <th className="px-3">QTY</th>
-                <th className="px-3">CAPITAL GAINS</th>
-                <th className="px-3">RETURNS</th>
-                <th className="px-3">CAPITAL ALLOCATION</th>
-              </tr>
-            </thead>
-            {trades.map((element, index) => {
-              return (
-                <tr key={index}>
-                  <td className="px-3">{element.name}</td>
-                  <td className="px-3">{element.price}</td>
-                  <td className="px-3">{element.quantity}</td>
-                  <td className="px-3">{element.capitalGain}</td>
-                  <td className="px-3">{element.returns}</td>
-                  <td className="px-3">100%</td>
-                </tr>
-              );
-            })}
-          </table>
+          <StockPerformanceTable />
           {/* Portfolio Growth Line Graph */}
           <div className="row mt-5 px-5">
             <div className="col">
