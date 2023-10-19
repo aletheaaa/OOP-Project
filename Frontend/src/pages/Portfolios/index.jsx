@@ -259,11 +259,11 @@ export default function Portfolios() {
             <h4>$1000</h4>
           </div>
         </div>
-        <div className="shadow mb-5 bg-body rounded pb-3">
+        <div className="position-static mb-5 bg-body rounded pb-3">
           <PortfolioNavBar name={chosenPortfolio.name} />
           {/* Dashboard Cards */}
           <div className="row py-2 px-4">
-            <div className="col-6 col-lg-3 mb-4">
+            <div className="col-6 col-lg-3 mb-4 ">
               <DashboardCard
                 title="Returns"
                 value="170.69"
@@ -299,7 +299,7 @@ export default function Portfolios() {
           <div className="row px-5">
             {/* Allocation by Sector */}
             <div className="col-6">
-              <div class="card shadow mb-4">
+              <div class="card position-static shadow mb-4">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">
                     % Allocation by Sector
@@ -349,7 +349,7 @@ export default function Portfolios() {
             </div>
             {/* Allocation by Individual Stocks */}
             <div className="col-6">
-              <div class="card shadow mb-4">
+              <div class="card shadow position-static mb-4">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">
                     % Allocation by Individual Stocks
@@ -405,7 +405,7 @@ export default function Portfolios() {
           {/* Portfolio Growth Line Graph */}
           <div className="row mt-5 px-5">
             <div className="col">
-              <div className="card shadow mb-4">
+              <div className="card position-static shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">
                     Portfolio Growth
@@ -437,7 +437,7 @@ export default function Portfolios() {
           {/* Returns Bar Chart */}
           <div className="row mt-3 px-5">
             <div className="col">
-              <div className="card shadow mb-4">
+              <div className="card position-static shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">
                     Portfolio Returns

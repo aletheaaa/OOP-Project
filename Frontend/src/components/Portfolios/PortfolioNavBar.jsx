@@ -5,7 +5,7 @@ function PortfolioNavBar(props) {
   return (
     <>
       <nav
-        className="navbar navbar-expand-lg rounded"
+        className="navbar navbar-expand-lg rounded position-static"
         style={{ backgroundColor: "lightgrey" }}
       >
         <div className="container-fluid">
