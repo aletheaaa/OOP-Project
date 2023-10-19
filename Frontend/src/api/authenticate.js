@@ -24,6 +24,20 @@ export function setId(id) {
   sessionStorage.setItem("id", JSON.stringify(id));
 }
 
+export function getEmail() {
+  return sessionStorage.getItem("email");
+}
+
+export function setEmail(userEmail) {
+  let email = JSON.stringify(userEmail).slice(1, -1);
+  sessionStorage.setItem("email", email);
+}
+
+export function logout() {
+    sessionStorage.clear();
+    window.location.href = "/";
+}
+
 export async function authenticate(registering, email, password) {
   let URL = registering ? REGISTER_URL : AUTH_URL;
   try {

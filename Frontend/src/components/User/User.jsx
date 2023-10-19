@@ -1,16 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../api/user";
+import { logout } from "../../api/authenticate";
 
 function User() {
   const profile = getProfile("userone@gmail.com");
+  // const email = profile.email;
+  const email = sessionStorage.getItem("email");
+  const userName = email.slice(0, email.indexOf("@"));
   const navigate = useNavigate();
 
   const handleLogout = (event) => {
     event.preventDefault();
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("id");
-    window.location.href = "/";
+    logout();
   }
 
   const handleSettingsClick = (event) => {
@@ -34,7 +36,7 @@ function User() {
           height="30"
           className="rounded-circle"
         />
-        <span className="d-none d-sm-inline mx-1">{ profile.email }</span>
+        <span className="d-none d-sm-inline mx-1">{ userName }</span>
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>

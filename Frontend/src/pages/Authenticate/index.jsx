@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "../../components/Common/Alert";
 
 function Authenticate(props) {
-  const [email, setUsername] = useState();
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [errors, setErrors] = useState([]); // For RED Errors
   const [notifications, setNotifications] = useState([]); // For other messages e.g. Registration successful
@@ -16,7 +16,7 @@ function Authenticate(props) {
   const loginMessage = "Not a User yet? Register ";
 
   const handleEmailChange = (event) => {
-    setUsername(event.target.value);
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -31,6 +31,7 @@ function Authenticate(props) {
     // if (!registering && authentication.status == "200") {
       props.setToken(authentication.data.token);
       props.setId(authentication.data.id);
+      props.setEmail(email);
       setErrors([]);
       setNotifications([]);
       window.location.reload(); // reload page after logging in to exit login page
