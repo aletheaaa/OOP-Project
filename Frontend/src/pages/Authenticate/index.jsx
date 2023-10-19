@@ -31,7 +31,6 @@ function Authenticate(props) {
     // if (!registering && authentication.status == "200") {
       props.setToken(authentication.data.token);
       props.setId(authentication.data.id);
-      props.setEmail(email);
       setErrors([]);
       setNotifications([]);
       window.location.reload(); // reload page after logging in to exit login page

@@ -4,8 +4,9 @@ import { getToken } from "./authenticate";
 const USER_URL = "http://localhost:8080/users/email/";
 const PORTFOLIO_URL = "http://localhost:8080/"; // Placeholder
 const token = getToken();
+const email = "userone@gmail.com"; // Placeholder, should make a call based on ID in sessionStorage
 
-export async function getProfile(email) {
+export async function getProfile() {
   let URL = USER_URL + email;
   let config = {
     headers: { Authorization: `Bearer ${token}` }

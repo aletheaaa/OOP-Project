@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../api/user";
 import { logout } from "../../api/authenticate";
 
+const profile = await getProfile("userone@gmail.com");
+const email = profile.email;
+const userName = email ? email.slice(0, email.indexOf("@")) : "" ;
+
 function User() {
-  const profile = getProfile("userone@gmail.com");
-  // const email = profile.email;
-  const email = sessionStorage.getItem("email");
-  const userName = email.slice(0, email.indexOf("@"));
   const navigate = useNavigate();
 
   const handleLogout = (event) => {
