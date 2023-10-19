@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  createPortfolioAPI,
+  getStockSectorAPI,
+  getValidStockSymbolsAPI,
+} from "../../api/portfolio";
 
 export default function CreatePortfolioButton() {
   const [validStocks, setValidStocks] = useState([]);
@@ -21,9 +25,19 @@ export default function CreatePortfolioButton() {
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: connect to api to get all the valid stock symbols
   useEffect(() => {
-    setValidStocks(["AAPL", "TSLA"]);
+    // load user id and set it to portfolioDetails
+    const userId = sessionStorage.getItem("id");
+    setPortfolioDetails({ ...portfolioDetails, UserId: Number(userId) });
+
+    // get all valid stock symbols
+    const getValidStocks = async () => {
+      const response = await getValidStockSymbolsAPI();
+      if (response.status === 200) {
+        setValidStocks(response.data);
+      }
+    };
+    getValidStocks();
   }, []);
 
   const handleStockChange = (event, index) => {
@@ -35,19 +49,6 @@ export default function CreatePortfolioButton() {
     setChosenStockAllocation(updatedStockAllocation);
   };
 
-  // TODO: to connect to api to get the sector from stock symbol
-  const getStockSector = (stock) => {
-    console.log("this is stock", stock);
-    axios
-      .get(
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stock}&apikey=${process.env.REACT_APP_API_KEY}`
-      )
-      .then((response) => {
-        console.log("this is response", response);
-      });
-    return "Technology";
-  };
-
   const handleAllocationChange = (event, index) => {
     const updatedStockAllocation = [...chosenStockAllocation];
     updatedStockAllocation[index] = {
@@ -57,7 +58,7 @@ export default function CreatePortfolioButton() {
     setChosenStockAllocation(updatedStockAllocation);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("hre");
     // console.log(portfolioDetails);
     // console.log(chosenStockAllocation);
@@ -132,38 +133,17 @@ export default function CreatePortfolioButton() {
       ...portfolioDetails,
       AssetList: chosenStockAllocationFiltered,
     };
+    console.log(requestBody);
     // send to backend
-    let token = sessionStorage.getItem("token");
-    token = token.slice(1, token.length - 1);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    };
     setIsLoading(true);
-    console.log("this is req body", requestBody);
-    axios
-      .post(
-        "http://localhost:8080/portfolio/createPortfolio",
-        requestBody,
-        config
-      )
-      .then((response) => {
-        console.log("This is the response");
-        console.log(response.data);
-        if (response.status === 200) {
-          setErrorMessage("");
-          setSuccessMessage("Portfolio created successfully.");
-        }
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        console.log(e.message);
-        setErrorMessage(e.message);
-        setIsLoading(false);
-      });
-
+    const response = await createPortfolioAPI(requestBody);
+    if (response.status === 200) {
+      setErrorMessage("");
+      setSuccessMessage("Portfolio created successfully.");
+    } else {
+      setErrorMessage("Error creating portfolio: " + response.data.message);
+    }
+    setIsLoading(false);
     return;
   };
 
@@ -178,6 +158,20 @@ export default function CreatePortfolioButton() {
       node.classList.add("is-invalid");
       return false;
     }
+  };
+
+  // function to add stock allocation to portfolioDetails
+  const addStockAllocToPortfolio = async (stockSymbol, index) => {
+    // setting sector to portfolioDetails to relevant stock
+    const sector = await getStockSectorAPI(stockSymbol);
+    const updatedStockAllocation = [...chosenStockAllocation];
+    updatedStockAllocation.forEach((ele) => {
+      if (ele.id === index) {
+        ele.Symbol = stockSymbol.toUpperCase();
+        ele.Sector = sector;
+      }
+    });
+    setChosenStockAllocation(updatedStockAllocation);
   };
 
   return (
@@ -406,23 +400,9 @@ export default function CreatePortfolioButton() {
                                   `stock-${index}`
                                 );
                                 if (isValid) {
-                                  // setting sector to portfolioDetails to relevant stock
-                                  const sector = getStockSector(
-                                    event.target.value.toUpperCase()
-                                  );
-
-                                  const updatedStockAllocation = [
-                                    ...chosenStockAllocation,
-                                  ];
-                                  updatedStockAllocation.forEach((ele) => {
-                                    if (ele.id === index) {
-                                      ele.Symbol =
-                                        event.target.value.toUpperCase();
-                                      ele.Sector = sector;
-                                    }
-                                  });
-                                  setChosenStockAllocation(
-                                    updatedStockAllocation
+                                  addStockAllocToPortfolio(
+                                    event.target.value.toUpperCase(),
+                                    index
                                   );
                                 }
                               }}
