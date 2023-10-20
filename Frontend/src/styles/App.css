@@ -1,6 +1,7 @@
 .App {
   padding: 0;
   margin: 0;
+  font-family: "Open Sans";
 }
 .App-header {
   position: fixed;
@@ -13,6 +14,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  /* z-index: 1000; */
 }
 .App-body {
   margin: 5vh;

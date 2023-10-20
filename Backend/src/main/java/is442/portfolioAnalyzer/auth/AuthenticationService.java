@@ -1,11 +1,13 @@
 package is442.portfolioAnalyzer.auth;
 
+import is442.portfolioAnalyzer.User.UserServiceImpl;
 import is442.portfolioAnalyzer.config.JwtService;
-import is442.portfolioAnalyzer.user.Role;
-import is442.portfolioAnalyzer.user.User;
-import is442.portfolioAnalyzer.user.UserRepository;
+import is442.portfolioAnalyzer.User.Role;
+import is442.portfolioAnalyzer.User.User;
+import is442.portfolioAnalyzer.User.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +19,10 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    @Autowired
+    UserServiceImpl userserviceimpl;
+
+    private final UserDTO repository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -32,9 +37,11 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
         repository.save(user);
+        User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .id(userInfo.getId())
                 .build();
     }
 
@@ -52,6 +59,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .id(user.getId())
                 .build();
     }
 }

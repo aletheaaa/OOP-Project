@@ -2,7 +2,7 @@ package is442.portfolioAnalyzer.config;
 
 // This class will handle all the application config such as Bean etc
 
-import is442.portfolioAnalyzer.user.UserRepository;
+import is442.portfolioAnalyzer.User.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public class ApplicationConfig {
 
-    private final UserRepository repository;
+    private final UserDTO repository;
 
     @Bean
     public UserDetailsService userDetailsService() {
