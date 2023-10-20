@@ -79,6 +79,18 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
+    //Create portfolio button
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "updatePortfolio", consumes = "application/json")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioCreation portfolioCreation) {
+        portfolioService.updatePortfolio(portfolioCreation);
+//        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
+
+        // String name = portfolioCreation.getPortfolioName();
+
+        return ResponseEntity.ok("Portfolio Created!");
+    }
+
     @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable Integer portfolioId) {
         GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioId);
