@@ -119,7 +119,7 @@ import lombok.Data;
     }
 
 
-    private String convertMonthNumberToName(String monthNumber) {
+    public String convertMonthNumberToName(String monthNumber) {
         // Create an array of month names
         String[] monthNames = new String[] {
             "January", "February", "March", "April", "May", "June",
@@ -136,4 +136,8 @@ import lombok.Data;
     }
     
 
+
+    public Double getTotalValue(Asset asset){
+        return asset.getQuantityPurchased() * asset.getUnitPrice();
+    }
  }
