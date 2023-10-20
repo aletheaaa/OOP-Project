@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +93,19 @@ public class PortfolioController {
         }
         
     }
+    //Get Assets Allocation by  portfolio ID
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "assetsAllocation/{portfolioId}", produces = "application/json")
+    public ResponseEntity<AssetsAllocation> getAssetsAllocation(@PathVariable Integer portfolioId) {
+        AssetsAllocation assetsAllocation = portfolioService.getAssetsAllocation(portfolioId);
+    
+        if (assetsAllocation != null) {
+            return ResponseEntity.ok(assetsAllocation);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    
 }
 

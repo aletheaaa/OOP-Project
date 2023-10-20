@@ -353,5 +353,51 @@ public class PortfolioService {
         
         return portfolioDetails;
     }
+
+    public AssetsAllocation getAssetsAllocation(Integer portfolioId){
+        
+        // create AssetAllocation json model
+        AssetsAllocation assetsAllocation = new AssetsAllocation();
+        Map<String, AssetModel> assetMap = new HashMap<>();
+
+        // get existing portfolio by portfoloioId
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+         // Loop through assets of existing portfolio
+        List<String> sectors = new ArrayList<>();
+        for (Asset asset : portfolio.getAssets()) {
+            // Check if sector already exists in sectors list before adding it
+            if (!sectors.contains(asset.getSector())) {
+                sectors.add(asset.getSector());
+            }
+        }
+        System.out.println(sectors);
+           
+        for (String sector : sectors) {
+            double totalAllocation = 0;
+            List<Stock> stocks = new ArrayList<>(); 
+
+            // code block
+            for (Asset asset : portfolio.getAssets()) {
+                if (asset.getSector().equals(sector)) {
+                    // Get the value of the asset here
+                    Double allocation = asset.getAllocation();
+                    totalAllocation +=  allocation;
+
+                    // Create a list of stocks 
+                    String symbol = asset.getAssetId().getStockSymbol();
+                    stocks.add(new Stock(symbol, allocation));
+                }
+            }
+            // Create an AssetModel instance
+            AssetModel am = new AssetModel(totalAllocation, stocks);
+            // System.out.println(am);
+            assetMap.put(sector,am);
+            System.out.println(assetMap);
+        }
+        assetsAllocation.setAssets(assetMap);
+        System.out.println(assetsAllocation);
+        return assetsAllocation;
+    }
 }
 
