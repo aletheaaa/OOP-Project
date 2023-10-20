@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.user;
+package is442.portfolioAnalyzer.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +25,7 @@ public class UserController {
             throw new UserNotFoundException("User not found with email: " + email);
         }
     }
+
+
 }
 
