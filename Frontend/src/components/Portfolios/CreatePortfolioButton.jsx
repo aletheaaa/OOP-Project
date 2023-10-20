@@ -137,11 +137,12 @@ export default function CreatePortfolioButton() {
     // send to backend
     setIsLoading(true);
     const response = await createPortfolioAPI(requestBody);
+    console.log("response", response);
     if (response.status === 200) {
       setErrorMessage("");
       setSuccessMessage("Portfolio created successfully.");
     } else {
-      setErrorMessage("Error creating portfolio: " + response.data.message);
+      setErrorMessage("Error creating portfolio: " + response.message);
     }
     setIsLoading(false);
     return;

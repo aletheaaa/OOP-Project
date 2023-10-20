@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getPortfolios, getProfile } from "../../api/user";
 import NavBarItem from "./NavBarItem";
 import User from "../User/User";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
-// Get User information from profile
-const profile = await getProfile();
-const email = profile.email;
-const userName = email ? email.slice(0, email.indexOf("@")) : "";
-const portfolios = await getPortfolios();
-
 function SideNavBar() {
+  const [portfolios, setPortfolios] = useState([]);
+  const [userName, setUserName] = useState("");
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // Get User information from profile
+      const profile = await getProfile();
+      const email = profile.email;
+      const userName = email ? email.slice(0, email.indexOf("@")) : "";
+      const portfolios = await getPortfolios();
+      setUserName(userName);
+      if (portfolios === null) {
+        return;
+      }
+      console.log("portfolios", portfolios.userPortfolios);
+      setPortfolios(portfolios.userPortfolios);
+    };
+    getUserInfo();
+  }, []);
+
   return (
     <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold">
       <a
@@ -31,16 +44,16 @@ function SideNavBar() {
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
         id="menu"
       >
-        {portfolios.map((portfolio, index) => {
-          console.log(portfolio);
-          return (
-            <NavBarItem
-              key={index}
-              link={`/portfolios/${portfolio.portfolioId}`}
-              text={portfolio.name}
-            />
-          );
-        })}
+        {portfolios.length != 0 &&
+          portfolios.map((portfolio, index) => {
+            return (
+              <NavBarItem
+                key={index}
+                link={`/portfolios/${portfolio.portfolioId}`}
+                text={portfolio.portfolioName}
+              />
+            );
+          })}
         {/*
           <NavBarItem link="/" icon="bi-speedometer2" text="Dashboard" />
           <NavBarItem link="/portfolios/1" icon="bi-person-lines-fill" text="Portfolios" />

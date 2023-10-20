@@ -299,21 +299,21 @@ export default function Portfolios() {
           <div className="row px-5">
             {/* Allocation by Sector */}
             <div className="col-6">
-              <div class="card position-static shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
+              <div className="card position-static shadow mb-4">
+                <div className="card-header py-3">
+                  <h6 className="m-0 font-weight-bold text-primary">
                     % Allocation by Sector
                   </h6>
                 </div>
-                <div class="card-body row">
-                  <div class="chart-area w-50">
+                <div className="card-body row">
+                  <div className="chart-area w-50">
                     {assetAllocationBySector &&
                       Object.keys(assetAllocationBySector).length > 0 && (
                         <DoughnutChart data={assetAllocationBySector} />
                       )}
                   </div>
                   <div className="w-50 d-flex align-items-center">
-                    <table class="table table-striped">
+                    <table className="table table-striped">
                       <thead>
                         <tr>
                           <th scope="col">Sector</th>
@@ -349,14 +349,14 @@ export default function Portfolios() {
             </div>
             {/* Allocation by Individual Stocks */}
             <div className="col-6">
-              <div class="card shadow position-static mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">
+              <div className="card shadow position-static mb-4">
+                <div className="card-header py-3">
+                  <h6 className="m-0 font-weight-bold text-primary">
                     % Allocation by Individual Stocks
                   </h6>
                 </div>
-                <div class="card-body row">
-                  <div class="chart-area w-50">
+                <div className="card-body row">
+                  <div className="chart-area w-50">
                     {asssetAllocationByIndividualStock &&
                       Object.keys(asssetAllocationByIndividualStock).length >
                         0 && (
@@ -366,7 +366,7 @@ export default function Portfolios() {
                       )}
                   </div>
                   <div className="w-50 d-flex align-items-center">
-                    <table class="table table-striped">
+                    <table className="table table-striped">
                       <thead>
                         <tr>
                           <th scope="col">Sector</th>
@@ -406,8 +406,8 @@ export default function Portfolios() {
           <div className="row mt-5 px-5">
             <div className="col">
               <div className="card position-static shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">
+                <div className="card-header py-3 d-flex justify-content-between">
+                  <h6 className="m-0 font-weight-bold text-primary">
                     Portfolio Growth
                   </h6>
                   <select
@@ -422,8 +422,8 @@ export default function Portfolios() {
                     <option value="quarter">Quarter Returns</option>
                   </select>
                 </div>
-                <div class="card-body row">
-                  <div class="chart-area">
+                <div className="card-body row">
+                  <div className="chart-area">
                     {chartData &&
                       chartData.datasets &&
                       chartData.datasets.length > 0 && (
@@ -438,8 +438,8 @@ export default function Portfolios() {
           <div className="row mt-3 px-5">
             <div className="col">
               <div className="card position-static shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">
+                <div className="card-header py-3 d-flex justify-content-between">
+                  <h6 className="m-0 font-weight-bold text-primary">
                     Portfolio Returns
                   </h6>
                   <select
@@ -454,8 +454,8 @@ export default function Portfolios() {
                     <option value="quarter">Quarter Returns</option>
                   </select>
                 </div>
-                <div class="card-body row">
-                  <div class="chart-area">
+                <div className="card-body row">
+                  <div className="chart-area">
                     {barChartConfig == "annual"
                       ? barChartDataByYear &&
                         barChartDataByYear.data &&
