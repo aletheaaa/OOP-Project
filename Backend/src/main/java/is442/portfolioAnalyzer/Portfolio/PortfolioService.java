@@ -1,12 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
-import is442.portfolioAnalyzer.JsonModels.AssetCreation;
-import is442.portfolioAnalyzer.JsonModels.AssetModel;
-import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
-import is442.portfolioAnalyzer.JsonModels.Stock;
-import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
-import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
-import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.JsonModels.*;
 import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,21 +115,21 @@ public class PortfolioService {
     }
 
     // UPDATE PORTFOLIO ---------------------------------------------------------------------------------------------------
-    public void updatePortfolio(PortfolioCreation portfolioCreation) {
-        // Get the portfolio by name
-        Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioCreation.getPortfolioName());
-        // Get the portfolioId
+    public void updatePortfolio(PortfolioUpdate portfolioUpdate) {
+        // Get the portfolio by id
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioUpdate.getPortfolioId());
         Integer portfolioId = portfolio.getPortfolioId();
 
         // PORTFOLIO NAME CANNOT BE CHANGE, UNLESS FRONTEND PASS IN THE PORTFOLIO ID
         // Set the portfolio capital, description, startDate, timePeriod
-        portfolio.setCapital(portfolioCreation.getCapital());
-        portfolio.setDescription(portfolioCreation.getDescription());
-        portfolio.setStartDate(portfolioCreation.getStartDate());
-        portfolio.setTimePeriod(portfolioCreation.getTimePeriod());
+        portfolio.setPortfolioName(portfolioUpdate.getPortfolioName());
+        portfolio.setCapital(portfolioUpdate.getCapital());
+        portfolio.setDescription(portfolioUpdate.getDescription());
+        portfolio.setStartDate(portfolioUpdate.getStartDate());
+        portfolio.setTimePeriod(portfolioUpdate.getTimePeriod());
 
         // Get the assetList from the portfolioCreation
-        List<AssetCreation> assetList = portfolioCreation.getAssetList();
+        List<AssetCreation> assetList = portfolioUpdate.getAssetList();
         List<String> existedAssets = getAssetSymbols(portfolioId);
 
         List<Asset> assets = assetService.getAssetsByPortfolioId(portfolioId);
@@ -152,7 +146,7 @@ public class PortfolioService {
                         double oldTotalValue = asset.getTotalValue();
                         // Update the asset
                         asset.setAllocation(assetCreation.getAllocation());
-                        asset.setTotalValue(assetCreation.getAllocation() * portfolioCreation.getCapital());
+                        asset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
 
 
                         if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
@@ -168,7 +162,7 @@ public class PortfolioService {
 
                         System.out.println(symbol);
                         System.out.println(assetCreation.getAllocation() + " updated");
-                        System.out.println(assetCreation.getAllocation() * portfolioCreation.getCapital() + " updated");
+                        System.out.println(assetCreation.getAllocation() * portfolioUpdate.getCapital() + " updated");
                         System.out.println(asset.getQuantityPurchased() + " updated");
                         System.out.println(asset.getUnitPrice() + " updated");
                         System.out.println(asset.getTotalValue() + " updated");
@@ -191,7 +185,7 @@ public class PortfolioService {
                     newAsset.setAssetId(assetId);
                     newAsset.setSector(assetCreation.getSector());
                     newAsset.setAllocation(assetCreation.getAllocation());
-                    newAsset.setTotalValue(assetCreation.getAllocation() * portfolioCreation.getCapital());
+                    newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
                     newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                     newAsset.setQuantityPurchased(newAsset.getTotalValue() / newAsset.getUnitPrice());
 

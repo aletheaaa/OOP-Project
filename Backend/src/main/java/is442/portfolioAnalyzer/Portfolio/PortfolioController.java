@@ -3,6 +3,7 @@ package is442.portfolioAnalyzer.Portfolio;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,8 +83,8 @@ public class PortfolioController {
     // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "updatePortfolio", consumes = "application/json")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioCreation portfolioCreation) {
-        portfolioService.updatePortfolio(portfolioCreation);
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate) {
+        portfolioService.updatePortfolio(portfolioUpdate);
 
         return ResponseEntity.ok("Portfolio Updated!");
     }
