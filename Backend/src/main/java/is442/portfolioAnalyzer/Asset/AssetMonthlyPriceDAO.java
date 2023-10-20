@@ -7,4 +7,5 @@ package is442.portfolioAnalyzer.Asset;
 
  @Repository
  public interface AssetMonthlyPriceDAO extends JpaRepository<AssetMonthlyPrice, AssetMonthlyPriceId> {
+    boolean existsByIdStockSymbol(String symbol);        
  }

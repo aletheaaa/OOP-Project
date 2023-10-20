@@ -77,6 +77,8 @@ public class PortfolioService {
             AssetId assetId = new AssetId();
             String symbol = assetCreation.getSymbol();
 
+            //Set all monthly prices and divident amount of asset by symbol and save into DB
+            assetService.populateAssetMonthlyPrices(symbol);
 
             assetId.setPortfolioId(portfolio.getPortfolioId());
             assetId.setStockSymbol(assetCreation.getSymbol());
@@ -86,13 +88,13 @@ public class PortfolioService {
             asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
-            // assetService.updateMonthlyPrices(asset, symbol);
+            // assetService.updateMonthlyPrices(asset, symbol); 
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                 // Call External API to get the latest price
-                asset.setUnitPrice(assetService.getAssetLatestPrice(assetCreation.getSymbol()));
+                asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                 // Add the quantity purchased based on the portfolio capital and asset allocation
-                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(assetCreation.getSymbol()));
+                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(symbol));
 
                 // Calculate the total value of the asset
                 asset.setTotalValue(asset.getUnitPrice() * asset.getQuantityPurchased());

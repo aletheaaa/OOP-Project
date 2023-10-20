@@ -15,10 +15,16 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 public class AssetMonthlyPriceId implements Serializable {
-    @Column(name = "date")
-    private String date;
+
+
+    
+    @Column(name = "year") // Stored as 2020, 2021
+    private String year;
+
+    @Column(name = "month") //Stored as January, February
+    private String month;
 
     @Column(name = "stock_symbol") // Updated to stock_symbol
-    private String stockSymbol;
+    private String stockSymbol; 
 
 }
