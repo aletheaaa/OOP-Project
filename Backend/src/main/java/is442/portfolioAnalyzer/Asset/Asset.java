@@ -32,6 +32,4 @@ public class Asset {
     private double quantityPurchased;
     private double totalValue; //The total value of the asset at current time, this is purely for calculation of net profit for portfolio
 
-    @OneToMany
-    private List<AssetMonthlyPrice> monthlyPrices = new ArrayList<>();
 }

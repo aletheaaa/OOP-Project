@@ -1,11 +1,11 @@
  package is442.portfolioAnalyzer.Asset;
 
- import java.util.Date;
+ import java.util.ArrayList;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
@@ -77,55 +77,62 @@ import lombok.Data;
             }
         }
 
-        
+    
+    //
+    public void populateAssetMonthlyPrices(String symbol) {
 
-
-     //Set all the monthly prices of the asset from api
-      public void updateMonthlyPrices(Asset asset, String symbol) {
-        try {
-            ResponseEntity<?> response = externalApiService.getMonthlyStockPrice(symbol);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                TimeSeriesResponse timeSeriesResponse = (TimeSeriesResponse) response.getBody();
-                List<StockUnit> stockUnits = timeSeriesResponse.getStockUnits();
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM");
-                
-                for (StockUnit stockUnit : stockUnits) {
-                    String date = stockUnit.getDate();
-                    // Parse the date and format it as "yyyy-MM"
-                    Date parsedDate = inputFormat.parse(date);
-                    String formattedDate = outputFormat.format(parsedDate);
-                    
-                    Double closingPrice = stockUnit.getClose();
-
-                    AssetMonthlyPrice assetMonthlyPrice = new AssetMonthlyPrice();
-                    AssetMonthlyPriceId assetMonthlyPriceId = new AssetMonthlyPriceId();
-                    assetMonthlyPriceId.setDate(formattedDate); 
-                    assetMonthlyPriceId.setStockSymbol(symbol);
-                    assetMonthlyPrice.setId(assetMonthlyPriceId);
-                    assetMonthlyPrice.setClosingPrice(closingPrice);
-                    assetMonthlyPriceDAO.save(assetMonthlyPrice);
-                    
-                    asset.getMonthlyPrices().add(assetMonthlyPrice);
-
-                    
-                }
-                
-               
-            }
-        } catch (Exception e) {
-            // Handle any exceptions or errors
-            System.out.println("Error in updateMonthlyPrices");
-            e.printStackTrace();
+        // Check if the symbol already exists in the AssetMonthlyPrice table
+        boolean symbolExists = assetMonthlyPriceDAO.existsByIdStockSymbol(symbol);
+        if (symbolExists) {
+            return; // Symbol already exists, no need to update
         }
-       
+
+        // Call the external API service to get monthly stock prices
+        TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
+
+
+        if (response != null && response.getStockUnits() != null) {
+            List<AssetMonthlyPrice> monthlyPrices = new ArrayList<>();
+            for (StockUnit stockUnit : response.getStockUnits()) {
+                AssetMonthlyPrice monthlyPrice = new AssetMonthlyPrice();
+
+                // Extract year and month from the date
+                String date = stockUnit.getDate();
+                String[] dateParts = date.split("-");
+                if (dateParts.length >= 2) {
+                    String year = dateParts[0];
+                    String monthNumber = dateParts[1];
+                    String monthName = convertMonthNumberToName(monthNumber);
+
+                    monthlyPrice.setId(new AssetMonthlyPriceId(year, monthName, symbol));
+                }
+
+                monthlyPrice.setClosingPrice(stockUnit.getClose());
+                monthlyPrice.setDividendAmount(stockUnit.getDividendAmount());
+
+                monthlyPrices.add(monthlyPrice);
+            }
+
+            assetMonthlyPriceDAO.saveAll(monthlyPrices);
+        }
     }
 
 
+    private String convertMonthNumberToName(String monthNumber) {
+        // Create an array of month names
+        String[] monthNames = new String[] {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
 
-    public double getAssetMonthlyPrice(String symbol, String date) {
-        return 0;
+        // Convert the month number to an integer and use it as an index
+        int index = Integer.parseInt(monthNumber) - 1;
+        if (index >= 0 && index < monthNames.length) {
+            return monthNames[index];
+        }
+
+        return monthNumber; // If the conversion fails, return the original number
     }
+    
 
  }

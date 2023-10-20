@@ -20,7 +20,7 @@
     {
       "Symbol": "CASHALLOCATION",
       "Allocation": 0.1,
-      "Sector": null
+      "Sector": "CASHALLOCATION"
     }
   ]
 

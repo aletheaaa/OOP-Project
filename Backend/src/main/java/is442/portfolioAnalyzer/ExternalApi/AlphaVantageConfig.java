@@ -3,7 +3,6 @@ package is442.portfolioAnalyzer.ExternalApi;
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.Config;
 import lombok.Getter;
-import org.hibernate.annotations.Comment;
 import org.springframework.stereotype.Component;
 
 @Getter
