@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 
-function NavBarItem({link, icon, text, bsToggle}) {
-    return (
-        <a href={link} className="nav-link active ps-0 align-middle" data-bs-toggle={bsToggle} >
-            <i className={"fs-4 " + icon}></i>{" "}
-            <span className="ms-1 d-none d-sm-inline">{text}</span>
-        </a>
-    );
+function NavBarItem({link, icon, text}) {
+  return (
+    <Link to={link} className="nav-link active ps-0 align-middle">
+      <i className={"fs-4 " + icon}></i>{" "}
+      <span className="ms-1 d-none d-sm-inline">{text}</span>
+    </Link>
+  );
 }
 
 export default NavBarItem;

@@ -1,0 +1,45 @@
+{
+  "Assets Allocation": {
+    "Technology": {
+      "Value": 0.5,
+      "Stocks": [
+        {
+          "Symbol": "TSLA",
+          "Allocation": 0.5
+        }
+      ]
+    },
+    "Healthcare": {
+      "Value": 0.4,
+      "Stocks": [
+        {
+          "Symbol": "PFE",
+          "Allocation": 0.4
+        }
+      ]
+    },
+    "Cash": {
+      "Allocation": 0.1
+    }
+  },
+  "PerformanceSummary": {
+    "InitialBalance": 1000,
+    "FinalBalance": 2000,
+    "NetProfit": 1000,
+    "CAGR": 7.77,
+    "SharpeRatio": 0.59,
+    "SortinoRatio": 0.42
+  },
+  "Performance": {
+    "2013": {
+      "Jan": 1100,
+      "Feb": 1200,
+      "Mar": 2100
+    },
+    "2014": {
+      "Jan": 1200,
+      "Feb": 1300,
+      "Mar": 1100
+    }
+  }
+}

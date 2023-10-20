@@ -1,9 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import DoughnutChart from "../../components/Common/DoughnutChart";
 import DashboardCard from "../../components/Common/DashboardCard";
 
 export default function Dashboard() {
+  const [areaChartData, setAreaChartData] = useState([]);
+  const [doughnutChartData, setDoughnutChartData] = useState([]);
+
+  useEffect(() => {
+    const getAreaChartData = () => {
+      const labels = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      const data = {
+        labels,
+        datasets: [
+          {
+            label: "Actual Performance",
+            data: [8, 7, 6, 7, 9, 7, 9, 6, 9, 7, 8, 9],
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },
+          {
+            label: "Index",
+            data: [2, 3, 5, 2, 3, 4, 1, 5, 1, 3, 2, 7],
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+        ],
+      };
+      setAreaChartData(data);
+    };
+    const getDoughnutChartData = () => {
+      const data = {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [
+          {
+            label: "% of Capital Allocated to Different Stocks",
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)",
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+      setDoughnutChartData(data);
+    };
+    getAreaChartData();
+    getDoughnutChartData();
+  }, []);
+
   return (
     <>
       <div className="container my-3">
@@ -49,7 +120,11 @@ export default function Dashboard() {
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                  <AreaChart />
+                  {areaChartData &&
+                    areaChartData.datasets &&
+                    areaChartData.datasets.length > 0 && (
+                      <AreaChart data={areaChartData} />
+                    )}
                 </div>
               </div>
             </div>
@@ -63,7 +138,11 @@ export default function Dashboard() {
               </div>
               <div class="card-body">
                 <div class="chart-pie pt-4">
-                  <DoughnutChart />
+                  {doughnutChartData &&
+                    doughnutChartData.datasets &&
+                    doughnutChartData.datasets.length > 0 && (
+                      <DoughnutChart data={doughnutChartData} />
+                    )}
                 </div>
               </div>
             </div>

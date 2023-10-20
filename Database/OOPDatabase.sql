@@ -1,9 +1,8 @@
 CREATE SCHEMA IF NOT EXISTS OOP;
 USE OOP;
 
-DROP TABLE IF EXISTS trades;
+DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS portfolios;
-DROP TABLE IF EXISTS stocks;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -17,29 +16,25 @@ CREATE TABLE IF NOT EXISTS users (
  role enum('ADMIN','USER') NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS stocks (
- stock_symbol VARCHAR(20) NOT NULL PRIMARY KEY,
- stock_name VARCHAR(64) NOT NULL,
- last_updated_time DATETIME NOT NULL,
- last_updated_price DOUBLE NOT NULL
-);
 
 CREATE TABLE IF NOT EXISTS portfolios (
- portfolio_id INT NOT NULL PRIMARY KEY,
- portfolio_name VARCHAR(64) NOT NULL,
+ portfolio_name VARCHAR(64) NOT NULL PRIMARY KEY,
  description VARCHAR(255) NOT NULL,
  capital DOUBLE NOT NULL,
+ start_date VARCHAR(255) NOT NULL,
+ time_period VARCHAR(255) NOT NULL,
  user_id INT NOT NULL,
  CONSTRAINT portfolios_fk1 FOREIGN KEY(user_id) references users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS trades (
- purchase_date_time DATETIME NOT NULL,
- purchase_price DOUBLE NOT NULL,
- purchase_quantity INT NOT NULL,
- portfolio_id INT NOT NULL,
+CREATE TABLE IF NOT EXISTS assets (
+ purchased_price DOUBLE NOT NULL,
+ portfolio_name VARCHAR(64) NOT NULL,
  stock_symbol VARCHAR(20) NOT NULL,
- CONSTRAINT trades_pk PRIMARY KEY(purchase_date_time, portfolio_id, stock_symbol),
- CONSTRAINT trades_fk1 FOREIGN KEY(portfolio_id) references portfolios(portfolio_id),
- CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
+ allocation DOUBLE NOT NULL,
+ sector VARCHAR(64) NOT NULL,
+ monthly_performance VARCHAR(64) NOT NULL,
+ CONSTRAINT assets_pk PRIMARY KEY(portfolio_name, stock_symbol),
+ CONSTRAINT assets_fk1 FOREIGN KEY(portfolio_name) references portfolios(portfolio_name)
+--  CONSTRAINT trades_fk2 FOREIGN KEY(stock_symbol) references stocks(stock_symbol)
 );

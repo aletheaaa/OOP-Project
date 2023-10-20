@@ -1,7 +1,7 @@
-package is442.portfolioAnalyzer.Stock;
+// package is442.portfolioAnalyzer.Stock;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StockDAO extends JpaRepository<Stock, String> {
+// public interface StockDAO extends JpaRepository<Stock, String> {
     
-}
+// }
