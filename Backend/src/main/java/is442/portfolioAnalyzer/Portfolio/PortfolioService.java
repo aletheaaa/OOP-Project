@@ -4,6 +4,7 @@ import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
 import is442.portfolioAnalyzer.JsonModels.Stock;
+import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import is442.portfolioAnalyzer.Asset.*;
 
+import java.time.Year;
 import java.util.*;
 
 @Service
@@ -35,14 +37,21 @@ public class PortfolioService {
         return portfolioDAO.findAll();
     }
 
-    public List<Integer> getPortfolioByUser(Integer userid) {
-         List<Portfolio> portfolios = portfolioDAO.findByUserId(userid);
-         List<Integer> portfolioIds = new ArrayList<>();
-         for (Portfolio portfolio : portfolios) {
-             portfolioIds.add(portfolio.getPortfolioId());
-         }
-         return portfolioIds;
+    public UserPortfolios getPortfolioByUser(Integer userId) {
+        List<Portfolio> portfolios = portfolioDAO.findByUserId(userId);
+        List<Map<String, String>> userPortfoliosList = new ArrayList<>();
+        UserPortfolios userPortfolios = new UserPortfolios(null);
+        for (Portfolio portfolio : portfolios) {
+            Map<String, String> portfolioMap = new HashMap<>();
+            portfolioMap.put("portfolioId", String.valueOf(portfolio.getPortfolioId()));
+            portfolioMap.put("portfolioName", portfolio.getPortfolioName());
+            userPortfoliosList.add(portfolioMap);
+            userPortfolios.setUserPortfolios(userPortfoliosList);
+        }
+    
+        return userPortfolios;
     }
+    
 
     public Portfolio getPortfolioByName(String portfolioName) {
         return portfolioDAO.findByPortfolioName(portfolioName);
@@ -238,94 +247,94 @@ public class PortfolioService {
     }
 
 //   // Get the net profit of the portfolio based on the portfolioName
-//   public double getNetProfit(String portfolioName) {
-//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
-//       List<Asset> assets = portfolio.getAssets();
-//       double totalAssetsValue = 0;
-//       for (int i = 0; i < assets.size(); i++) {
-//           Asset asset = assets.get(i);
-//           totalAssetsValue += asset.getTotalValue();
-//       }
-//       double netProfit = totalAssetsValue - portfolio.getCapital();
-//       return netProfit;
-//
-//   }
+  public double getNetProfit(Integer portfolioId) {
+      Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+      List<Asset> assets = portfolio.getAssets();
+      double totalAssetsValue = 0;
+      for (int i = 0; i < assets.size(); i++) {
+          Asset asset = assets.get(i);
+          totalAssetsValue += asset.getTotalValue();
+      }
+      double netProfit = totalAssetsValue - portfolio.getCapital();
+      return netProfit;
+
+  }
 //
 //   // Get portfolio final balance
-//   public double getPortfolioFinalBalance(String portfolioName) {
-//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
-//       List<Asset> assets = portfolio.getAssets();
-//       double totalValue = 0;
-//       for (int i = 0; i < assets.size(); i++) {
-//           Asset asset = assets.get(i);
-//           totalValue += asset.getTotalValue();
-//       }
-//       return totalValue;
-//   }
-//
+    public double getPortfolioFinalBalance(Integer portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        List<Asset> assets = portfolio.getAssets();
+        double totalValue = 0;
+        for (int i = 0; i < assets.size(); i++) {
+            Asset asset = assets.get(i);
+            totalValue += asset.getTotalValue();
+        }
+        return totalValue;
+    }
+
 //   // Get the portfolio's CAGR
-//   public double getCAGR(String portfolioName) {
-//       Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioName);
-//       double finalBalance = getPortfolioFinalBalance(portfolioName);
-//       double initialBalance = portfolio.getCapital();
-//
-//       // Calculate the time period from current
-//       int currentYearvalue = Year.now().getValue();
-//       int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4));
-//       int timePeriod = currentYearvalue - startYearValue;
-//
-//       double CAGR = Math.pow(finalBalance/initialBalance, 1/timePeriod) - 1;
-//       return CAGR * 100; // Convert to percentage
-//   }
+    public double getCAGR(Integer portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        double finalBalance = getPortfolioFinalBalance(portfolioId);
+        double initialBalance = portfolio.getCapital();
+
+        // Calculate the time period from current
+        int currentYearvalue = Year.now().getValue();
+        int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4));
+        int timePeriod = currentYearvalue - startYearValue;
+
+        double CAGR = Math.pow(finalBalance/initialBalance, 1/timePeriod) - 1;
+        return CAGR * 100; // Convert to percentage
+    }
 //
 //   // Get SharpeRatio of the portfolio
 //   // The Sharpe Ratio is a measure of the risk-adjusted return of a portfolio.
-//   public double calcSharpeRatio(double expectedReturn, double riskFreeRate, double standardDeviation) {
-//       // Example: 10% expected return
-//       // Example: 3% risk-free rate
-//       // Example: 15% standard deviation
-//       return (expectedReturn - riskFreeRate) / standardDeviation;
-//   }
+    public double calcSharpeRatio(double expectedReturn, double riskFreeRate, double standardDeviation) {
+        // Example: 10% expected return
+        // Example: 3% risk-free rate
+        // Example: 15% standard deviation
+        return (expectedReturn - riskFreeRate) / standardDeviation;
+    }
 //
 //   // Calculate portfolio's standard deviation
-//   public double calcStandardDeviation(double[] stockReturns) {
-//       return Math.sqrt(calcVariance(stockReturns));
-//   }
+    public double calcStandardDeviation(double[] stockReturns) {
+        return Math.sqrt(calcVariance(stockReturns));
+    }
 //
 //   // Calculate portfolio's variance
-//   public double calcVariance(double[] stockReturns) {
-//       double sum = 0.0;
-//       double mean = calcMean(stockReturns);
-//       for (double stockReturn : stockReturns) {
-//           sum += Math.pow(stockReturn - mean, 2.0);
-//       }
-//       return sum / (stockReturns.length - 1);
-//   }
+    public double calcVariance(double[] stockReturns) {
+        double sum = 0.0;
+        double mean = calcMean(stockReturns);
+        for (double stockReturn : stockReturns) {
+            sum += Math.pow(stockReturn - mean, 2.0);
+        }
+        return sum / (stockReturns.length - 1);
+    }
 //
 //   // Calculate portfolio's mean
-//   public double calcMean(double[] stockReturns) {
-//       double sum = 0.0;
-//       for (double stockReturn : stockReturns) {
-//           sum += stockReturn;
-//       }
-//       return sum / stockReturns.length;
-//   }
+    public double calcMean(double[] stockReturns) {
+        double sum = 0.0;
+        for (double stockReturn : stockReturns) {
+            sum += stockReturn;
+        }
+        return sum / stockReturns.length;
+    }
 //
 //   // Calculate portfolio's expected return
-//   public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
+  public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
 //   //The expected return of a portfolio is a weighted sum of the expected returns of its individual assets,
 //   //where the weights represent the proportion of each asset in the portfolio
-//   if (assetReturns.length != weights.length) {
-//       // TODO - Handles exceptions
-//       throw new IllegalArgumentException("Arrays must have the same length.");
-//   }
-//   double expectedReturn = 0;
-//
-//   for (int i = 0; i < assetReturns.length; i++) {
-//       expectedReturn += assetReturns[i] * weights[i];
-//   }
-//   return expectedReturn;
-//   }
+    // if (assetReturns.length != weights.length) {
+    //     // TODO - Handles exceptions
+    //     throw new IllegalArgumentException("Arrays must have the same length.");
+    // }
+    double expectedReturn = 0;
+
+    for (int i = 0; i < assetReturns.length; i++) {
+        expectedReturn += assetReturns[i] * weights[i];
+    }
+    return expectedReturn;
+    }
 
 
 
@@ -501,6 +510,24 @@ public class PortfolioService {
         assetsAllocation.setAssets(assetMap);
         System.out.println(assetsAllocation);
         return assetsAllocation;
+    }
+
+    public PerformanceSummary getPerformanceSummary(Integer portfolioId){
+        PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
+        
+        double netProfit = this.getNetProfit(portfolioId);
+        performanceSummary.setNetProfit(netProfit);
+        
+        double finalBalance = this.getPortfolioFinalBalance(portfolioId);
+        performanceSummary.setFinalBalance(finalBalance);
+
+        double cagr = this.getCAGR(portfolioId);
+        performanceSummary.setCAGR(cagr);
+
+        
+        // double stdDev = this.calcStandardDeviation()
+
+        return performanceSummary;
     }
 }
 

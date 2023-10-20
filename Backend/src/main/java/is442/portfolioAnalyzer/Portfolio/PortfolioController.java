@@ -2,7 +2,11 @@ package is442.portfolioAnalyzer.Portfolio;
 
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
+import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
+import is442.portfolioAnalyzer.User.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +41,13 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolioService.getAllPortfolios());
     }
 
-    @GetMapping("user/{userid}")
-    public ResponseEntity <List<Integer>> getPortfolioByUser(@PathVariable Integer userid) {
-        return ResponseEntity.ok(portfolioService.getPortfolioByUser(userid));
+    
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "user/{userid}", produces = "application/json")
+    public ResponseEntity<UserPortfolios>
+    getPortfolioByUser(@PathVariable Integer userid) {
+        UserPortfolios userPortfolios = portfolioService.getPortfolioByUser(userid);
+        return ResponseEntity.ok(userPortfolios);
     }
 
     @GetMapping("portfolioName/{portfolioName}")
@@ -53,6 +61,7 @@ public class PortfolioController {
     }
 
     // Get portfolio by name and userid
+    
     @GetMapping("{portfolioId}/{userId}")
     public ResponseEntity<Portfolio> getPortfolioByIds(
         @PathVariable Integer portfolioId,
@@ -113,6 +122,18 @@ public class PortfolioController {
     
         if (assetsAllocation != null) {
             return ResponseEntity.ok(assetsAllocation);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    //Get Performance Summary by portfolioID
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "performanceSummary/{portfolioId}", produces = "application/json")
+    public ResponseEntity<PerformanceSummary> getPerformanceSummary(@PathVariable Integer portfolioId) {
+        PerformanceSummary performanceSummary = portfolioService.getPerformanceSummary(portfolioId);
+    
+        if (performanceSummary != null) {
+            return ResponseEntity.ok(performanceSummary);
         } else {
             return ResponseEntity.notFound().build();
         }
