@@ -51,9 +51,8 @@ public class PortfolioService {
         System.out.println("Get portfolio by name and id  - in the service");
         return portfolioDAO.findByPortfolioIds(portfolioId, userId);
     }
-// ------------------------------------------------------------------------------------------------
-    // CREATE PORTFOLIO
 
+// CREATE PORTFOLIO ---------------------------------------------------------------------------------------------------
     public void createPortfolio(PortfolioCreation portfolioCreation) {
 
         // PROCESS THE PORTFOLIO CREATION
@@ -120,9 +119,8 @@ public class PortfolioService {
         portfolioDAO.save(portfolio);
 
     }
-// ------------------------------------------------------------------------------------------------
-    // UPDATE PORTFOLIO
 
+    // UPDATE PORTFOLIO ---------------------------------------------------------------------------------------------------
     public void updatePortfolio(PortfolioCreation portfolioCreation) {
         // Get the portfolio by name
         Portfolio portfolio = portfolioDAO.findByPortfolioName(portfolioCreation.getPortfolioName());
@@ -197,7 +195,7 @@ public class PortfolioService {
                     newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                     newAsset.setQuantityPurchased(newAsset.getTotalValue() / newAsset.getUnitPrice());
 
-                    System.out.println(symbol + "Added!");
+                    System.out.println(symbol + " added");
                     System.out.println(newAsset.getAllocation() + " added") ;
                     System.out.println(newAsset.getTotalValue() + " added") ;
                     System.out.println(newAsset.getQuantityPurchased() + " added") ;
@@ -210,8 +208,18 @@ public class PortfolioService {
             }
         }
         portfolioDAO.save(portfolio);
-
     }
+
+    // DELETE PORTFOLIO ---------------------------------------------------------------------------------------------------
+    public void deletePortfolio(Integer portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        List <Asset> assets = portfolio.getAssets();
+        for (Asset asset : assets) {
+            assetDAO.delete(asset);
+        }
+        portfolioDAO.delete(portfolio);
+    }
+
 
     // Get a list of asset symbols in the portfolio
     public List<String> getAssetSymbols(Integer portfolioId) {

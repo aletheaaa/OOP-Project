@@ -67,7 +67,7 @@ public class PortfolioController {
     }
 
 
-    //Create portfolio button
+    // Create portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "createPortfolio", consumes = "application/json")
     public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
@@ -79,16 +79,23 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
-    //Create portfolio button
+    // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "updatePortfolio", consumes = "application/json")
     public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioCreation portfolioCreation) {
         portfolioService.updatePortfolio(portfolioCreation);
-//        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
 
-        // String name = portfolioCreation.getPortfolioName();
+        return ResponseEntity.ok("Portfolio Updated!");
+    }
 
-        return ResponseEntity.ok("Portfolio Created!");
+    // Delete portfolio ---------------------------------------------------------------------------------------------------
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping(value = "deletePortfolio/{portfolioId}", produces = "application/json")
+    public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId) {
+        portfolioService.deletePortfolio(portfolioId);
+
+        return ResponseEntity.ok("Portfolio Deleted!");
+
     }
 
     @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
