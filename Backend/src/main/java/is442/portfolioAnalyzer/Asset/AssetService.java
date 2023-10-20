@@ -112,6 +112,7 @@ import lombok.Data;
 
                 monthlyPrices.add(monthlyPrice);
             }
+            System.out.println("IT WORKS TILL HERE");
 
             assetMonthlyPriceDAO.saveAll(monthlyPrices);
         }
