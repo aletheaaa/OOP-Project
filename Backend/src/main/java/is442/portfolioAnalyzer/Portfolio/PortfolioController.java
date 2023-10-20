@@ -4,6 +4,9 @@ import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
 import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
+import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
