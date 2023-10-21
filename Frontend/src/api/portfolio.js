@@ -84,7 +84,7 @@ export async function getPortfolioDetailsAPI(portfolioId) {
   };
 }
 
-export async function getAssetAllocationBySectorAPI(portfolioId) {
+export async function getAssetAllocationAPI(portfolioId) {
   try {
     const config = {
       headers: {
@@ -102,6 +102,29 @@ export async function getAssetAllocationBySectorAPI(portfolioId) {
     return response;
   } catch (error) {
     console.log("Error in getAssetAllocationBySector API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(
+      BASE_URL + "/portfolio/performanceSummary/" + portfolioId,
+      {
+        portfolioId: Number(portfolioId),
+      },
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioPerformanceSummary API: ");
     console.log(error);
     return error;
   }

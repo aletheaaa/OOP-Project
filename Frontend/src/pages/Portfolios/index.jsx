@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
-import DashboardCard from "../../components/Common/DashboardCard";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import DoughnutChart from "../../components/Common/DoughnutChart";
 import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
 import {
-  getAssetAllocationBySectorAPI,
+  getAssetAllocationAPI,
   getPortfolioDetailsAPI,
 } from "../../api/portfolio";
 import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
 import { useParams } from "react-router-dom";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
+import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
 
 export default function Portfolios() {
-  const [trades, setTrades] = useState([]);
+  const [currentBalance, setCurrentBalance] = useState(0);
   const [chosenPortfolio, setChosenPortfolio] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
@@ -78,15 +78,14 @@ export default function Portfolios() {
     setChartData(data);
 
     const getAssetAllocation = async () => {
-      let assetAllocationFromServer = await getAssetAllocationBySectorAPI(
-        portfolioId
-      );
+      let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
       if (assetAllocationFromServer.status != 200) {
         console.log("error getting asset allocation by sector");
         return;
       }
       assetAllocationFromServer = assetAllocationFromServer.data.assets;
 
+      // getting asset allocation by sector
       const assetAllocationBySector = () => {
         // Number of data points
         const numberOfDataPoints = Object.keys(
@@ -208,6 +207,10 @@ export default function Portfolios() {
     getPortfolioReturns();
   }, [chosenPortfolio]);
 
+  const handleGetCurrentBalance = (balance) => {
+    setCurrentBalance(balance);
+  };
+
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
@@ -221,45 +224,17 @@ export default function Portfolios() {
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
-            <h4>$1000</h4>
+            <h4>${currentBalance}</h4>
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">
           <PortfolioNavBar name={chosenPortfolio.name} />
           {/* Dashboard Cards */}
           <div className="row py-2 px-4">
-            <div className="col-6 col-lg-3 mb-4 ">
-              <DashboardCard
-                title="Returns"
-                value="170.69"
-                iconClassName="bi-cash-coin"
-                colorClassName="primary"
-              />
-            </div>
-            <div className="col-6 col-lg-3 mb-4">
-              <DashboardCard
-                title="Loss"
-                value="170.43"
-                iconClassName="bi-cash"
-                colorClassName="secondary"
-              />
-            </div>
-            <div className="col-6 col-lg-3 mb-4">
-              <DashboardCard
-                title="Open"
-                value="169.34"
-                iconClassName="bi-coin"
-                colorClassName="info"
-              />
-            </div>
-            <div className="col-6 col-lg-3 mb-4">
-              <DashboardCard
-                title="Close"
-                value="170.69"
-                iconClassName="bi-cash-coin"
-                colorClassName="info"
-              />
-            </div>
+            <PortfolioPerformanceSummary
+              portfolioId={portfolioId}
+              setCurrentBalanceParent={handleGetCurrentBalance}
+            />
           </div>
           <div className="row px-5">
             {/* Allocation by Sector */}
@@ -281,6 +256,8 @@ export default function Portfolios() {
           </div>
           {/* Trades table */}
           <StockPerformanceTable />
+          {/* Performance Summary */}
+          {/* <PerformanceSummaryTable /> */}
           {/* Portfolio Growth Line Graph */}
           <div className="row mt-5 px-5">
             <div className="col">
