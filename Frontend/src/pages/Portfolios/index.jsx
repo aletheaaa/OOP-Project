@@ -77,117 +77,76 @@ export default function Portfolios() {
     };
     setChartData(data);
 
-    // TODO: to connect to backend
-    const getAssetAllocationBySector = async () => {
-      // return data from backend
-      // let assetAllocationFromServer = {
-      //   Technology: {
-      //     value: 0.6,
-      //     stocks: [
-      //       {
-      //         symbol: "TSLA",
-      //         allocation: 0.4,
-      //       },
-      //       {
-      //         symbol: "AAPL",
-      //         allocation: 0.2,
-      //       },
-      //     ],
-      //   },
-      //   Healthcare: {
-      //     value: 0.4,
-      //     stocks: [
-      //       {
-      //         symbol: "PFE",
-      //         allocation: 0.4,
-      //       },
-      //     ],
-      //   },
-      // };
-      let assetAllocationFromServer =
-        getAssetAllocationBySectorAPI(portfolioId);
+    const getAssetAllocation = async () => {
+      let assetAllocationFromServer = await getAssetAllocationBySectorAPI(
+        portfolioId
+      );
+      if (assetAllocationFromServer.status != 200) {
+        console.log("error getting asset allocation by sector");
+        return;
+      }
+      assetAllocationFromServer = assetAllocationFromServer.data.assets;
 
-      // Number of data points
-      const numberOfDataPoints = Object.keys(assetAllocationFromServer).length;
-      // Generate dynamic colors
-      const [dynamicBackgroundColors, dynamicBorderColors] =
-        generateDoughnutColors(numberOfDataPoints);
-      const sectorDoughnutData = {
-        labels: Object.keys(assetAllocationFromServer),
-        datasets: [
-          {
-            label: "% of Capital Allocated to Different Sector",
-            data: Object.values(assetAllocationFromServer).map(
-              (element) => element.value * 100
-            ),
-            backgroundColor: dynamicBackgroundColors,
-            borderColor: dynamicBorderColors,
-            borderWidth: 1,
-          },
-        ],
-      };
-      setAssetAllocationBySector(sectorDoughnutData);
-    };
-    getAssetAllocationBySector();
-
-    // TODO: to connect to backend
-    const getAssetAllocationByIndividualStock = async () => {
-      // return data from backend
-      let assetAllocationFromServer = {
-        Technology: {
-          value: 0.6,
-          stocks: [
+      const assetAllocationBySector = () => {
+        // Number of data points
+        const numberOfDataPoints = Object.keys(
+          assetAllocationFromServer
+        ).length;
+        // Generate dynamic colors
+        const [dynamicBackgroundColors, dynamicBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+        const sectorDoughnutData = {
+          labels: Object.keys(assetAllocationFromServer),
+          datasets: [
             {
-              symbol: "TSLA",
-              allocation: 0.4,
-            },
-            {
-              symbol: "AAPL",
-              allocation: 0.2,
+              label: "% of Capital Allocated to Different Sector",
+              data: Object.keys(assetAllocationFromServer).map(
+                (element) => assetAllocationFromServer[element].value
+              ),
+              backgroundColor: dynamicBackgroundColors,
+              borderColor: dynamicBorderColors,
+              borderWidth: 1,
             },
           ],
-        },
-        Healthcare: {
-          value: 0.4,
-          stocks: [
-            {
-              symbol: "PFE",
-              allocation: 0.4,
-            },
-          ],
-        },
+        };
+        setAssetAllocationBySector(sectorDoughnutData);
       };
+      assetAllocationBySector();
+
       // getting asset allocation by indiv stocks
-      const stockLabel = [];
-      const stockData = [];
-      Object.values(assetAllocationFromServer).forEach((element) => {
-        element.stocks.forEach((stock) => {
-          stockLabel.push(stock.symbol);
-          stockData.push(stock.allocation * 100);
+      const assetAllocationByIndividualStock = () => {
+        const stockLabel = [];
+        const stockData = [];
+        Object.keys(assetAllocationFromServer).forEach((element) => {
+          assetAllocationFromServer[element].stocks.forEach((stock) => {
+            stockLabel.push(stock.symbol);
+            stockData.push(stock.allocation);
+          });
         });
-      });
 
-      // Number of data points
-      const numberOfDataPoints = stockLabel.length;
-      // Generate dynamic colors
-      const [doughnutBackgroundColors, doughnutBorderColors] =
-        generateDoughnutColors(numberOfDataPoints);
+        // Number of data points
+        const numberOfDataPoints = stockLabel.length;
+        // Generate dynamic colors
+        const [doughnutBackgroundColors, doughnutBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
 
-      const individualStockDoughnutData = {
-        labels: stockLabel,
-        datasets: [
-          {
-            label: "% of Capital Allocated to Different Stocks",
-            data: stockData,
-            backgroundColor: doughnutBackgroundColors,
-            borderColor: doughnutBorderColors,
-            borderWidth: 1,
-          },
-        ],
+        const individualStockDoughnutData = {
+          labels: stockLabel,
+          datasets: [
+            {
+              label: "% of Capital Allocated to Different Stocks",
+              data: stockData,
+              backgroundColor: doughnutBackgroundColors,
+              borderColor: doughnutBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationByIndividualStock(individualStockDoughnutData);
       };
-      setAssetAllocationByIndividualStock(individualStockDoughnutData);
+      assetAllocationByIndividualStock();
     };
-    getAssetAllocationByIndividualStock();
+    getAssetAllocation();
   }, [portfolioId]);
 
   // TODO: to connect to backend

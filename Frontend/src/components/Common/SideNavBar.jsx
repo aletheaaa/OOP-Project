@@ -44,7 +44,8 @@ function SideNavBar() {
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
         id="menu"
       >
-        {portfolios.length != 0 &&
+        {portfolios &&
+          portfolios.length != 0 &&
           portfolios.map((portfolio, index) => {
             return (
               <NavBarItem
@@ -54,6 +55,7 @@ function SideNavBar() {
               />
             );
           })}
+        {portfolios == null && <div>no portfolios</div>}
         {/*
           <NavBarItem link="/" icon="bi-speedometer2" text="Dashboard" />
           <NavBarItem link="/portfolios/1" icon="bi-person-lines-fill" text="Portfolios" />
