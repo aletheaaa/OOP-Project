@@ -28,23 +28,12 @@ function Authenticate(props) {
     let authentication = await authenticate(registering, email, password);
     console.log(authentication);
     if (authentication.status == "200") {
-    // if (!registering && authentication.status == "200") {
       props.setToken(authentication.data.token);
       props.setId(authentication.data.id);
       setErrors([]);
       setNotifications([]);
       window.location.reload(); // reload page after logging in to exit login page
     }
-    // Included the code below in case we wanted to add a notification for successful registration
-    // To be removed if unnecessary
-    /* else if (registering && authentication.status == "200") {
-      setRegistering(false);
-      setErrors([]);
-      setNotifications([...notifications, {
-        code: "Registration Successful!",
-        message: "Please proceed to login."
-      }]);
-    } */
     else {
       setErrors([...errors, {
         code: "Successful!",

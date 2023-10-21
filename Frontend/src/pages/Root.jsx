@@ -8,7 +8,7 @@ function Root() {
       <div className="App-header">Portfolio Management</div>
       <div className="container-fluid">
         <div className="row">
-          <div className="col-1 col-sm-3 col-lg-2 px-0">
+          <div className="col-1 col-sm-3 px-0">
             <SideNavBar />
           </div>
           <div className="App-body col px-0 mx-0">

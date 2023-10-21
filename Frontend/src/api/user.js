@@ -40,38 +40,4 @@ export async function getPortfolios() {
   );
   // console.log(response.data);
   return response.data;
-  // return [{
-  //   portfolioId: "1",
-  //   name: "Safe Retirement",
-  //   description: "Safe Retirement",
-  //   totalCapital: 1000,
-  // },
-  // {
-  //   portfolioId: "2",
-  //   name: "Risky Investment",
-  //   description: "Risky Investment",
-  //   totalCapital: 1000,
-  // },
-  // {
-  //   portfolioId: "3",
-  //   name: "Sugar Daddy Money",
-  //   description: "Jaden's Sugar Daddy Money",
-  //   totalCapital: 1000,
-  // }];
 }
-
-// Placeholder
-/*
-export async function getPortfolios(user) {
-  let URL = PORTFOLIO_URL + user;
-  try {
-    const response = await axios.get(URL);
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.log("[getPortfolios] Error");
-    console.log(error);
-    return error;
-  }
-}
-*/

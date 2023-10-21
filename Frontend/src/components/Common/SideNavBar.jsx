@@ -4,6 +4,14 @@ import NavBarItem from "./NavBarItem";
 import User from "../User/User";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
+const iconList = [
+  "bi-cash-coin",
+  "bi-speedometer2",
+  "bi-person-lines-fill",
+  "bi-graph-up-arrow",
+  "bi-graph-down-arrow"
+]
+
 function SideNavBar() {
   const [portfolios, setPortfolios] = useState([]);
   const [userName, setUserName] = useState("");
@@ -30,9 +38,6 @@ function SideNavBar() {
         href="/"
         className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
       >
-        {/* <span className="fs-4 d-none d-sm-inline">
-          <i className="bi-cash-coin"></i>
-        </span> */}
         <span
           className="fs-5 d-none d-sm-inline"
           style={{ letterSpacing: ".2rem" }}
@@ -52,15 +57,11 @@ function SideNavBar() {
                 key={index}
                 link={`/portfolios/${portfolio.portfolioId}`}
                 text={portfolio.portfolioName}
+                icon={iconList[index % iconList.length]}
               />
             );
           })}
         {portfolios == null && <div>no portfolios</div>}
-        {/*
-          <NavBarItem link="/" icon="bi-speedometer2" text="Dashboard" />
-          <NavBarItem link="/portfolios/1" icon="bi-person-lines-fill" text="Portfolios" />
-          <NavBarItem link="/stocks" icon="bi-graph-up-arrow" text="Stocks" />
-          */}
       </nav>
       {/* <CreatePortfolioButton /> */}
       <hr />
