@@ -5,10 +5,14 @@ import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import DoughnutChart from "../../components/Common/DoughnutChart";
 import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
-import { getPortfolioDetailsAPI } from "../../api/portfolio";
+import {
+  getAssetAllocationBySectorAPI,
+  getPortfolioDetailsAPI,
+} from "../../api/portfolio";
 import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
 import { useParams } from "react-router-dom";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
 
 export default function Portfolios() {
   const [trades, setTrades] = useState([]);
@@ -73,115 +77,76 @@ export default function Portfolios() {
     };
     setChartData(data);
 
-    // TODO: to connect to backend
-    const getAssetAllocationBySector = async () => {
-      // return data from backend
-      let assetAllocationFromServer = {
-        Technology: {
-          value: 0.6,
-          stocks: [
-            {
-              symbol: "TSLA",
-              allocation: 0.4,
-            },
-            {
-              symbol: "AAPL",
-              allocation: 0.2,
-            },
-          ],
-        },
-        Healthcare: {
-          value: 0.4,
-          stocks: [
-            {
-              symbol: "PFE",
-              allocation: 0.4,
-            },
-          ],
-        },
-      };
+    const getAssetAllocation = async () => {
+      let assetAllocationFromServer = await getAssetAllocationBySectorAPI(
+        portfolioId
+      );
+      if (assetAllocationFromServer.status != 200) {
+        console.log("error getting asset allocation by sector");
+        return;
+      }
+      assetAllocationFromServer = assetAllocationFromServer.data.assets;
 
-      // Number of data points
-      const numberOfDataPoints = Object.keys(assetAllocationFromServer).length;
-      // Generate dynamic colors
-      const [dynamicBackgroundColors, dynamicBorderColors] =
-        generateDoughnutColors(numberOfDataPoints);
-      const sectorDoughnutData = {
-        labels: Object.keys(assetAllocationFromServer),
-        datasets: [
-          {
-            label: "% of Capital Allocated to Different Sector",
-            data: Object.values(assetAllocationFromServer).map(
-              (element) => element.value * 100
-            ),
-            backgroundColor: dynamicBackgroundColors,
-            borderColor: dynamicBorderColors,
-            borderWidth: 1,
-          },
-        ],
+      const assetAllocationBySector = () => {
+        // Number of data points
+        const numberOfDataPoints = Object.keys(
+          assetAllocationFromServer
+        ).length;
+        // Generate dynamic colors
+        const [dynamicBackgroundColors, dynamicBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+        const sectorDoughnutData = {
+          labels: Object.keys(assetAllocationFromServer),
+          datasets: [
+            {
+              label: "% of Capital Allocated to Different Sector",
+              data: Object.keys(assetAllocationFromServer).map(
+                (element) => assetAllocationFromServer[element].value
+              ),
+              backgroundColor: dynamicBackgroundColors,
+              borderColor: dynamicBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationBySector(sectorDoughnutData);
       };
-      setAssetAllocationBySector(sectorDoughnutData);
-    };
-    getAssetAllocationBySector();
+      assetAllocationBySector();
 
-    // TODO: to connect to backend
-    const getAssetAllocationByIndividualStock = async () => {
-      // return data from backend
-      let assetAllocationFromServer = {
-        Technology: {
-          value: 0.6,
-          stocks: [
-            {
-              symbol: "TSLA",
-              allocation: 0.4,
-            },
-            {
-              symbol: "AAPL",
-              allocation: 0.2,
-            },
-          ],
-        },
-        Healthcare: {
-          value: 0.4,
-          stocks: [
-            {
-              symbol: "PFE",
-              allocation: 0.4,
-            },
-          ],
-        },
-      };
       // getting asset allocation by indiv stocks
-      const stockLabel = [];
-      const stockData = [];
-      Object.values(assetAllocationFromServer).forEach((element) => {
-        element.stocks.forEach((stock) => {
-          stockLabel.push(stock.symbol);
-          stockData.push(stock.allocation * 100);
+      const assetAllocationByIndividualStock = () => {
+        const stockLabel = [];
+        const stockData = [];
+        Object.keys(assetAllocationFromServer).forEach((element) => {
+          assetAllocationFromServer[element].stocks.forEach((stock) => {
+            stockLabel.push(stock.symbol);
+            stockData.push(stock.allocation);
+          });
         });
-      });
 
-      // Number of data points
-      const numberOfDataPoints = stockLabel.length;
-      // Generate dynamic colors
-      const [doughnutBackgroundColors, doughnutBorderColors] =
-        generateDoughnutColors(numberOfDataPoints);
+        // Number of data points
+        const numberOfDataPoints = stockLabel.length;
+        // Generate dynamic colors
+        const [doughnutBackgroundColors, doughnutBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
 
-      const individualStockDoughnutData = {
-        labels: stockLabel,
-        datasets: [
-          {
-            label: "% of Capital Allocated to Different Stocks",
-            data: stockData,
-            backgroundColor: doughnutBackgroundColors,
-            borderColor: doughnutBorderColors,
-            borderWidth: 1,
-          },
-        ],
+        const individualStockDoughnutData = {
+          labels: stockLabel,
+          datasets: [
+            {
+              label: "% of Capital Allocated to Different Stocks",
+              data: stockData,
+              backgroundColor: doughnutBackgroundColors,
+              borderColor: doughnutBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationByIndividualStock(individualStockDoughnutData);
       };
-      setAssetAllocationByIndividualStock(individualStockDoughnutData);
+      assetAllocationByIndividualStock();
     };
-    getAssetAllocationByIndividualStock();
+    getAssetAllocation();
   }, [portfolioId]);
 
   // TODO: to connect to backend
@@ -299,105 +264,19 @@ export default function Portfolios() {
           <div className="row px-5">
             {/* Allocation by Sector */}
             <div className="col-6">
-              <div className="card position-static shadow mb-4">
-                <div className="card-header py-3">
-                  <h6 className="m-0 font-weight-bold text-primary">
-                    % Allocation by Sector
-                  </h6>
-                </div>
-                <div className="card-body row">
-                  <div className="chart-area w-50">
-                    {assetAllocationBySector &&
-                      Object.keys(assetAllocationBySector).length > 0 && (
-                        <DoughnutChart data={assetAllocationBySector} />
-                      )}
-                  </div>
-                  <div className="w-50 d-flex align-items-center">
-                    <table className="table table-striped">
-                      <thead>
-                        <tr>
-                          <th scope="col">Sector</th>
-                          <th scope="col">% Allocation</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {assetAllocationBySector &&
-                          assetAllocationBySector.labels &&
-                          assetAllocationBySector.labels.length > 0 &&
-                          assetAllocationBySector.labels.map(
-                            (element, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{element}</td>
-                                  <td>
-                                    {
-                                      assetAllocationBySector.datasets[0].data[
-                                        index
-                                      ]
-                                    }
-                                    %
-                                  </td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <PortfolioDoughnutChart
+                asssetAllocation={assetAllocationBySector}
+                title="% Allocation by Sector"
+                tableHeaders={["Sector", "% Allocation"]}
+              />
             </div>
             {/* Allocation by Individual Stocks */}
             <div className="col-6">
-              <div className="card shadow position-static mb-4">
-                <div className="card-header py-3">
-                  <h6 className="m-0 font-weight-bold text-primary">
-                    % Allocation by Individual Stocks
-                  </h6>
-                </div>
-                <div className="card-body row">
-                  <div className="chart-area w-50">
-                    {asssetAllocationByIndividualStock &&
-                      Object.keys(asssetAllocationByIndividualStock).length >
-                        0 && (
-                        <DoughnutChart
-                          data={asssetAllocationByIndividualStock}
-                        />
-                      )}
-                  </div>
-                  <div className="w-50 d-flex align-items-center">
-                    <table className="table table-striped">
-                      <thead>
-                        <tr>
-                          <th scope="col">Sector</th>
-                          <th scope="col">% Allocation</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {asssetAllocationByIndividualStock &&
-                          asssetAllocationByIndividualStock.labels &&
-                          asssetAllocationByIndividualStock.labels.length > 0 &&
-                          asssetAllocationByIndividualStock.labels.map(
-                            (element, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{element}</td>
-                                  <td>
-                                    {
-                                      asssetAllocationByIndividualStock
-                                        .datasets[0].data[index]
-                                    }
-                                    %
-                                  </td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <PortfolioDoughnutChart
+                asssetAllocation={asssetAllocationByIndividualStock}
+                title="% Allocation by Individual Stocks"
+                tableHeaders={["Stock", "% Allocation"]}
+              />
             </div>
           </div>
           {/* Trades table */}

@@ -83,3 +83,26 @@ export async function getPortfolioDetailsAPI(portfolioId) {
     Trades: [],
   };
 }
+
+export async function getAssetAllocationBySectorAPI(portfolioId) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.post(
+      BASE_URL + "/portfolio/assetsAllocation/" + portfolioId,
+      {
+        portfolioId: Number(portfolioId),
+      },
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getAssetAllocationBySector API: ");
+    console.log(error);
+    return error;
+  }
+}
