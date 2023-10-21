@@ -89,7 +89,7 @@ import lombok.Data;
 
         // Call the external API service to get monthly stock prices
         TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
-
+        
 
         if (response != null && response.getStockUnits() != null) {
             List<AssetMonthlyPrice> monthlyPrices = new ArrayList<>();
@@ -112,6 +112,7 @@ import lombok.Data;
 
                 monthlyPrices.add(monthlyPrice);
             }
+            System.out.println(response.getStockUnits());
             System.out.println("IT WORKS TILL HERE");
 
             assetMonthlyPriceDAO.saveAll(monthlyPrices);

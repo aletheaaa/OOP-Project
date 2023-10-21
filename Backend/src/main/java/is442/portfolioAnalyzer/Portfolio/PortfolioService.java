@@ -194,6 +194,9 @@ public class PortfolioService {
                 } else { //If new asset added ...
                     existedAssets.add(symbol);
 
+                     //Set all monthly prices and divident amount of asset by symbol and save into DB
+                    assetService.populateAssetMonthlyPrices(symbol);
+                    
                     // Create the asset
                     Asset newAsset = new Asset();
                     // Create the assetId
