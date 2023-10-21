@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
-import DoughnutChart from "../../components/Common/DoughnutChart";
 import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
 import {
@@ -10,9 +9,9 @@ import {
 } from "../../api/portfolio";
 import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
 import { useParams } from "react-router-dom";
-import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
 import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
+import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);

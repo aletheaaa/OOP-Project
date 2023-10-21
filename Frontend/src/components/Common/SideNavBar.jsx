@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { getPortfolios, getProfile } from "../../api/user";
 import NavBarItem from "./NavBarItem";
 import User from "../User/User";
-import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import CreatePortfolioButton from "../Portfolios/CreatePortfolioButton";
 
 const iconList = [
   "bi-cash-coin",
   "bi-speedometer2",
   "bi-person-lines-fill",
   "bi-graph-up-arrow",
-  "bi-graph-down-arrow"
-]
+  "bi-graph-down-arrow",
+];
 
 function SideNavBar() {
   const [portfolios, setPortfolios] = useState([]);
@@ -63,7 +63,6 @@ function SideNavBar() {
           })}
         {portfolios == null && <div>no portfolios</div>}
       </nav>
-      {/* <CreatePortfolioButton /> */}
       <hr />
       <User userName={userName} />
     </div>

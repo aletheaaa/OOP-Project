@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import SideNavBar from "../components/Common/SideNavBar";
+import CreatePortfolioModal from "../components/Portfolios/CreatePortfolioModal";
 
 function Root() {
   return (
@@ -12,12 +13,13 @@ function Root() {
             <SideNavBar />
           </div>
           <div className="App-body col px-0 mx-0">
+            <CreatePortfolioModal />
             <Outlet />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Root;
