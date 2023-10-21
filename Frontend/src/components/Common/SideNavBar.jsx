@@ -32,7 +32,10 @@ function SideNavBar() {
   }, []);
 
   return (
-    <div className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold">
+    <div
+      id="sidebar"
+      className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold"
+    >
       <a
         href="/"
         className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
