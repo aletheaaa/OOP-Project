@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DashboardCard from "../../components/Common/DashboardCard";
 import { getPortfolioPerformanceSummaryAPI } from "../../api/portfolio";
 
-function PortfolioPerformanceSummaryCards(portfolioId, setCurrentBalance) {
+function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
   const [InitialBalance, setInitialBalance] = useState([]);
   const [FinalBalance, setFinalBalance] = useState([]);
   const [netProfit, setNetProfit] = useState([]);
@@ -18,7 +18,7 @@ function PortfolioPerformanceSummaryCards(portfolioId, setCurrentBalance) {
       portfolioDetails = portfolioDetails.data;
       setInitialBalance(portfolioDetails.InitialBalance);
       setFinalBalance(portfolioDetails.FinalBalance);
-      setCurrentBalance(portfolioDetails.FinalBalance);
+      setCurrentBalanceParent(portfolioDetails.FinalBalance);
       setNetProfit(portfolioDetails.NetProfit);
       setCAGR(portfolioDetails.CAGR);
       setSharpeRatio(portfolioDetails.SharpeRatio);
@@ -65,4 +65,4 @@ function PortfolioPerformanceSummaryCards(portfolioId, setCurrentBalance) {
   );
 }
 
-export default PortfolioPerformanceSummaryCards;
+export default PortfolioPerformanceSummary;

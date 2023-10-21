@@ -116,7 +116,7 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
       },
     };
     const response = await axios.post(
-      BASE_URL + "/portfolio/performanceSummary/" + portfolioId.portfolioId,
+      BASE_URL + "/portfolio/performanceSummary/" + portfolioId,
       {
         portfolioId: Number(portfolioId),
       },

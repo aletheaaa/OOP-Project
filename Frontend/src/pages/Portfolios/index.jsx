@@ -12,7 +12,7 @@ import StockPerformanceTable from "../../components/Portfolios/StockPerformance"
 import { useParams } from "react-router-dom";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
-import PortfolioPerformanceSummaryCards from "../../components/Portfolios/PortfolioPerformanceSummary";
+import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -207,6 +207,10 @@ export default function Portfolios() {
     getPortfolioReturns();
   }, [chosenPortfolio]);
 
+  const handleGetCurrentBalance = (balance) => {
+    setCurrentBalance(balance);
+  };
+
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
@@ -227,9 +231,9 @@ export default function Portfolios() {
           <PortfolioNavBar name={chosenPortfolio.name} />
           {/* Dashboard Cards */}
           <div className="row py-2 px-4">
-            <PortfolioPerformanceSummaryCards
+            <PortfolioPerformanceSummary
               portfolioId={portfolioId}
-              setCurrentBalance={(balance) => setCurrentBalance(balance)}
+              setCurrentBalanceParent={handleGetCurrentBalance}
             />
           </div>
           <div className="row px-5">
