@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import SideNavBar from "../components/Common/SideNavBar";
 import CreatePortfolioModal from "../components/Portfolios/CreatePortfolioModal";
+import ChangePasswordModal from "../components/User/ChangePasswordModal";
 
 function Root() {
   return (
@@ -14,6 +15,7 @@ function Root() {
           </div>
           <div className="App-body col px-0 mx-0">
             <CreatePortfolioModal />
+            <ChangePasswordModal />
             <Outlet />
           </div>
         </div>

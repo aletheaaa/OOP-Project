@@ -19,9 +19,14 @@ export default function Dashboard() {
     getUserInfo();
   }, []);
 
-  return (
-    (portfolios && portfolios.length != 0) ?
-    <div className="">Please select portfolio to view from side menu <ChangePasswordModal /></div> :
-    <div className="">No portfolios found. Create a portfolio to get started. <CreatePortfolioButton /></div>
+  return portfolios && portfolios.length != 0 ? (
+    <div className="">
+      Please select portfolio to view from side menu <ChangePasswordModal />
+    </div>
+  ) : (
+    <div className="">
+      No portfolios found. Create a portfolio to get started.{" "}
+      <CreatePortfolioButton />
+    </div>
   );
 }

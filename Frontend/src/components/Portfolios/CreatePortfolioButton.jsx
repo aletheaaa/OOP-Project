@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-export default function CreatePortfolioButton() {
+export default function CreatePortfolioButton({ className }) {
   return (
     <button
       type="button"
-      className="btn btn-success"
+      className={className != null ? className : "btn btn-success"}
       data-bs-toggle="modal"
       data-bs-target="#createPortfolio"
     >

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { getPortfolios, getProfile } from "../../api/user";
 import NavBarItem from "./NavBarItem";
 import User from "../User/User";
-import CreatePortfolioButton from "../Portfolios/CreatePortfolioButton";
 
 const iconList = [
   "bi-cash-coin",
