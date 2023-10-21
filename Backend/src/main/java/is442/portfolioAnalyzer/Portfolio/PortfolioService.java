@@ -196,7 +196,7 @@ public class PortfolioService {
 
                      //Set all monthly prices and divident amount of asset by symbol and save into DB
                     assetService.populateAssetMonthlyPrices(symbol);
-                    
+
                     // Create the asset
                     Asset newAsset = new Asset();
                     // Create the assetId
@@ -246,6 +246,55 @@ public class PortfolioService {
         return symbols;
     }
 
+
+    // Calculate the total value of the portfolio by the end of each year
+    public Map<String, Double> getPortfolioAnnualGrowth(int portfolioId, String startYear) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return null;
+        }
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int startYearInt = Integer.parseInt(startYear);
+
+        if (startYearInt > currentYear) {
+            // Handle the case where the start year is in the future.
+            return null;
+        }
+
+        Map<String, Double> portfolioValuesByYear = new HashMap<>();
+
+        for (int year = startYearInt; year <= currentYear; year++) {
+            String yearString = Integer.toString(year);
+            double portfolioValue = getPortfolioValueByYear(portfolioId, yearString);
+            portfolioValuesByYear.put(yearString, portfolioValue);
+        }
+
+        return portfolioValuesByYear;
+    }
+
+
+    // Calculate the value of the portfolio by the end of the year
+    public double getPortfolioValueByYear(Integer portfolioId, String year) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return 0;
+        }
+
+        List<Asset> assets = portfolio.getAssets();
+        double portfolioValue = 0.0;
+
+        for (Asset asset : assets) {
+            double assetValue = assetService.getAssetValueByYear(asset.getAssetId().getStockSymbol(), year, asset);
+            portfolioValue += assetValue;
+        }
+
+        return portfolioValue;
+    }
 
     //Get performance of portfolio in that month
     public double getPortfolioValueByMonth(Integer portfolioId, String date) {

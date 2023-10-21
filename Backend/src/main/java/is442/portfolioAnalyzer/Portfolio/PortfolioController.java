@@ -107,6 +107,7 @@ public class PortfolioController {
 
     }
 
+
     @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable Integer portfolioId) {
         GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioId);
@@ -121,6 +122,23 @@ public class PortfolioController {
         }
         
     }
+    
+    //Get Portfolio Annual Growth by portfolioId and startYear
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("/getPortfolioAnnualGrowth/{portfolioId}/{startYear}")
+    public ResponseEntity<Map<String, Double>> getPortfolioAnnualGrowth(@PathVariable int portfolioId, @PathVariable String startYear) {
+        Map<String, Double> annualGrowth = portfolioService.getPortfolioAnnualGrowth(portfolioId, startYear);
+
+        if (annualGrowth == null) {
+            // Handle the case where the portfolio or startYear is not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(annualGrowth);
+    }
+
+
+
     //Get Assets Allocation by  portfolio ID
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "assetsAllocation/{portfolioId}", produces = "application/json")

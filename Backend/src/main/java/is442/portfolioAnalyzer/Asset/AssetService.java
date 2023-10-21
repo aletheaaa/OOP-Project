@@ -51,9 +51,48 @@ import lombok.Data;
              return 0;
          }
      }
-    
-        //Get value of asset at that particular month
-        public double getAssetPriceBySymbolAndDate(String symbol, String date) {
+
+
+        // Get value of asset at the end of the specified year
+public double getAssetValueByYear(String symbol, String year, Asset asset) {
+    try {
+        TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
+        List<StockUnit> stockUnits = response.getStockUnits();
+        Double quantityPurchased = asset.getQuantityPurchased();
+        
+        if (stockUnits.isEmpty()) {
+            // Handle the case where there's no stock data available.
+            return 0;
+        }
+
+        // Find the earliest year in the stock data.
+        String earliestYear = stockUnits.get(stockUnits.size() - 1).getDate().split("-")[0];
+
+        // Check if the requested year is greater than or equal to the earliest year.
+        if (Integer.parseInt(year) < Integer.parseInt(earliestYear)) {
+            // Handle the case where the requested year is earlier than the available data.
+            return 0;
+        }
+
+        for (StockUnit stockUnit : stockUnits) {
+            String stockUnitDate = stockUnit.getDate();
+            String[] dateParts = stockUnitDate.split("-");
+            String stockYear = dateParts[0];
+            if (stockYear.equals(year)) {
+                return stockUnit.getClose() * quantityPurchased;
+            }
+        }
+        return 0; // Year not found in the available data.
+    } catch (Exception e) {
+        // Handle exceptions appropriately.
+        return 0;
+    }
+}
+
+
+
+        //Get value of asset of of specifed year and month
+        public double getAssetMonthlyPriceBySymbolAndDate(String symbol, String date) {
             try {
                 TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
                 // System.out.println(response);
@@ -69,7 +108,7 @@ import lombok.Data;
                         return stockUnit.getClose();
                     }
                 }
-                return 2;
+                return 0;
             } catch (Exception e) {
                 // TODO
                 // throw exception if symbol not found
@@ -78,7 +117,7 @@ import lombok.Data;
         }
 
     
-    //
+    //Populate AssetMonthlyPrice Table of the specified stock with all the monthly prices from the api service
     public void populateAssetMonthlyPrices(String symbol) {
 
         // Check if the symbol already exists in the AssetMonthlyPrice table
@@ -136,6 +175,21 @@ import lombok.Data;
         return monthNumber; // If the conversion fails, return the original number
     }
     
+
+    //Get Annual Growth of an Asset by symbol
+    public double getAnnualGrowth(String symbol) {
+        // Get the latest price of the asset
+        double latestPrice = getAssetLatestPrice(symbol);
+
+        // Get the price of the asset 1 year ago
+        String date = "2020-01";
+        double priceOneYearAgo = getAssetPriceBySymbolAndDate(symbol, date);
+
+        // Calculate the annual growth
+        double annualGrowth = (latestPrice - priceOneYearAgo) / priceOneYearAgo * 100;
+
+        return annualGrowth;
+    }
 
 
     public Double getTotalValue(Asset asset){
