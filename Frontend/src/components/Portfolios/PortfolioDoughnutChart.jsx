@@ -1,5 +1,5 @@
 import React from "react";
-import DoughnutChart from "../../components/Common/DoughnutChart";
+import DoughnutChart from "../Common/DoughnutChart";
 
 function PortfolioDoughnutChart({ asssetAllocation, title, tableHeaders }) {
   return (

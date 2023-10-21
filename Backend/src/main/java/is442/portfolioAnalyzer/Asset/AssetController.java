@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 
      
-     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
      @GetMapping("getAssetsByPortfolioId/{portfolioId}")
      public List<Asset> getAssetsByPortfolioId(@PathVariable Integer portfolioId){
          System.out.println("In controller");
