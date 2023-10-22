@@ -5,6 +5,7 @@ import com.crazzyghost.alphavantage.Config;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
+//ZKMMTO1ATDBLXH2K
 @Getter
 @Component
 public class AlphaVantageConfig {

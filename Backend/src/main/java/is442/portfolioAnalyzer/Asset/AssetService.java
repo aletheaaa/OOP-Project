@@ -126,7 +126,7 @@ public double getAssetValueByYear(String symbol, String year, Asset asset) {
             return; // Symbol already exists, no need to update
         }
 
-        // Call the external API service to get monthly stock prices
+        // Call the external API servic e to get monthly stock prices
         TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
         
 

@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.ExceptionHandler;
 
+import com.crazzyghost.alphavantage.AlphaVantageException;
 import is442.portfolioAnalyzer.Exception.ErrorResponse;
 import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserNotFoundException;
@@ -37,5 +38,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(AlphaVantageException.class)
+    public ResponseEntity<ErrorResponse> handleAlphaVantageException(AlphaVantageException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 
 }
