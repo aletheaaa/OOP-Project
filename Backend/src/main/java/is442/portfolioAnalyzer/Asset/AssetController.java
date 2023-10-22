@@ -34,9 +34,9 @@ import org.springframework.web.bind.annotation.*;
          return assetService.getAssetsByPortfolioId(portfolioId);
      }
 
-     @GetMapping("getAssetPriceBySymbolAndDate/{symbol}/{date}")
-        public double getAssetPriceBySymbolAndDate(@PathVariable String symbol, @PathVariable String date){
-            System.out.println("In controller");
-            return assetService.getAssetPriceBySymbolAndDate(symbol, date);
-        }
- }
+//     @GetMapping("getAssetPriceBySymbolAndDate/{symbol}/{date}")
+//        public double getAssetPriceBySymbolAndDate(@PathVariable String symbol, @PathVariable String date){
+//            System.out.println("In controller");
+//            return assetService.getAssetPriceBySymbolAndDate(symbol, date);
+//        }
+}

@@ -176,20 +176,20 @@ public double getAssetValueByYear(String symbol, String year, Asset asset) {
     }
     
 
-    //Get Annual Growth of an Asset by symbol
-    public double getAnnualGrowth(String symbol) {
-        // Get the latest price of the asset
-        double latestPrice = getAssetLatestPrice(symbol);
-
-        // Get the price of the asset 1 year ago
-        String date = "2020-01";
-        double priceOneYearAgo = getAssetPriceBySymbolAndDate(symbol, date);
-
-        // Calculate the annual growth
-        double annualGrowth = (latestPrice - priceOneYearAgo) / priceOneYearAgo * 100;
-
-        return annualGrowth;
-    }
+//    //Get Annual Growth of an Asset by symbol
+//    public double getAnnualGrowth(String symbol) {
+//        // Get the latest price of the asset
+//        double latestPrice = getAssetLatestPrice(symbol);
+//
+//        // Get the price of the asset 1 year ago
+//        String date = "2020-01";
+//        double priceOneYearAgo = getAssetPriceBySymbolAndDate(symbol, date);
+//
+//        // Calculate the annual growth
+//        double annualGrowth = (latestPrice - priceOneYearAgo) / priceOneYearAgo * 100;
+//
+//        return annualGrowth;
+//    }
 
 
     public Double getTotalValue(Asset asset){

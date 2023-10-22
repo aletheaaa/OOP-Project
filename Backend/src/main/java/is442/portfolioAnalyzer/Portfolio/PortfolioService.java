@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
@@ -60,6 +61,22 @@ public class PortfolioService {
     public Portfolio getPortfolioByIds(Integer portfolioId, Integer userId) {
         System.out.println("Get portfolio by name and id  - in the service");
         return portfolioDAO.findByPortfolioIds(portfolioId, userId);
+    }
+    public Portfolio findByPortfolioId(Integer portfolioId) {
+        Portfolio portfolio =  portfolioDAO.findByPortfolioId(portfolioId);
+        if (portfolio == null) {
+            throw new UserPortfolioNotMatchException("User does not have the portfolio!");
+        } else {
+            return portfolio;
+        }
+    }
+
+    // Will throw Exception if Portfolio does not belong to the user
+    public void checkPortfolioBelongsToUser(Integer portfolioId, Integer userId) {
+        Portfolio portfolio = findByPortfolioId(portfolioId);
+        if (portfolio.getUser().getId() != userId) {
+            throw new UserPortfolioNotMatchException("User does not have the portfolio!");
+        }
     }
 
 // CREATE PORTFOLIO ---------------------------------------------------------------------------------------------------
@@ -134,8 +151,7 @@ public class PortfolioService {
 
     // UPDATE PORTFOLIO ---------------------------------------------------------------------------------------------------
     public void updatePortfolio(PortfolioUpdate portfolioUpdate) {
-        // Get the portfolio by id
-        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioUpdate.getPortfolioId());
+        Portfolio portfolio = findByPortfolioId(portfolioUpdate.getPortfolioId());
         Integer portfolioId = portfolio.getPortfolioId();
 
         // PORTFOLIO NAME CANNOT BE CHANGE, UNLESS FRONTEND PASS IN THE PORTFOLIO ID
@@ -222,6 +238,14 @@ public class PortfolioService {
                 }
             }
         }
+        // Remove existing assets that are not in the updated lit of assets
+        List<String> symbolsToUpdate = getAssetSymbolsToUpdate(assetList);
+        for (Asset asset : assets) {
+            if (!symbolsToUpdate.contains(asset.getAssetId().getStockSymbol())) {
+                assetDAO.delete(asset);
+            }
+        }
+
         portfolioDAO.save(portfolio);
     }
 
@@ -244,6 +268,15 @@ public class PortfolioService {
             symbols.add(asset.getAssetId().getStockSymbol());
         }
         return symbols;
+    }
+
+    // Retrieve the list of asset symbols that is to be updated
+    public List<String> getAssetSymbolsToUpdate(List<AssetCreation> assetList) {
+        List<String> symbolsToUpdate = new ArrayList<>();
+        for (AssetCreation assetCreation : assetList) {
+            symbolsToUpdate.add(assetCreation.getSymbol());
+        }
+        return symbolsToUpdate;
     }
 
 
@@ -296,18 +329,18 @@ public class PortfolioService {
         return portfolioValue;
     }
 
-    //Get performance of portfolio in that month
-    public double getPortfolioValueByMonth(Integer portfolioId, String date) {
-        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-        List<Asset> assets = portfolio.getAssets();
-        double value = 0.0;
-        for (Asset asset : assets) {
-            String symbol = asset.getAssetId().getStockSymbol();
-            double price = assetService.getAssetPriceBySymbolAndDate(symbol, date);
-            value += price * asset.getQuantityPurchased();
-        }
-        return value;
-    }
+//    //Get performance of portfolio in that month
+//    public double getPortfolioValueByMonth(Integer portfolioId, String date) {
+//        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+//        List<Asset> assets = portfolio.getAssets();
+//        double value = 0.0;
+//        for (Asset asset : assets) {
+//            String symbol = asset.getAssetId().getStockSymbol();
+//            double price = assetService.getAssetPriceBySymbolAndDate(symbol, date);
+//            value += price * asset.getQuantityPurchased();
+//        }
+//        return value;
+//    }
 
 //   // Get the net profit of the portfolio based on the portfolioName
   public double getNetProfit(Integer portfolioId) {
@@ -592,5 +625,7 @@ public class PortfolioService {
 
         return performanceSummary;
     }
+
+
 }
 

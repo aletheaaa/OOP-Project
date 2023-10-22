@@ -90,21 +90,20 @@ public class PortfolioController {
 
     // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "updatePortfolio", consumes = "application/json")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate) {
+    @PostMapping(value = "updatePortfolio/{userId}", consumes = "application/json")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate, @PathVariable Integer userId) {
+        portfolioService.checkPortfolioBelongsToUser(portfolioUpdate.getPortfolioId(), userId);
         portfolioService.updatePortfolio(portfolioUpdate);
-
         return ResponseEntity.ok("Portfolio Updated!");
     }
 
     // Delete portfolio ---------------------------------------------------------------------------------------------------
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "deletePortfolio/{portfolioId}", produces = "application/json")
-    public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId) {
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.DELETE, allowCredentials = "true")
+    @DeleteMapping(value = "deletePortfolio/{portfolioId}/{userId}", produces = "application/json")
+    public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId, @PathVariable Integer userId) {
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
         portfolioService.deletePortfolio(portfolioId);
-
         return ResponseEntity.ok("Portfolio Deleted!");
-
     }
 
 

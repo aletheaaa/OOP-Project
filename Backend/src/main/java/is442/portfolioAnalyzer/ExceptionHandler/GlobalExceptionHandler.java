@@ -4,6 +4,7 @@ import is442.portfolioAnalyzer.Exception.ErrorResponse;
 import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserNotFoundException;
 
+import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,9 +16,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     // @ExceptionHandler(PortfolioNameNotUniqueException.class)
@@ -31,5 +30,12 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorResponse);
     }
+
+    @ExceptionHandler(UserPortfolioNotMatchException.class)
+    public ResponseEntity<ErrorResponse> handleUserPortfolioNotMatchException(UserPortfolioNotMatchException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
 
 }
