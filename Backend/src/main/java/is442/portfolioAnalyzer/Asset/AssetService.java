@@ -1,9 +1,12 @@
  package is442.portfolioAnalyzer.Asset;
 
  import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,68 +56,81 @@ import lombok.Data;
      }
 
 
-        // Get value of asset at the end of the specified year
-public double getAssetValueByYear(String symbol, String year, Asset asset) {
-    try {
-        TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
-        List<StockUnit> stockUnits = response.getStockUnits();
-        Double quantityPurchased = asset.getQuantityPurchased();
-        
-        if (stockUnits.isEmpty()) {
-            // Handle the case where there's no stock data available.
-            return 0;
-        }
+    // Get value of asset at the end of the specified year
+    public double getAssetValueByYear(String symbol, String year, Asset asset) {
+        try {
+            // Use your AssetMonthlyPriceDAO to retrieve the asset price for the specified year.
+            AssetMonthlyPriceId id = new AssetMonthlyPriceId();
+            id.setYear(year);
+            id.setStockSymbol(symbol);
 
-        // Find the earliest year in the stock data.
-        String earliestYear = stockUnits.get(stockUnits.size() - 1).getDate().split("-")[0];
-
-        // Check if the requested year is greater than or equal to the earliest year.
-        if (Integer.parseInt(year) < Integer.parseInt(earliestYear)) {
-            // Handle the case where the requested year is earlier than the available data.
-            return 0;
-        }
-
-        for (StockUnit stockUnit : stockUnits) {
-            String stockUnitDate = stockUnit.getDate();
-            String[] dateParts = stockUnitDate.split("-");
-            String stockYear = dateParts[0];
-            if (stockYear.equals(year)) {
-                return stockUnit.getClose() * quantityPurchased;
+            // Check if the input year is the current year.
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            if (year.equals(Integer.toString(currentYear))) {
+                // Get the current month.
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+                // Set the month to the current month (adjust for 0-based index).
+                id.setMonth(getMonthName(currentMonth));
+                System.out.println("Current month: " + getMonthName(currentMonth));
+            } else {
+                // Set the month to "December" for other years.
+                id.setMonth("December");
             }
+
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+
+            if (assetMonthlyPriceOptional.isPresent()) {
+                // Asset price for the specified year is found in the database.
+                double closingPrice = assetMonthlyPriceOptional.get().getClosingPrice();
+                double quantityPurchased = asset.getQuantityPurchased();
+                return closingPrice * quantityPurchased;
+            } else {
+                // Handle the case where data for the specified year is not found in the database.
+                return 0;
+            }
+        } catch (Exception e) {
+            // Handle exceptions appropriately.
+            return 0;
         }
-        return 0; // Year not found in the available data.
-    } catch (Exception e) {
-        // Handle exceptions appropriately.
-        return 0;
     }
-}
+
+    // Helper method to get month name based on its number (0-based index).
+    private String getMonthName(int month) {
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        return monthNames[month];
+    }
 
 
 
-        //Get value of asset of of specifed year and month
-        public double getAssetMonthlyPriceBySymbolAndDate(String symbol, String date) {
-            try {
-                TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
-                // System.out.println(response);
-                List<StockUnit> stockUnits = response.getStockUnits();
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM");
-                
-                for (StockUnit stockUnit : stockUnits) {
-                    String stockUnitDate = stockUnit.getDate();
-                    Date parsedDate = inputFormat.parse(stockUnitDate);
-                    String formattedDate = outputFormat.format(parsedDate);
-                    if (formattedDate.equals(date)) {
-                        return stockUnit.getClose();
-                    }
-                }
-                return 0;
-            } catch (Exception e) {
-                // TODO
-                // throw exception if symbol not found
+
+    // Get value of asset at the end of the specified year and month
+    public double getAssetValueByYearAndMonth(String symbol, String year, String month, Asset asset) {
+        try {
+            AssetMonthlyPriceId id = new AssetMonthlyPriceId();
+            id.setYear(year);
+            id.setMonth(month);
+            id.setStockSymbol(symbol);
+
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+
+            if (assetMonthlyPriceOptional.isPresent()) {
+                // Asset price for the specified year and month is found in the database.
+                double closingPrice = assetMonthlyPriceOptional.get().getClosingPrice();
+                double quantityPurchased = asset.getQuantityPurchased();
+                return closingPrice * quantityPurchased;
+            } else {
+                // Handle the case where data for the specified year and month is not found in the database.
                 return 0;
             }
+        } catch (Exception e) {
+            // Handle exceptions appropriately.
+            return 0;
         }
+    }
+
 
     
     //Populate AssetMonthlyPrice Table of the specified stock with all the monthly prices from the api service

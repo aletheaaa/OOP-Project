@@ -134,7 +134,23 @@ public class PortfolioController {
         return ResponseEntity.ok(annualGrowth);
     }
 
+    //Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
+    @GetMapping("/getPortfolioMonthlyGrowth/{portfolioId}/{startYear}/{startMonth}")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    public ResponseEntity<Map<String, Map<String, Integer>>> getPortfolioMonthlyGrowth(
+        @PathVariable Integer portfolioId,
+        @PathVariable String startYear,
+        @PathVariable String startMonth
+    ) {
+        Map<String, Map<String, Integer>> monthlyGrowth = portfolioService.getPortfolioMonthlyGrowth(portfolioId, startYear, startMonth);
 
+        if (monthlyGrowth == null) {
+            // Handle the case where the data is not found or invalid inputs.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(monthlyGrowth);
+    }
 
     //Get Assets Allocation by  portfolio ID
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")

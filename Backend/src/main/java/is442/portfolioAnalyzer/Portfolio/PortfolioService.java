@@ -19,6 +19,8 @@ import is442.portfolioAnalyzer.Asset.*;
 
 import java.time.Year;
 import java.util.*;
+import java.math.BigDecimal;
+
 
 @Service
 public class PortfolioService {
@@ -278,7 +280,7 @@ public class PortfolioService {
     }
 
 
-    // Calculate the total value of the portfolio by the end of each year
+    // Get list of portfolio values by end of every year from the startYear to current year
     public Map<String, Double> getPortfolioAnnualGrowth(int portfolioId, String startYear) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
@@ -307,24 +309,104 @@ public class PortfolioService {
     }
 
 
+
     // Calculate the value of the portfolio by the end of the year
-    public double getPortfolioValueByYear(Integer portfolioId, String year) {
+    public int getPortfolioValueByYear(Integer portfolioId, String year) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-        
+
         if (portfolio == null) {
             // Handle the case where the portfolio with the given ID is not found.
-            return 0;
+            return 0;  // Return 0 as an integer.
         }
 
         List<Asset> assets = portfolio.getAssets();
-        double portfolioValue = 0.0;
+        BigDecimal portfolioValue = BigDecimal.ZERO;  // Initialize as zero.
 
         for (Asset asset : assets) {
             double assetValue = assetService.getAssetValueByYear(asset.getAssetId().getStockSymbol(), year, asset);
-            portfolioValue += assetValue;
+            BigDecimal assetValueBigDecimal = new BigDecimal(assetValue);
+            portfolioValue = portfolioValue.add(assetValueBigDecimal);
         }
 
-        return portfolioValue;
+        // Convert the portfolio value to an integer.
+        int portfolioValueInt = portfolioValue.intValue();
+
+        return portfolioValueInt;
+    }
+
+
+    // Get list of portfolio values by year and month from the starting year and month until the current year and month
+    public Map<String, Map<String, Integer>> getPortfolioMonthlyGrowth(int portfolioId, String startYear, String startMonth) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return null;
+        }
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;  // Adjust for 0-based index
+
+        int startYearInt = Integer.parseInt(startYear);
+        int startMonthInt = Integer.parseInt(startMonth);
+
+        if (startYearInt > currentYear || (startYearInt == currentYear && startMonthInt > currentMonth)) {
+            // Handle the case where the start year and month are in the future.
+            return null;
+        }
+
+        Map<String, Map<String, Integer>> portfolioMonthlyValues = new HashMap<>();
+
+        for (int year = startYearInt; year <= currentYear; year++) {
+            Map<String, Integer> monthlyValues = new LinkedHashMap<>();
+            int endMonth = (year == currentYear) ? currentMonth : 12;
+
+            for (int month = startMonthInt; month <= endMonth; month++) {
+                String monthName = getMonthName(month - 1);  // Adjust for 0-based index
+                String yearString = Integer.toString(year);
+                int portfolioValue = getPortfolioValueByYearAndMonth(portfolioId, yearString, monthName);
+                monthlyValues.put(monthName, portfolioValue);
+            }
+
+            portfolioMonthlyValues.put(Integer.toString(year), monthlyValues);
+        }
+
+        return portfolioMonthlyValues;
+    }
+
+
+
+    // Get the portfolio value at the end of the specified year and month
+    public int getPortfolioValueByYearAndMonth(Integer portfolioId, String year, String month) {
+    Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+    if (portfolio == null) {
+        // Handle the case where the portfolio with the given ID is not found.
+        return 0;  // Return 0 as an integer.
+    }
+
+    List<Asset> assets = portfolio.getAssets();
+    BigDecimal portfolioValue = BigDecimal.ZERO;  // Initialize as zero.
+
+    for (Asset asset : assets) {
+        double assetValue = assetService.getAssetValueByYearAndMonth(asset.getAssetId().getStockSymbol(), year, month, asset);
+        BigDecimal assetValueBigDecimal = new BigDecimal(assetValue);
+        portfolioValue = portfolioValue.add(assetValueBigDecimal);
+    }
+
+    // Convert the portfolio value to an integer, effectively rounding down.
+    int portfolioValueInt = portfolioValue.intValue();
+
+    return portfolioValueInt;
+}
+
+// Helper method to get month name based on its number (0-based index).
+    private String getMonthName(int month) {
+        String[] monthNames = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        return monthNames[month];
     }
 
 //    //Get performance of portfolio in that month
