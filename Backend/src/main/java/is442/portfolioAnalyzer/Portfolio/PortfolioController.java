@@ -78,28 +78,26 @@ public class PortfolioController {
 
     // Create portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "createPortfolio", consumes = "application/json")
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
-        portfolioService.createPortfolio(portfolioCreation);
-//        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
-
-        // String name = portfolioCreation.getPortfolioName();
-
+    @PostMapping(value = "createPortfolio/{userId}", consumes = "application/json")
+    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation, @PathVariable Integer userId) {
+        portfolioService.createPortfolio(portfolioCreation, userId);
         return ResponseEntity.ok("Portfolio Created!");
     }
 
     // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "updatePortfolio/{userId}", consumes = "application/json")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate, @PathVariable Integer userId) {
-        portfolioService.checkPortfolioBelongsToUser(portfolioUpdate.getPortfolioId(), userId);
-        portfolioService.updatePortfolio(portfolioUpdate);
+    @PostMapping(value = "updatePortfolio/{userId}/{portfolioId}", consumes = "application/json")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate,
+                                             @PathVariable Integer userId,
+                                             @PathVariable Integer portfolioId) {
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
+        portfolioService.updatePortfolio(portfolioUpdate, portfolioId);
         return ResponseEntity.ok("Portfolio Updated!");
     }
 
     // Delete portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.DELETE, allowCredentials = "true")
-    @DeleteMapping(value = "deletePortfolio/{portfolioId}/{userId}", produces = "application/json")
+    @DeleteMapping(value = "deletePortfolio/{userId}/{portfolioId}", produces = "application/json")
     public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId, @PathVariable Integer userId) {
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
         portfolioService.deletePortfolio(portfolioId);

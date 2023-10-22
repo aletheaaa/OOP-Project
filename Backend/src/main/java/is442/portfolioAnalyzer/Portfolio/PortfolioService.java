@@ -80,12 +80,12 @@ public class PortfolioService {
     }
 
 // CREATE PORTFOLIO ---------------------------------------------------------------------------------------------------
-    public void createPortfolio(PortfolioCreation portfolioCreation) {
+    public void createPortfolio(PortfolioCreation portfolioCreation,Integer userId) {
 
         // PROCESS THE PORTFOLIO CREATION
         Portfolio portfolio = new Portfolio();
         // Get the userId add  into portfolio
-        User user = userServiceImpl.getUserById(portfolioCreation.getUserId());
+        User user = userServiceImpl.getUserById(userId);
         portfolio.setUser(user);
         // Get the portfolioName, capital, timePeriod, description, startDate and add into portfolio
         portfolio.setPortfolioName(portfolioCreation.getPortfolioName());
@@ -150,11 +150,9 @@ public class PortfolioService {
     }
 
     // UPDATE PORTFOLIO ---------------------------------------------------------------------------------------------------
-    public void updatePortfolio(PortfolioUpdate portfolioUpdate) {
+    public void updatePortfolio(PortfolioUpdate portfolioUpdate, Integer portfolioId) {
         Portfolio portfolio = findByPortfolioId(portfolioUpdate.getPortfolioId());
-        Integer portfolioId = portfolio.getPortfolioId();
 
-        // PORTFOLIO NAME CANNOT BE CHANGE, UNLESS FRONTEND PASS IN THE PORTFOLIO ID
         // Set the portfolio capital, description, startDate, timePeriod
         portfolio.setPortfolioName(portfolioUpdate.getPortfolioName());
         portfolio.setCapital(portfolioUpdate.getCapital());
