@@ -20,6 +20,7 @@ import is442.portfolioAnalyzer.Asset.*;
 import java.time.Year;
 import java.util.*;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 
 @Service
@@ -400,7 +401,7 @@ public class PortfolioService {
     return portfolioValueInt;
 }
 
-// Helper method to get month name based on its number (0-based index).
+    // Helper method to get month name based on its number (0-based index).
     private String getMonthName(int month) {
         String[] monthNames = {
             "January", "February", "March", "April", "May", "June",
@@ -409,18 +410,43 @@ public class PortfolioService {
         return monthNames[month];
     }
 
-//    //Get performance of portfolio in that month
-//    public double getPortfolioValueByMonth(Integer portfolioId, String date) {
-//        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-//        List<Asset> assets = portfolio.getAssets();
-//        double value = 0.0;
-//        for (Asset asset : assets) {
-//            String symbol = asset.getAssetId().getStockSymbol();
-//            double price = assetService.getAssetPriceBySymbolAndDate(symbol, date);
-//            value += price * asset.getQuantityPurchased();
-//        }
-//        return value;
-//    }
+    
+    public Map<String, Double> getPortfolioAnnualReturns(int portfolioId, String startYear) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return null;
+        }
+
+        // Calculate the portfolio values by year for all years after the start year.
+        Map<String, Double> portfolioValuesByYear = new TreeMap<>(); // Use a TreeMap to keep years sorted.
+
+        int startYearInt = Integer.parseInt(startYear);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        double previousYearValue = getPortfolioValueByYear(portfolioId, String.valueOf(startYearInt - 1));
+
+        for (int year = startYearInt; year <= currentYear; year++) {
+            String yearString = String.valueOf(year);
+            double portfolioValue = getPortfolioValueByYear(portfolioId, yearString);
+            System.out.println("Portfolio value for " + yearString + ": " + String.valueOf(portfolioValue));
+
+            // Calculate the annual return as a percentage increase with two decimal places.
+            double annualReturn = 0.0;
+            if (previousYearValue != 0.0) {
+                annualReturn = ((portfolioValue - previousYearValue) / previousYearValue) * 100;
+                annualReturn = Math.round(annualReturn * 100.0) / 100.0; // Round to two decimal places.
+            }
+
+            portfolioValuesByYear.put(yearString, annualReturn);
+
+            // Update the previous year's value.
+            previousYearValue = portfolioValue;
+        }
+
+        return portfolioValuesByYear;
+    }
 
 //   // Get the net profit of the portfolio based on the portfolioName
   public double getNetProfit(Integer portfolioId) {

@@ -152,6 +152,25 @@ public class PortfolioController {
         return ResponseEntity.ok(monthlyGrowth);
     }
 
+    //Get Portfolio Annual Returns (% returns) by portfolioId and startYear
+    @GetMapping("/getPortfolioAnnualReturns/{portfolioId}/{startYear}")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    public ResponseEntity<Map<String, Double>> getPortfolioAnnualReturns(
+        @PathVariable Integer portfolioId,
+        @PathVariable String startYear
+    ) {
+        Map<String, Double> annualReturns = portfolioService.getPortfolioAnnualReturns(portfolioId, startYear);
+
+        if (annualReturns == null) {
+            // Handle the case where the data is not found or invalid inputs.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(annualReturns);
+    }
+
+
+
     //Get Assets Allocation by  portfolio ID
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "assetsAllocation/{portfolioId}", produces = "application/json")
