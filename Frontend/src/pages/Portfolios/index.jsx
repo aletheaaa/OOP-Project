@@ -1,142 +1,333 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
-import DashboardCard from "../../components/Common/DashboardCard";
-import AddStockButton from "../../components/Stocks/AddStockButton";
+import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
+import BarChart from "../../components/Common/BarChart";
+import { generateDoughnutColors } from "../../utils/chartUtils";
+import {
+  getAssetAllocationAPI,
+  getPortfolioDetailsAPI,
+} from "../../api/portfolio";
+import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
+import { useParams } from "react-router-dom";
+import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
+import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 
 export default function Portfolios() {
-  const [stocks, setStocks] = useState([]);
+  const [currentBalance, setCurrentBalance] = useState(0);
+  const [chosenPortfolio, setChosenPortfolio] = useState(0);
+  const [chartData, setChartData] = useState([]);
+  const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
+  const [
+    asssetAllocationByIndividualStock,
+    setAssetAllocationByIndividualStock,
+  ] = useState({});
+  const [barChartConfig, setBarChartConfig] = useState("annual");
+  const [barChartDataByYear, setBarChartDataByYear] = useState({});
+  const [barChartDataByQuarter, setBarChartDataByQuarter] = useState({});
+
+  const { portfolioId } = useParams(); // get portfolioID from url
 
   useEffect(() => {
-    const getStocks = async () => {
-      // const stocksFromServer = await fetchStocks();
-      const stocksFromServer = [
-        {
-          name: "AAPL",
-          price: 100,
-          quantity: 1,
-          capitalGain: 100,
-          returns: 100,
-        },
-        {
-          name: "TSLA",
-          price: 200,
-          quantity: 2,
-          capitalGain: 200,
-          returns: 200,
-        },
-      ];
-      setStocks(stocksFromServer);
+    if (!portfolioId) return;
+    // TODO: get the user's portfolio from backend
+    // getting the user's portfolio
+    const getPortfolioDetails = async () => {
+      const portfolioDetails = await getPortfolioDetailsAPI(portfolioId);
+      setChosenPortfolio(portfolioDetails);
     };
-    getStocks();
-  }, []);
+    getPortfolioDetails();
+
+    // TODO: get the user's portfolio from backend
+    // getting the area line chart data
+    const labels = [
+      "November",
+      "December",
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+    ];
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: "TSLA",
+          data: [
+            227.82, 194.7, 108.1, 181.41, 202.77, 194.77, 161.83, 207.52,
+            179.82, 261.07, 245.01, 251.6,
+          ],
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+        },
+        {
+          label: "Index",
+          data: [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
+          borderColor: "rgb(53, 162, 235)",
+          backgroundColor: "rgba(53, 162, 235, 0.5)",
+        },
+      ],
+    };
+    setChartData(data);
+
+    const getAssetAllocation = async () => {
+      let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
+      if (assetAllocationFromServer.status != 200) {
+        console.log("error getting asset allocation by sector");
+        return;
+      }
+      assetAllocationFromServer = assetAllocationFromServer.data.assets;
+
+      // getting asset allocation by sector
+      const assetAllocationBySector = () => {
+        // Number of data points
+        const numberOfDataPoints = Object.keys(
+          assetAllocationFromServer
+        ).length;
+        // Generate dynamic colors
+        const [dynamicBackgroundColors, dynamicBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+        const sectorDoughnutData = {
+          labels: Object.keys(assetAllocationFromServer),
+          datasets: [
+            {
+              label: "% of Capital Allocated to Different Sector",
+              data: Object.keys(assetAllocationFromServer).map(
+                (element) => assetAllocationFromServer[element].value
+              ),
+              backgroundColor: dynamicBackgroundColors,
+              borderColor: dynamicBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationBySector(sectorDoughnutData);
+      };
+      assetAllocationBySector();
+
+      // getting asset allocation by indiv stocks
+      const assetAllocationByIndividualStock = () => {
+        const stockLabel = [];
+        const stockData = [];
+        Object.keys(assetAllocationFromServer).forEach((element) => {
+          assetAllocationFromServer[element].stocks.forEach((stock) => {
+            stockLabel.push(stock.symbol);
+            stockData.push(stock.allocation);
+          });
+        });
+
+        // Number of data points
+        const numberOfDataPoints = stockLabel.length;
+        // Generate dynamic colors
+        const [doughnutBackgroundColors, doughnutBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+
+        const individualStockDoughnutData = {
+          labels: stockLabel,
+          datasets: [
+            {
+              label: "% of Capital Allocated to Different Stocks",
+              data: stockData,
+              backgroundColor: doughnutBackgroundColors,
+              borderColor: doughnutBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationByIndividualStock(individualStockDoughnutData);
+      };
+      assetAllocationByIndividualStock();
+    };
+    getAssetAllocation();
+  }, [portfolioId]);
+
+  // TODO: to connect to backend
+  // get data for bar chart
+  useEffect(() => {
+    const getPortfolioReturns = async () => {
+      let options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Chart.js Bar Chart",
+          },
+        },
+      };
+
+      const labels = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+      ];
+
+      let data = {
+        labels,
+        datasets: [
+          {
+            label: chosenPortfolio.name,
+            data: labels.map(() => Math.floor(Math.random() * 1001) + 0),
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },
+        ],
+      };
+      setBarChartDataByYear({
+        options: options,
+        data: data,
+      });
+      let data2 = {
+        labels,
+        datasets: [
+          {
+            label: chosenPortfolio.name,
+            data: labels.map(() => Math.floor(Math.random() * 500) + 0),
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },
+        ],
+      };
+      setBarChartDataByQuarter({
+        options: options,
+        data: data2,
+      });
+    };
+    getPortfolioReturns();
+  }, [chosenPortfolio]);
+
+  const handleGetCurrentBalance = (balance) => {
+    setCurrentBalance(balance);
+  };
 
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
-        <div className="d-flex flex-row-reverse">
-          <div className="w-25 d-flex justify-content-end">
-            <CreatePortfolioButton />
-          </div>
+        <div className="d-flex justify-content-end">
+          <CreatePortfolioButton />
         </div>
-        <div className="row mb-3 mt-5">
+        <div className="row mb-3 mt-3">
           <div className="col">
-            <h3>Portfolio Name</h3>
-            <div>description strategy etc</div>
+            <h3>{chosenPortfolio.name}</h3>
+            <div>{chosenPortfolio.description}</div>
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
-            <h4>$1000</h4>
+            <h4>${currentBalance}</h4>
           </div>
         </div>
-        <div className="shadow mb-5 bg-body rounded pb-3">
-          <div
-            className="p-3 rounded d-flex justify-content-end"
-            style={{ backgroundColor: "lightgrey" }}
-          >
-            <select
-              className="form-select w-25"
-              aria-label="Default select example"
-            >
-              <option value="quarter" selected>
-                Quarter Returns
-              </option>
-              <option value="annual">Annual Returns</option>
-            </select>
-          </div>
+        <div className="position-static mb-5 bg-body rounded pb-3">
+          <PortfolioNavBar name={chosenPortfolio.name} />
+          {/* Dashboard Cards */}
           <div className="row py-2 px-4">
-            <div className="col-12 col-lg-6">
-              <div className="container">
-                <div className="row">
-                  <div className="col-12 mb-4">
-                    <DashboardCard
-                      title="Returns"
-                      value="170.69"
-                      iconClassName="bi-cash-coin"
-                      colorClassName="primary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Loss"
-                      value="170.43"
-                      iconClassName="bi-cash"
-                      colorClassName="secondary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Open"
-                      value="169.34"
-                      iconClassName="bi-coin"
-                      colorClassName="secondary"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Placeholder"
-                      value="100,000"
-                      iconClassName="bi-cup-straw"
-                      colorClassName="info"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-4">
-                    <DashboardCard
-                      title="Placeholder"
-                      value="100,000"
-                      iconClassName="bi-cup-hot"
-                      colorClassName="info"
-                    />
+            <PortfolioPerformanceSummary
+              portfolioId={portfolioId}
+              setCurrentBalanceParent={handleGetCurrentBalance}
+            />
+          </div>
+          <div className="row px-5">
+            {/* Allocation by Sector */}
+            <div className="col-6">
+              <PortfolioDoughnutChart
+                asssetAllocation={assetAllocationBySector}
+                title="% Allocation by Sector"
+                tableHeaders={["Sector", "% Allocation"]}
+              />
+            </div>
+            {/* Allocation by Individual Stocks */}
+            <div className="col-6">
+              <PortfolioDoughnutChart
+                asssetAllocation={asssetAllocationByIndividualStock}
+                title="% Allocation by Individual Stocks"
+                tableHeaders={["Stock", "% Allocation"]}
+              />
+            </div>
+          </div>
+          {/* Trades table */}
+          <StockPerformanceTable />
+          {/* Performance Summary */}
+          {/* <PerformanceSummaryTable /> */}
+          {/* Portfolio Growth Line Graph */}
+          <div className="row mt-5 px-5">
+            <div className="col">
+              <div className="card position-static shadow mb-4">
+                <div className="card-header py-3 d-flex justify-content-between">
+                  <h6 className="m-0 font-weight-bold text-primary">
+                    Portfolio Growth
+                  </h6>
+                  <select
+                    className="form-select w-25"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      console.log("e", e.target.value);
+                      setBarChartConfig(e.target.value);
+                    }}
+                  >
+                    <option value="annual">Annual Returns</option>
+                    <option value="quarter">Quarter Returns</option>
+                  </select>
+                </div>
+                <div className="card-body row">
+                  <div className="chart-area">
+                    {chartData &&
+                      chartData.datasets &&
+                      chartData.datasets.length > 0 && (
+                        <AreaChart data={chartData} />
+                      )}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-12 col-lg-6">
-              <AreaChart />
-            </div>
           </div>
-          <div className="px-5">
-            <div
-              className="row p-1 fw-medium"
-              style={{ backgroundColor: "lightgray" }}
-            >
-              <div className="col-5">NASDAQ</div>
-              <div className="col">PRICE</div>
-              <div className="col">QTY</div>
-              <div className="col">CAPITAL GAINS</div>
-              <div className="col">RETURNS</div>
-            </div>
-            {stocks.map((element) => {
-              return (
-                <div className="row p-1">
-                  <div className="col-5">{element.name}</div>
-                  <div className="col">{element.price}</div>
-                  <div className="col">{element.quantity}</div>
-                  <div className="col">{element.capitalGain}</div>
-                  <div className="col">{element.returns}</div>
+          {/* Returns Bar Chart */}
+          <div className="row mt-3 px-5">
+            <div className="col">
+              <div className="card position-static shadow mb-4">
+                <div className="card-header py-3 d-flex justify-content-between">
+                  <h6 className="m-0 font-weight-bold text-primary">
+                    Portfolio Returns
+                  </h6>
+                  <select
+                    className="form-select w-25"
+                    aria-label="Default select example"
+                    onChange={(e) => {
+                      console.log("e", e.target.value);
+                      setBarChartConfig(e.target.value);
+                    }}
+                  >
+                    <option value="annual">Annual Returns</option>
+                    <option value="quarter">Quarter Returns</option>
+                  </select>
                 </div>
-              );
-            })}
+                <div className="card-body row">
+                  <div className="chart-area">
+                    {barChartConfig == "annual"
+                      ? barChartDataByYear &&
+                        barChartDataByYear.data &&
+                        barChartDataByYear.data.datasets &&
+                        barChartDataByYear.data.datasets.length > 0 && (
+                          <BarChart data={barChartDataByYear.data} />
+                        )
+                      : barChartDataByQuarter &&
+                        barChartDataByQuarter.data &&
+                        barChartDataByQuarter.data.datasets &&
+                        barChartDataByQuarter.data.datasets.length > 0 && (
+                          <BarChart data={barChartDataByQuarter.data} />
+                        )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

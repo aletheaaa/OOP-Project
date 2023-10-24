@@ -1,0 +1,27 @@
+{
+  "Capital": 10000,
+  "TimePeriod": "Monthly",
+  "StartDate": "2000-01",
+  "PortfolioName": "InsaneReturns", //UNIQUE portfolio name
+  "Description": "This is my high risk portfolio",
+  "UserId": 1,
+  "AssetList":
+  [
+    {
+      "Symbol": "TSLA",
+      "Allocation": 0.5,
+      "Sector": "TECHNOLOGY"
+    },
+    {
+      "Symbol": "PFE",
+      "Allocation": 0.4,
+      "Sector": "HEALTHCARE"
+    },
+    {
+      "Symbol": "CASHALLOCATION",
+      "Allocation": 0.1,
+      "Sector": "CASHALLOCATION"
+    }
+  ]
+
+}

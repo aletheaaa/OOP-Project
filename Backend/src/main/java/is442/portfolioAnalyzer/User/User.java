@@ -1,13 +1,13 @@
-package is442.portfolioAnalyzer.user;
+package is442.portfolioAnalyzer.User;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import is442.portfolioAnalyzer.Asset.Asset;
+import is442.portfolioAnalyzer.Portfolio.Portfolio;
 import is442.portfolioAnalyzer.config.ApplicationConfig;
 import java.util.Collection;
 import java.util.List;
@@ -22,12 +22,14 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 @Table(name="users")
 
 public class User implements UserDetails { // UserDetails contains methods from user security
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)  // id will automatically be generated. By default, is auto
-    private Integer userId;
+    private Integer id;
+
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -40,6 +42,9 @@ public class User implements UserDetails { // UserDetails contains methods from 
     private String password;
 
 
+    @OneToMany
+    // @JoinColumn(name = "id", referencedColumnName = "id")
+    private List<Portfolio> portfolios;
 
     @Enumerated(EnumType.STRING)
     private Role role;

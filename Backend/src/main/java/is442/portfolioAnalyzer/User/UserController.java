@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.user;
+package is442.portfolioAnalyzer.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,24 +35,11 @@ public class UserController {
         }
     }
 
-//    public ResponseEntity<User> updateUserSettings(@PathVariable int id, @RequestBody UserSettings userSettings) {
-//        // Retrieve the user by ID
-//        User user = userServiceImpl.getUserById(id);
-//
-//        if (user != null) {
-//
-//            return ResponseEntity.ok(user);
-//        } else {
-//            throw new UserNotFoundException("User not found with id: " + id);
-//        }
-//    }
-
     @PostMapping("/id/change-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         String message = userServiceImpl.changePassword(request.getEmail(), request.getNewPassword());
         return ResponseEntity.ok(message);
     }
-
 
 }
 

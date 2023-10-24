@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +36,14 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(withCorsConfiguration -> {
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
+                corsConfiguration.addAllowedOrigin("*");
+                corsConfiguration.addAllowedHeader("*");
+                corsConfiguration.addAllowedMethod("*");
+                withCorsConfiguration.configurationSource(request -> corsConfiguration);
+            });
         return http.build();
     }
 }

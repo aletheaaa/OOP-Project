@@ -1,9 +1,12 @@
 .App {
   padding: 0;
   margin: 0;
+  font-family: "Open Sans";
 }
 .App-header {
+  position: fixed;
   height: 5vh;
+  width: 100%;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
@@ -11,9 +14,15 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  /* z-index: 1000; */
+}
+.App-body {
+  margin: 5vh;
 }
 
 .sidebar {
+  position: fixed;
+  top: 5vh;
   min-height: 95vh;
 }
 

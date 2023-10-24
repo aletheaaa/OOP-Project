@@ -1,11 +1,11 @@
-package is442.portfolioAnalyzer.user;
+package is442.portfolioAnalyzer.User;
 
 import java.util.Optional;
 
 import is442.portfolioAnalyzer.Exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import is442.portfolioAnalyzer.user.UserDTO;
+import is442.portfolioAnalyzer.User.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,6 +43,4 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User not found");
         }
     }
-
-}
 
