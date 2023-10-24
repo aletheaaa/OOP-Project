@@ -78,34 +78,32 @@ public class PortfolioController {
 
     // Create portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "createPortfolio", consumes = "application/json")
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation) {
-        portfolioService.createPortfolio(portfolioCreation);
-//        Map<String, AssetCreation> assetList = portfolioCreation.getAssetList();
-
-        // String name = portfolioCreation.getPortfolioName();
-
+    @PostMapping(value = "createPortfolio/{userId}", consumes = "application/json")
+    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioCreation portfolioCreation, @PathVariable Integer userId) {
+        portfolioService.createPortfolio(portfolioCreation, userId);
         return ResponseEntity.ok("Portfolio Created!");
     }
 
     // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "updatePortfolio", consumes = "application/json")
-    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate) {
-        portfolioService.updatePortfolio(portfolioUpdate);
-
+    @PostMapping(value = "updatePortfolio/{userId}/{portfolioId}", consumes = "application/json")
+    public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate,
+                                             @PathVariable Integer userId,
+                                             @PathVariable Integer portfolioId) {
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
+        portfolioService.updatePortfolio(portfolioUpdate, portfolioId);
         return ResponseEntity.ok("Portfolio Updated!");
     }
 
     // Delete portfolio ---------------------------------------------------------------------------------------------------
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "deletePortfolio/{portfolioId}", produces = "application/json")
-    public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId) {
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.DELETE, allowCredentials = "true")
+    @DeleteMapping(value = "deletePortfolio/{userId}/{portfolioId}", produces = "application/json")
+    public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId, @PathVariable Integer userId) {
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
         portfolioService.deletePortfolio(portfolioId);
-
         return ResponseEntity.ok("Portfolio Deleted!");
-
     }
+
 
     @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
     public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable Integer portfolioId) {
@@ -121,6 +119,58 @@ public class PortfolioController {
         }
         
     }
+    
+    //Get Portfolio Annual Growth by portfolioId and startYear
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("/getPortfolioAnnualGrowth/{portfolioId}/{startYear}")
+    public ResponseEntity<Map<String, Double>> getPortfolioAnnualGrowth(@PathVariable int portfolioId, @PathVariable String startYear) {
+        Map<String, Double> annualGrowth = portfolioService.getPortfolioAnnualGrowth(portfolioId, startYear);
+
+        if (annualGrowth == null) {
+            // Handle the case where the portfolio or startYear is not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(annualGrowth);
+    }
+
+    //Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
+    @GetMapping("/getPortfolioMonthlyGrowth/{portfolioId}/{startYear}/{startMonth}")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    public ResponseEntity<Map<String, Map<String, Integer>>> getPortfolioMonthlyGrowth(
+        @PathVariable Integer portfolioId,
+        @PathVariable String startYear,
+        @PathVariable String startMonth
+    ) {
+        Map<String, Map<String, Integer>> monthlyGrowth = portfolioService.getPortfolioMonthlyGrowth(portfolioId, startYear, startMonth);
+
+        if (monthlyGrowth == null) {
+            // Handle the case where the data is not found or invalid inputs.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(monthlyGrowth);
+    }
+
+    //Get Portfolio Annual Returns (% returns) by portfolioId and startYear
+    @GetMapping("/getPortfolioAnnualReturns/{portfolioId}/{startYear}")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    public ResponseEntity<Map<String, Double>> getPortfolioAnnualReturns(
+        @PathVariable Integer portfolioId,
+        @PathVariable String startYear
+    ) {
+        Map<String, Double> annualReturns = portfolioService.getPortfolioAnnualReturns(portfolioId, startYear);
+
+        if (annualReturns == null) {
+            // Handle the case where the data is not found or invalid inputs.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(annualReturns);
+    }
+
+
+
     //Get Assets Allocation by  portfolio ID
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "assetsAllocation/{portfolioId}", produces = "application/json")

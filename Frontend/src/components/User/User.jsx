@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/authenticate";
+import ChangePasswordButton from "./ChangePasswordButton";
+import CreatePortfolioButton from "../Portfolios/CreatePortfolioButton";
 
 function User(props) {
   const navigate = useNavigate();
@@ -8,12 +10,12 @@ function User(props) {
   const handleLogout = (event) => {
     event.preventDefault();
     logout();
-  }
+  };
 
   const handleSettingsClick = (event) => {
     event.preventDefault();
     navigate("/settings");
-  }
+  };
 
   return (
     <div className="dropdown pb-4">
@@ -35,9 +37,10 @@ function User(props) {
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
-          <a className="dropdown-item" href="#">
-            New Portfolio...
-          </a>
+          <CreatePortfolioButton className={"dropdown-item"} />
+        </li>
+        <li>
+          <ChangePasswordButton className={"dropdown-item"} />
         </li>
         <li>
           <button className="dropdown-item" onClick={handleSettingsClick}>
