@@ -11,6 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import is442.portfolioAnalyzer.config.ApplicationConfig;
 import java.util.Collection;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 
 @Data // Generate Getter and Setter
 @Builder
@@ -18,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name="users")
+
 public class User implements UserDetails { // UserDetails contains methods from user security
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)  // id will automatically be generated. By default, is auto
@@ -28,7 +34,12 @@ public class User implements UserDetails { // UserDetails contains methods from 
     private String lastName;
     @Column(name = "email")
     private String email;
+    @NotNull
+    @Size(min = 8, max = 25)
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>?]).{8,25}$", message = "Invalid password")
     private String password;
+
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -37,7 +48,6 @@ public class User implements UserDetails { // UserDetails contains methods from 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
-
 
 
     public String getEmail() {
@@ -54,12 +64,12 @@ public class User implements UserDetails { // UserDetails contains methods from 
         return email;
     }
 
-
+    @JsonIgnore
     public String getLastname() {
         return lastName;
     }
 
-
+    @JsonIgnore
     public String getFirstname() {
         return firstName;
     }
@@ -82,5 +92,19 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @Override
     public boolean isEnabled()  {
         return true;
+    }
+}
+
+@Data
+class ChangePasswordRequest {
+    private String email;
+    private String newPassword;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
     }
 }

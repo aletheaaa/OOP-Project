@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
     UserDetails getUserByEmail(String email) throws UserNotFoundException;
+    UserDetails getUserById(Integer id) throws UserNotFoundException;
+    String changePassword(String email, String newPassword);
+
 }
 
 
