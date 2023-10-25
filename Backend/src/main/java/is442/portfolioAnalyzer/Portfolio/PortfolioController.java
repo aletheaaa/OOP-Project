@@ -86,7 +86,7 @@ public class PortfolioController {
 
     // Update portfolio ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "updatePortfolio/{userId}/{portfolioId}", consumes = "application/json")
+    @PutMapping(value = "updatePortfolio/{userId}/{portfolioId}", consumes = "application/json")
     public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate,
                                              @PathVariable Integer userId,
                                              @PathVariable Integer portfolioId) {
