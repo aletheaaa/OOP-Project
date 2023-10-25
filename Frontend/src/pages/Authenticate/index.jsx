@@ -36,8 +36,8 @@ function Authenticate(props) {
     }
     else {
       setErrors([...errors, {
-        code: "Successful!",
-        message: authentication.message
+        code: "Error " + authentication.response.status,
+        message: authentication.response.data
       }]);
     }
   };
