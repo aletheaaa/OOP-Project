@@ -31,13 +31,7 @@ export async function getPortfolios() {
   let config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  const response = await axios.post(
-    URL,
-    {
-      userId: user,
-    },
-    config
-  );
+  const response = await axios.get(URL, config);
   // console.log(response.data);
   return response.data;
 }
