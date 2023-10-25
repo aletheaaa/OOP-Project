@@ -45,8 +45,8 @@ public class PortfolioController {
     // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @GetMapping("user/{userid}")
     public ResponseEntity<UserPortfolios>
-    getPortfolioByUser(@PathVariable Integer userid) {
-        UserPortfolios userPortfolios = portfolioService.getPortfolioByUser(userid);
+    getAllPortfoliosByUserId(@PathVariable Integer userid) {
+        UserPortfolios userPortfolios = portfolioService.getAllPortfoliosByUserId(userid);
         return ResponseEntity.ok(userPortfolios);
     }
 
