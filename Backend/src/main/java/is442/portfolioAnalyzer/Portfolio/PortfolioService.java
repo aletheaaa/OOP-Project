@@ -42,7 +42,8 @@ public class PortfolioService {
         return portfolioDAO.findAll();
     }
 
-    public UserPortfolios getPortfolioByUser(Integer userId) {
+    //Get all the portfolios for a user by specifying the userId
+    public UserPortfolios getAllPortfoliosByUserId(Integer userId) {
         List<Portfolio> portfolios = portfolioDAO.findByUserId(userId);
         List<Map<String, String>> userPortfoliosList = new ArrayList<>();
         UserPortfolios userPortfolios = new UserPortfolios(null);

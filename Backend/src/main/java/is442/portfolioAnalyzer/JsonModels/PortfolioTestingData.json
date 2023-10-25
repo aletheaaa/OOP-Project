@@ -2,7 +2,7 @@
   "Capital": 10000,
   "TimePeriod": "Monthly",
   "StartDate": "2000-01",
-  "PortfolioName": "InsaneReturns", //UNIQUE portfolio name
+  "PortfolioName": "InsaneReturns", 
   "Description": "This is my high risk portfolio",
   "UserId": 1,
   "AssetList":
