@@ -42,8 +42,8 @@ public class PortfolioController {
     }
 
     
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "user/{userid}", produces = "application/json")
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @GetMapping("user/{userid}")
     public ResponseEntity<UserPortfolios>
     getPortfolioByUser(@PathVariable Integer userid) {
         UserPortfolios userPortfolios = portfolioService.getPortfolioByUser(userid);
@@ -172,8 +172,8 @@ public class PortfolioController {
 
 
     //Get Assets Allocation by  portfolio ID
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "assetsAllocation/{portfolioId}", produces = "application/json")
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @GetMapping("assetsAllocation/{portfolioId}")
     public ResponseEntity<AssetsAllocation> getAssetsAllocation(@PathVariable Integer portfolioId) {
         AssetsAllocation assetsAllocation = portfolioService.getAssetsAllocation(portfolioId);
     
@@ -184,8 +184,8 @@ public class PortfolioController {
         }
     }
     //Get Performance Summary by portfolioID
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping(value = "performanceSummary/{portfolioId}", produces = "application/json")
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @GetMapping("performanceSummary/{portfolioId}")
     public ResponseEntity<PerformanceSummary> getPerformanceSummary(@PathVariable Integer portfolioId) {
         PerformanceSummary performanceSummary = portfolioService.getPerformanceSummary(portfolioId);
     
