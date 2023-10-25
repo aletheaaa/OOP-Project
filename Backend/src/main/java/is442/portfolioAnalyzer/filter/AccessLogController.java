@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,9 @@ public class AccessLogController {
         this.accessLogList = accessLogList;
     }
     @GetMapping("/accessLogs")
+    @PreAuthorize("hasRole('admin')")
     public List<String> getAccessLogs() {
+
         return accessLogList;
     }
     }
