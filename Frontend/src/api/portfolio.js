@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080";
 let token = sessionStorage.getItem("token");
+let userId = sessionStorage.getItem("id");
 
 export async function createPortfolioAPI(requestBody) {
   try {
@@ -13,7 +14,7 @@ export async function createPortfolioAPI(requestBody) {
       },
     };
     const response = await axios.post(
-      BASE_URL + "/portfolio/createPortfolio",
+      BASE_URL + "/portfolio/createPortfolio/" + userId,
       requestBody,
       config
     );
