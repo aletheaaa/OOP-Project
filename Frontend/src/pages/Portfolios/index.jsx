@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AreaChart from "../../components/Common/AreaChart";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
@@ -12,11 +11,11 @@ import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
 import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowthLineGraph";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
   const [chosenPortfolio, setChosenPortfolio] = useState(0);
-  const [chartData, setChartData] = useState([]);
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
   const [
     asssetAllocationByIndividualStock,
@@ -37,44 +36,6 @@ export default function Portfolios() {
       setChosenPortfolio(portfolioDetails);
     };
     getPortfolioDetails();
-
-    // TODO: get the user's portfolio from backend
-    // getting the area line chart data
-    const labels = [
-      "November",
-      "December",
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-    ];
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: "TSLA",
-          data: [
-            227.82, 194.7, 108.1, 181.41, 202.77, 194.77, 161.83, 207.52,
-            179.82, 261.07, 245.01, 251.6,
-          ],
-          borderColor: "rgb(255, 99, 132)",
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-          label: "Index",
-          data: [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
-          borderColor: "rgb(53, 162, 235)",
-          backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-      ],
-    };
-    setChartData(data);
 
     const getAssetAllocation = async () => {
       let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
@@ -260,33 +221,10 @@ export default function Portfolios() {
           {/* Portfolio Growth Line Graph */}
           <div className="row mt-5 px-5">
             <div className="col">
-              <div className="card position-static shadow mb-4">
-                <div className="card-header py-3 d-flex justify-content-between">
-                  <h6 className="m-0 font-weight-bold text-primary">
-                    Portfolio Growth
-                  </h6>
-                  <select
-                    className="form-select w-25"
-                    aria-label="Default select example"
-                    onChange={(e) => {
-                      console.log("e", e.target.value);
-                      setBarChartConfig(e.target.value);
-                    }}
-                  >
-                    <option value="annual">Annual Returns</option>
-                    <option value="quarter">Quarter Returns</option>
-                  </select>
-                </div>
-                <div className="card-body row">
-                  <div className="chart-area">
-                    {chartData &&
-                      chartData.datasets &&
-                      chartData.datasets.length > 0 && (
-                        <AreaChart data={chartData} />
-                      )}
-                  </div>
-                </div>
-              </div>
+              <PortfolioGrowthLineGraph
+                portfolioId={portfolioId}
+                portfolioName={chosenPortfolio.name}
+              />
             </div>
           </div>
           {/* Returns Bar Chart */}

@@ -85,6 +85,7 @@ export async function getPortfolioDetailsAPI(portfolioId) {
   };
 }
 
+// asset allocation for indiv stocks & sectors
 export async function getAssetAllocationAPI(portfolioId) {
   try {
     const config = {
@@ -105,6 +106,7 @@ export async function getAssetAllocationAPI(portfolioId) {
   }
 }
 
+// this performance summary is used in the cards in the portfolio page
 export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
   try {
     const config = {
@@ -120,6 +122,31 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
     return response;
   } catch (error) {
     console.log("Error in getPortfolioPerformanceSummary API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+// get portfolio growth for the line chart
+export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioAnnualGrowth/" +
+        portfolioId +
+        "/" +
+        startYear,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioGrowthByYear API: ");
     console.log(error);
     return error;
   }
