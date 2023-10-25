@@ -93,11 +93,8 @@ export async function getAssetAllocationAPI(portfolioId) {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(
+    const response = await axios.get(
       BASE_URL + "/portfolio/assetsAllocation/" + portfolioId,
-      {
-        portfolioId: Number(portfolioId),
-      },
       config
     );
     return response;
@@ -116,11 +113,8 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(
+    const response = await axios.get(
       BASE_URL + "/portfolio/performanceSummary/" + portfolioId,
-      {
-        portfolioId: Number(portfolioId),
-      },
       config
     );
     return response;
