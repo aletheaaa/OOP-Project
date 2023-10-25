@@ -142,7 +142,9 @@ export default function CreatePortfolioModal() {
       setErrorMessage("");
       setSuccessMessage("Portfolio created successfully.");
     } else {
-      setErrorMessage("Error creating portfolio: " + response.message);
+      setErrorMessage("Error creating portfolio: " + response.response.data.message);
+      setIsLoading(false);
+      return;
     }
     setIsLoading(false);
 

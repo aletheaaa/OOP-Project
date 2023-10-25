@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
+import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
@@ -22,7 +23,6 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-
 @Service
 public class PortfolioService {
 
@@ -42,7 +42,7 @@ public class PortfolioService {
         return portfolioDAO.findAll();
     }
 
-    //Get all the portfolios for a user by specifying the userId
+    // Get all the portfolios for a user by specifying the userId
     public UserPortfolios getAllPortfoliosByUserId(Integer userId) {
         List<Portfolio> portfolios = portfolioDAO.findByUserId(userId);
         List<Map<String, String>> userPortfoliosList = new ArrayList<>();
@@ -54,20 +54,21 @@ public class PortfolioService {
             userPortfoliosList.add(portfolioMap);
             userPortfolios.setUserPortfolios(userPortfoliosList);
         }
-    
+
         return userPortfolios;
     }
-    
 
     public Portfolio getPortfolioByName(String portfolioName) {
         return portfolioDAO.findByPortfolioName(portfolioName);
     }
+
     public Portfolio getPortfolioByIds(Integer portfolioId, Integer userId) {
         System.out.println("Get portfolio by name and id  - in the service");
         return portfolioDAO.findByPortfolioIds(portfolioId, userId);
     }
+
     public Portfolio findByPortfolioId(Integer portfolioId) {
-        Portfolio portfolio =  portfolioDAO.findByPortfolioId(portfolioId);
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         if (portfolio == null) {
             throw new UserPortfolioNotMatchException("User does not have the portfolio!");
         } else {
@@ -83,24 +84,36 @@ public class PortfolioService {
         }
     }
 
-// CREATE PORTFOLIO ---------------------------------------------------------------------------------------------------
-    public void createPortfolio(PortfolioCreation portfolioCreation,Integer userId) {
+    // CREATE PORTFOLIO
+    // ---------------------------------------------------------------------------------------------------
+    public void createPortfolio(PortfolioCreation portfolioCreation, Integer userId)
+            throws PortfolioNameNotUniqueException {
 
         // PROCESS THE PORTFOLIO CREATION
         Portfolio portfolio = new Portfolio();
-        // Get the userId add  into portfolio
+        // Get the userId add into portfolio
         User user = userServiceImpl.getUserById(userId);
         portfolio.setUser(user);
-        // Get the portfolioName, capital, timePeriod, description, startDate and add into portfolio
+        // Get the portfolioName, capital, timePeriod, description, startDate and add
+        // into portfolio
         portfolio.setPortfolioName(portfolioCreation.getPortfolioName());
         portfolio.setCapital(portfolioCreation.getCapital());
         portfolio.setTimePeriod(portfolioCreation.getTimePeriod());
         portfolio.setDescription(portfolioCreation.getDescription());
         portfolio.setStartDate(portfolioCreation.getStartDate());
 
+        // Exception handling to check if portfolio name already exists for the user
+        List<Portfolio> existingPortfolios = portfolioDAO.findByUserId(userId);
+
+        for (Portfolio existingPortfolio : existingPortfolios) {
+            if (existingPortfolio.getPortfolioName().equals(portfolio.getPortfolioName())) {
+                throw new PortfolioNameNotUniqueException("Portfolio name is not unique");
+            }
+        }
+
         // Save the portfolio without AssetList into DB first
         System.out.println("--------------------------------------");
-//        System.out.println(portfolio);
+        // System.out.println(portfolio);
         portfolioDAO.save(portfolio);
 
         // Creating the assets
@@ -114,7 +127,8 @@ public class PortfolioService {
             AssetId assetId = new AssetId();
             String symbol = assetCreation.getSymbol();
 
-            //Set all monthly prices and divident amount of asset by symbol and save into DB
+            // Set all monthly prices and divident amount of asset by symbol and save into
+            // DB
             assetService.populateAssetMonthlyPrices(symbol);
 
             assetId.setPortfolioId(portfolio.getPortfolioId());
@@ -125,20 +139,19 @@ public class PortfolioService {
             asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
-            // assetService.updateMonthlyPrices(asset, symbol); 
+            // assetService.updateMonthlyPrices(asset, symbol);
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                 // Call External API to get the latest price
                 asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
-                // Add the quantity purchased based on the portfolio capital and asset allocation
-                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / assetService.getAssetLatestPrice(symbol));
+                // Add the quantity purchased based on the portfolio capital and asset
+                // allocation
+                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation()
+                        / assetService.getAssetLatestPrice(symbol));
 
                 // Calculate the total value of the asset
                 asset.setTotalValue(asset.getUnitPrice() * asset.getQuantityPurchased());
             }
-
-           
-
 
             // System.out.println(asset);
             assetDAO.save(asset);
@@ -153,7 +166,8 @@ public class PortfolioService {
 
     }
 
-    // UPDATE PORTFOLIO ---------------------------------------------------------------------------------------------------
+    // UPDATE PORTFOLIO
+    // ---------------------------------------------------------------------------------------------------
     public void updatePortfolio(PortfolioUpdate portfolioUpdate, Integer portfolioId) {
         Portfolio portfolio = findByPortfolioId(portfolioUpdate.getPortfolioId());
 
@@ -184,17 +198,17 @@ public class PortfolioService {
                         asset.setAllocation(assetCreation.getAllocation());
                         asset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
 
-
                         if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
-                            // Update the quantity purchased based on the portfolio capital and asset allocation
+                            // Update the quantity purchased based on the portfolio capital and asset
+                            // allocation
                             double oldQuantityPurchased = asset.getQuantityPurchased();
                             double stockTotalValueDifference = asset.getTotalValue() - oldTotalValue;
                             // Get the additional stock quantity purchased or sold
-                            double stockPurchasedOrSold = stockTotalValueDifference / assetService.getAssetLatestPrice(symbol);
+                            double stockPurchasedOrSold = stockTotalValueDifference
+                                    / assetService.getAssetLatestPrice(symbol);
                             asset.setQuantityPurchased(oldQuantityPurchased + stockPurchasedOrSold);
                             asset.setUnitPrice(asset.getTotalValue() / asset.getQuantityPurchased());
                         }
-
 
                         System.out.println(symbol);
                         System.out.println(assetCreation.getAllocation() + " updated");
@@ -209,10 +223,11 @@ public class PortfolioService {
                         assetDAO.save(asset);
                     }
 
-                } else { //If new asset added ...
+                } else { // If new asset added ...
                     existedAssets.add(symbol);
 
-                     //Set all monthly prices and divident amount of asset by symbol and save into DB
+                    // Set all monthly prices and divident amount of asset by symbol and save into
+                    // DB
                     assetService.populateAssetMonthlyPrices(symbol);
 
                     // Create the asset
@@ -229,13 +244,13 @@ public class PortfolioService {
                     newAsset.setQuantityPurchased(newAsset.getTotalValue() / newAsset.getUnitPrice());
 
                     System.out.println(symbol + " added");
-                    System.out.println(newAsset.getAllocation() + " added") ;
-                    System.out.println(newAsset.getTotalValue() + " added") ;
-                    System.out.println(newAsset.getQuantityPurchased() + " added") ;
-                    System.out.println(newAsset.getUnitPrice() + " added") ;
-                    System.out.println(newAsset.getTotalValue() + " added") ;
+                    System.out.println(newAsset.getAllocation() + " added");
+                    System.out.println(newAsset.getTotalValue() + " added");
+                    System.out.println(newAsset.getQuantityPurchased() + " added");
+                    System.out.println(newAsset.getUnitPrice() + " added");
+                    System.out.println(newAsset.getTotalValue() + " added");
 
-                    //Save the new asset into the DB
+                    // Save the new asset into the DB
                     assetDAO.save(newAsset);
                 }
             }
@@ -251,16 +266,16 @@ public class PortfolioService {
         portfolioDAO.save(portfolio);
     }
 
-    // DELETE PORTFOLIO ---------------------------------------------------------------------------------------------------
+    // DELETE PORTFOLIO
+    // ---------------------------------------------------------------------------------------------------
     public void deletePortfolio(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-        List <Asset> assets = portfolio.getAssets();
+        List<Asset> assets = portfolio.getAssets();
         for (Asset asset : assets) {
             assetDAO.delete(asset);
         }
         portfolioDAO.delete(portfolio);
     }
-
 
     // Get a list of asset symbols in the portfolio
     public List<String> getAssetSymbols(Integer portfolioId) {
@@ -281,8 +296,8 @@ public class PortfolioService {
         return symbolsToUpdate;
     }
 
-
-    // Get list of portfolio values by end of every year from the startYear to current year
+    // Get list of portfolio values by end of every year from the startYear to
+    // current year
     public Map<String, Double> getPortfolioAnnualGrowth(int portfolioId, String startYear) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
@@ -310,19 +325,17 @@ public class PortfolioService {
         return portfolioValuesByYear;
     }
 
-
-
     // Calculate the value of the portfolio by the end of the year
     public int getPortfolioValueByYear(Integer portfolioId, String year) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
         if (portfolio == null) {
             // Handle the case where the portfolio with the given ID is not found.
-            return 0;  // Return 0 as an integer.
+            return 0; // Return 0 as an integer.
         }
 
         List<Asset> assets = portfolio.getAssets();
-        BigDecimal portfolioValue = BigDecimal.ZERO;  // Initialize as zero.
+        BigDecimal portfolioValue = BigDecimal.ZERO; // Initialize as zero.
 
         for (Asset asset : assets) {
             double assetValue = assetService.getAssetValueByYear(asset.getAssetId().getStockSymbol(), year, asset);
@@ -336,9 +349,10 @@ public class PortfolioService {
         return portfolioValueInt;
     }
 
-
-    // Get list of portfolio values by year and month from the starting year and month until the current year and month
-    public Map<String, Map<String, Integer>> getPortfolioMonthlyGrowth(int portfolioId, String startYear, String startMonth) {
+    // Get list of portfolio values by year and month from the starting year and
+    // month until the current year and month
+    public Map<String, Map<String, Integer>> getPortfolioMonthlyGrowth(int portfolioId, String startYear,
+            String startMonth) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
         if (portfolio == null) {
@@ -347,7 +361,7 @@ public class PortfolioService {
         }
 
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;  // Adjust for 0-based index
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1; // Adjust for 0-based index
 
         int startYearInt = Integer.parseInt(startYear);
         int startMonthInt = Integer.parseInt(startMonth);
@@ -364,7 +378,7 @@ public class PortfolioService {
             int endMonth = (year == currentYear) ? currentMonth : 12;
 
             for (int month = startMonthInt; month <= endMonth; month++) {
-                String monthName = getMonthName(month - 1);  // Adjust for 0-based index
+                String monthName = getMonthName(month - 1); // Adjust for 0-based index
                 String yearString = Integer.toString(year);
                 int portfolioValue = getPortfolioValueByYearAndMonth(portfolioId, yearString, monthName);
                 monthlyValues.put(monthName, portfolioValue);
@@ -376,42 +390,40 @@ public class PortfolioService {
         return portfolioMonthlyValues;
     }
 
-
-
     // Get the portfolio value at the end of the specified year and month
     public int getPortfolioValueByYearAndMonth(Integer portfolioId, String year, String month) {
-    Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
-    if (portfolio == null) {
-        // Handle the case where the portfolio with the given ID is not found.
-        return 0;  // Return 0 as an integer.
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return 0; // Return 0 as an integer.
+        }
+
+        List<Asset> assets = portfolio.getAssets();
+        BigDecimal portfolioValue = BigDecimal.ZERO; // Initialize as zero.
+
+        for (Asset asset : assets) {
+            double assetValue = assetService.getAssetValueByYearAndMonth(asset.getAssetId().getStockSymbol(), year,
+                    month, asset);
+            BigDecimal assetValueBigDecimal = new BigDecimal(assetValue);
+            portfolioValue = portfolioValue.add(assetValueBigDecimal);
+        }
+
+        // Convert the portfolio value to an integer, effectively rounding down.
+        int portfolioValueInt = portfolioValue.intValue();
+
+        return portfolioValueInt;
     }
-
-    List<Asset> assets = portfolio.getAssets();
-    BigDecimal portfolioValue = BigDecimal.ZERO;  // Initialize as zero.
-
-    for (Asset asset : assets) {
-        double assetValue = assetService.getAssetValueByYearAndMonth(asset.getAssetId().getStockSymbol(), year, month, asset);
-        BigDecimal assetValueBigDecimal = new BigDecimal(assetValue);
-        portfolioValue = portfolioValue.add(assetValueBigDecimal);
-    }
-
-    // Convert the portfolio value to an integer, effectively rounding down.
-    int portfolioValueInt = portfolioValue.intValue();
-
-    return portfolioValueInt;
-}
 
     // Helper method to get month name based on its number (0-based index).
     private String getMonthName(int month) {
         String[] monthNames = {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
         };
         return monthNames[month];
     }
 
-    
     public Map<String, Double> getPortfolioAnnualReturns(int portfolioId, String startYear) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
@@ -449,21 +461,22 @@ public class PortfolioService {
         return portfolioValuesByYear;
     }
 
-//   // Get the net profit of the portfolio based on the portfolioName
-  public double getNetProfit(Integer portfolioId) {
-      Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-      List<Asset> assets = portfolio.getAssets();
-      double totalAssetsValue = 0;
-      for (int i = 0; i < assets.size(); i++) {
-          Asset asset = assets.get(i);
-          totalAssetsValue += asset.getTotalValue();
-      }
-      double netProfit = totalAssetsValue - portfolio.getCapital();
-      return netProfit;
+    // // Get the net profit of the portfolio based on the portfolioName
+    public double getNetProfit(Integer portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        List<Asset> assets = portfolio.getAssets();
+        double totalAssetsValue = 0;
+        for (int i = 0; i < assets.size(); i++) {
+            Asset asset = assets.get(i);
+            totalAssetsValue += asset.getTotalValue();
+        }
+        double netProfit = totalAssetsValue - portfolio.getCapital();
+        return netProfit;
 
-  }
-//
-//   // Get portfolio final balance
+    }
+
+    //
+    // // Get portfolio final balance
     public double getPortfolioFinalBalance(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         List<Asset> assets = portfolio.getAssets();
@@ -475,7 +488,7 @@ public class PortfolioService {
         return totalValue;
     }
 
-//   // Get the portfolio's CAGR
+    // // Get the portfolio's CAGR
     public double getCAGR(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         double finalBalance = getPortfolioFinalBalance(portfolioId);
@@ -486,25 +499,28 @@ public class PortfolioService {
         int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4));
         int timePeriod = currentYearvalue - startYearValue;
 
-        double CAGR = Math.pow(finalBalance/initialBalance, 1/timePeriod) - 1;
+        double CAGR = Math.pow(finalBalance / initialBalance, 1 / timePeriod) - 1;
         return CAGR * 100; // Convert to percentage
     }
-//
-//   // Get SharpeRatio of the portfolio
-//   // The Sharpe Ratio is a measure of the risk-adjusted return of a portfolio.
+
+    //
+    // // Get SharpeRatio of the portfolio
+    // // The Sharpe Ratio is a measure of the risk-adjusted return of a portfolio.
     public double calcSharpeRatio(double expectedReturn, double riskFreeRate, double standardDeviation) {
         // Example: 10% expected return
         // Example: 3% risk-free rate
         // Example: 15% standard deviation
         return (expectedReturn - riskFreeRate) / standardDeviation;
     }
-//
-//   // Calculate portfolio's standard deviation
+
+    //
+    // // Calculate portfolio's standard deviation
     public double calcStandardDeviation(double[] stockReturns) {
         return Math.sqrt(calcVariance(stockReturns));
     }
-//
-//   // Calculate portfolio's variance
+
+    //
+    // // Calculate portfolio's variance
     public double calcVariance(double[] stockReturns) {
         double sum = 0.0;
         double mean = calcMean(stockReturns);
@@ -513,8 +529,9 @@ public class PortfolioService {
         }
         return sum / (stockReturns.length - 1);
     }
-//
-//   // Calculate portfolio's mean
+
+    //
+    // // Calculate portfolio's mean
     public double calcMean(double[] stockReturns) {
         double sum = 0.0;
         for (double stockReturn : stockReturns) {
@@ -522,34 +539,30 @@ public class PortfolioService {
         }
         return sum / stockReturns.length;
     }
-//
-//   // Calculate portfolio's expected return
-  public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
-//   //The expected return of a portfolio is a weighted sum of the expected returns of its individual assets,
-//   //where the weights represent the proportion of each asset in the portfolio
-    // if (assetReturns.length != weights.length) {
-    //     // TODO - Handles exceptions
-    //     throw new IllegalArgumentException("Arrays must have the same length.");
-    // }
-    double expectedReturn = 0;
 
-    for (int i = 0; i < assetReturns.length; i++) {
-        expectedReturn += assetReturns[i] * weights[i];
+    //
+    // // Calculate portfolio's expected return
+    public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
+        // //The expected return of a portfolio is a weighted sum of the expected
+        // returns of its individual assets,
+        // //where the weights represent the proportion of each asset in the portfolio
+        // if (assetReturns.length != weights.length) {
+        // // TODO - Handles exceptions
+        // throw new IllegalArgumentException("Arrays must have the same length.");
+        // }
+        double expectedReturn = 0;
+
+        for (int i = 0; i < assetReturns.length; i++) {
+            expectedReturn += assetReturns[i] * weights[i];
+        }
+        return expectedReturn;
     }
-    return expectedReturn;
-    }
-
-
-
-
-
 
     public GetPortfolioDetails getPortfolioDetails(Integer porfolioId) {
         System.out.println("In portfolio posting service");
 
-        //create a GetPortfoilioDetails json model
+        // create a GetPortfoilioDetails json model
         GetPortfolioDetails portfolioDetails = new GetPortfolioDetails();
-
 
         // create AssetModel json model
         AssetModel assetModel = new AssetModel(0, null);
@@ -559,11 +572,11 @@ public class PortfolioService {
         Map<String, AssetModel> assetMap = new HashMap<>();
 
         // create PerformanceSummary json model
-        // PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
+        // PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0,
+        // 0);
 
         // get existing portfolio by portfoloioId
         Portfolio portfolio = portfolioDAO.findByPortfolioId(porfolioId);
-
 
         // Loop through assets of existing portfolio
         List<String> sectors = new ArrayList<>();
@@ -575,7 +588,6 @@ public class PortfolioService {
         }
         System.out.println(sectors);
 
-
         for (String sector : sectors) {
             double totalAllocation = 0;
             List<Stock> stocks = new ArrayList<>();
@@ -585,7 +597,7 @@ public class PortfolioService {
                 if (asset.getSector().equals(sector)) {
                     // Get the value of the asset here
                     Double allocation = asset.getAllocation();
-                    totalAllocation +=  allocation;
+                    totalAllocation += allocation;
 
                     // Create a list of stocks
                     String symbol = asset.getAssetId().getStockSymbol();
@@ -597,16 +609,10 @@ public class PortfolioService {
             System.out.println(am);
         }
 
-
         for (Asset asset : portfolio.getAssets()) {
             // populate json models less GetPortfolioDetails
 
-
-
-
-
         }
-
 
         // populate GetPortfoilioDetails
 
@@ -632,15 +638,15 @@ public class PortfolioService {
 
         // Populate the PerformanceSummary
         PerformanceSummary performanceSummary = new PerformanceSummary(
-            1000.0, // InitialBalance
-            2000.0, // FinalBalance
-            1000.0, // NetProfit
-            7.77,   // CAGR
-            0.59,   // SharpeRatio
-            0.42    // SortinoRatio
+                1000.0, // InitialBalance
+                2000.0, // FinalBalance
+                1000.0, // NetProfit
+                7.77, // CAGR
+                0.59, // SharpeRatio
+                0.42 // SortinoRatio
         );
 
-                // Create a sample "performance" map
+        // Create a sample "performance" map
         Map<String, Map<String, Double>> performanceMap = new HashMap<>();
 
         // Sample performance data for 2013
@@ -669,8 +675,8 @@ public class PortfolioService {
         return portfolioDetails;
     }
 
-    public AssetsAllocation getAssetsAllocation(Integer portfolioId){
-        
+    public AssetsAllocation getAssetsAllocation(Integer portfolioId) {
+
         // create AssetAllocation json model
         AssetsAllocation assetsAllocation = new AssetsAllocation();
         Map<String, AssetModel> assetMap = new HashMap<>();
@@ -678,7 +684,7 @@ public class PortfolioService {
         // get existing portfolio by portfoloioId
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
-         // Loop through assets of existing portfolio
+        // Loop through assets of existing portfolio
         List<String> sectors = new ArrayList<>();
         for (Asset asset : portfolio.getAssets()) {
             // Check if sector already exists in sectors list before adding it
@@ -687,19 +693,19 @@ public class PortfolioService {
             }
         }
         System.out.println(sectors);
-           
+
         for (String sector : sectors) {
             double totalAllocation = 0;
-            List<Stock> stocks = new ArrayList<>(); 
+            List<Stock> stocks = new ArrayList<>();
 
             // code block
             for (Asset asset : portfolio.getAssets()) {
                 if (asset.getSector().equals(sector)) {
                     // Get the value of the asset here
                     Double allocation = asset.getAllocation();
-                    totalAllocation +=  allocation;
+                    totalAllocation += allocation;
 
-                    // Create a list of stocks 
+                    // Create a list of stocks
                     String symbol = asset.getAssetId().getStockSymbol();
                     stocks.add(new Stock(symbol, allocation));
                 }
@@ -707,7 +713,7 @@ public class PortfolioService {
             // Create an AssetModel instance
             AssetModel am = new AssetModel(totalAllocation, stocks);
             // System.out.println(am);
-            assetMap.put(sector,am);
+            assetMap.put(sector, am);
             System.out.println(assetMap);
         }
         assetsAllocation.setAssets(assetMap);
@@ -715,24 +721,21 @@ public class PortfolioService {
         return assetsAllocation;
     }
 
-    public PerformanceSummary getPerformanceSummary(Integer portfolioId){
+    public PerformanceSummary getPerformanceSummary(Integer portfolioId) {
         PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
-        
+
         double netProfit = this.getNetProfit(portfolioId);
         performanceSummary.setNetProfit(netProfit);
-        
+
         double finalBalance = this.getPortfolioFinalBalance(portfolioId);
         performanceSummary.setFinalBalance(finalBalance);
 
         double cagr = this.getCAGR(portfolioId);
         performanceSummary.setCAGR(cagr);
 
-        
         // double stdDev = this.calcStandardDeviation()
 
         return performanceSummary;
     }
 
-
 }
-
