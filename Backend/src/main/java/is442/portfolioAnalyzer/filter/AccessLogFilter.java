@@ -15,14 +15,21 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
+
 public class AccessLogFilter extends OncePerRequestFilter {
+    private List<String> accessLogList = new ArrayList<>();
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+
 
         if (request.getRequestURI().toLowerCase().contains("/")) {
             long time = System.currentTimeMillis();
@@ -40,6 +47,8 @@ public class AccessLogFilter extends OncePerRequestFilter {
 
                 log.info("{} {} {} {} {} {}ms", remoteIpAddress, request.getMethod(), request.getRequestURI(), response.getContentType(),
                         response.getStatus(), time);
+
+                accessLogList.add(String.format("%s %s %s %s %s %sms", remoteIpAddress, request.getMethod(), request.getRequestURI(), response.getContentType(), response.getStatus(), time));
 
             }
         }
