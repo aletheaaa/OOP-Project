@@ -37,6 +37,11 @@ public class PortfolioService {
     @Autowired
     AssetService assetService;
 
+
+    // RETRIEVING PORTFOLIO DETAILS
+    // ---------------------------------------------------------------------------------------------------
+
+
     public List<Portfolio> getAllPortfolios() {
         System.out.println("In service");
         return portfolioDAO.findAll();
@@ -83,6 +88,9 @@ public class PortfolioService {
             throw new UserPortfolioNotMatchException("User does not have the portfolio!");
         }
     }
+
+
+    public 
 
     // CREATE PORTFOLIO
     // ---------------------------------------------------------------------------------------------------
@@ -296,6 +304,9 @@ public class PortfolioService {
         return symbolsToUpdate;
     }
 
+    // PORTFOLIO PERFORMANCE CALCULATIONS
+    // ---------------------------------------------------------------------------------------------------
+
     // Get list of portfolio values by end of every year from the startYear to
     // current year
     public Map<String, Double> getPortfolioAnnualGrowth(int portfolioId, String startYear) {
@@ -476,6 +487,7 @@ public class PortfolioService {
 
     }
 
+
     //
     // // Get portfolio final balance
     public double getPortfolioFinalBalance(Integer portfolioId) {
@@ -559,127 +571,7 @@ public class PortfolioService {
         return expectedReturn;
     }
 
-    public GetPortfolioDetails getPortfolioDetails(Integer porfolioId) {
-        System.out.println("In portfolio posting service");
-
-        // create a GetPortfoilioDetails json model
-        GetPortfolioDetails portfolioDetails = new GetPortfolioDetails();
-
-        // create AssetModel json model
-        AssetModel assetModel = new AssetModel(0, null);
-
-        // create AssetAllocation json model
-        AssetsAllocation assetsAllocation = new AssetsAllocation();
-        Map<String, AssetModel> assetMap = new HashMap<>();
-
-        // create PerformanceSummary json model
-        // PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0,
-        // 0);
-
-        // get existing portfolio by portfoloioId
-        Portfolio portfolio = portfolioDAO.findByPortfolioId(porfolioId);
-
-        // Loop through assets of existing portfolio
-        List<String> sectors = new ArrayList<>();
-        for (Asset asset : portfolio.getAssets()) {
-            // Check if sector already exists in sectors list before adding it
-            if (!sectors.contains(asset.getSector())) {
-                sectors.add(asset.getSector());
-            }
-        }
-        System.out.println(sectors);
-
-        for (String sector : sectors) {
-            double totalAllocation = 0;
-            List<Stock> stocks = new ArrayList<>();
-
-            // code block
-            for (Asset asset : portfolio.getAssets()) {
-                if (asset.getSector().equals(sector)) {
-                    // Get the value of the asset here
-                    Double allocation = asset.getAllocation();
-                    totalAllocation += allocation;
-
-                    // Create a list of stocks
-                    String symbol = asset.getAssetId().getStockSymbol();
-                    stocks.add(new Stock(symbol, allocation));
-                }
-            }
-            // Create an AssetModel instance
-            AssetModel am = new AssetModel(totalAllocation, stocks);
-            System.out.println(am);
-        }
-
-        for (Asset asset : portfolio.getAssets()) {
-            // populate json models less GetPortfolioDetails
-
-            
-
-
-
-        }
-
-        // populate GetPortfoilioDetails
-
-        // return GetPortfoilioDetails
-
-        // TESTING SAMPLE DATA
-        // Sample AssetModel instances for Technology and Healthcare
-        AssetModel technologyAsset = new AssetModel(0.5, new ArrayList<>());
-        AssetModel healthcareAsset = new AssetModel(0.4, new ArrayList<>());
-
-        // Sample Stock instances
-        Stock teslaStock = new Stock("TSLA", 0.5);
-        Stock pfizerStock = new Stock("PFE", 0.4);
-
-        // Add Stock instances to AssetModel
-        technologyAsset.getStocks().add(teslaStock);
-        healthcareAsset.getStocks().add(pfizerStock);
-
-        // // Populate the assets map
-        assetMap.put("Technology", technologyAsset);
-        assetMap.put("Healthcare", healthcareAsset);
-        assetsAllocation.setAssets(assetMap);
-
-        // Populate the PerformanceSummary
-        PerformanceSummary performanceSummary = new PerformanceSummary(
-                1000.0, // InitialBalance
-                2000.0, // FinalBalance
-                1000.0, // NetProfit
-                7.77, // CAGR
-                0.59, // SharpeRatio
-                0.42 // SortinoRatio
-        );
-
-        // Create a sample "performance" map
-        Map<String, Map<String, Double>> performanceMap = new HashMap<>();
-
-        // Sample performance data for 2013
-        Map<String, Double> performance2013 = new HashMap<>();
-        performance2013.put("Jan", 1100.0);
-        performance2013.put("Feb", 1200.0);
-        performance2013.put("Mar", 2100.0);
-
-        // Sample performance data for 2014
-        Map<String, Double> performance2014 = new HashMap<>();
-        performance2014.put("Jan", 1200.0);
-        performance2014.put("Feb", 1300.0);
-        performance2014.put("Mar", 1100.0);
-
-        // Add the performance data to the "performance" map
-        performanceMap.put("2013", performance2013);
-        performanceMap.put("2014", performance2014);
-
-        // Set the "performance" map in GetPortfolioDetails
-        portfolioDetails.setPerformance(performanceMap);
-
-        // Set AssetsAllocation and PerformanceSummary in GetPortfolioDetails
-        portfolioDetails.setAssetsAllocation(assetsAllocation);
-        portfolioDetails.setPerformanceSummary(performanceSummary);
-
-        return portfolioDetails;
-    }
-
+    
     public AssetsAllocation getAssetsAllocation(Integer portfolioId) {
 
         // create AssetAllocation json model
@@ -743,4 +635,24 @@ public class PortfolioService {
         return performanceSummary;
     }
 
+    // Get portfolio details by portfolioId
+    //Returns the columns of the portfolio table of that particular portfolio
+    public Map<String, Object> getPortfolioDetails(Integer portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+
+        if (portfolio == null) {
+            // Handle the case where the portfolio with the given ID is not found.
+            return null;
+        }
+
+        Map<String, Object> portfolioDetails = new HashMap<>();
+        portfolioDetails.put("capital", portfolio.getCapital());
+        portfolioDetails.put("description", portfolio.getDescription());
+        portfolioDetails.put("portfolio_name", portfolio.getPortfolioName());
+        portfolioDetails.put("start_date", portfolio.getStartDate());
+        portfolioDetails.put("time_period", portfolio.getTimePeriod());
+        portfolioDetails.put("id", portfolio.getUser().getId()); // Assuming you want to include user ID
+
+        return portfolioDetails;
+    }
 }
