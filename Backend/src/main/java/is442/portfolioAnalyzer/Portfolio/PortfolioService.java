@@ -488,7 +488,7 @@ public class PortfolioService {
         return totalValue;
     }
 
-    // // Get the portfolio's CAGR
+    // Get the portfolio's CAGR ----------------------------------------------------------------------------------------
     public double getCAGR(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         double finalBalance = getPortfolioFinalBalance(portfolioId);
@@ -496,7 +496,7 @@ public class PortfolioService {
 
         // Calculate the time period from current
         int currentYearvalue = Year.now().getValue();
-        int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4));
+        int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4)); // get the year e.g. 2005
         int timePeriod = currentYearvalue - startYearValue;
 
         double CAGR = Math.pow(finalBalance / initialBalance, 1 / timePeriod) - 1;
@@ -504,59 +504,56 @@ public class PortfolioService {
     }
 
     //
-    // // Get SharpeRatio of the portfolio
+    // // Get SharpeRatio of the portfolio -----------------------------------------------------------------------------
     // // The Sharpe Ratio is a measure of the risk-adjusted return of a portfolio.
-    public double calcSharpeRatio(double expectedReturn, double riskFreeRate, double standardDeviation) {
+    public double calcSharpeRatio(int portfolioId, double expectedReturn, double riskFreeRate, double standardDeviation) {
         // Example: 10% expected return
         // Example: 3% risk-free rate
         // Example: 15% standard deviation
         return (expectedReturn - riskFreeRate) / standardDeviation;
     }
 
-    //
-    // // Calculate portfolio's standard deviation
-    public double calcStandardDeviation(double[] stockReturns) {
-        return Math.sqrt(calcVariance(stockReturns));
-    }
+    // Get Portfolio's Standard Deviation ---------------------------------------------------------------------------
+    // Formula: Square root of the variance.
+    // Variance is calculated by sum of (annual returns  - mean returns) ^2
+    public double getPortfolioStandardDeviation(int portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
-    //
-    // // Calculate portfolio's variance
-    public double calcVariance(double[] stockReturns) {
-        double sum = 0.0;
-        double mean = calcMean(stockReturns);
-        for (double stockReturn : stockReturns) {
-            sum += Math.pow(stockReturn - mean, 2.0);
+        // Calculate the time period from current
+        int currentYearValue = Year.now().getValue();
+
+        // Calculate the average returns of the portfolio
+        Map<String,Double> annualReturns = getPortfolioAnnualReturns(portfolioId, String.valueOf(currentYearValue));
+        int numYear = annualReturns.size();
+        double totalAnnualReturns = 0;
+        for (Map.Entry<String, Double> entry : annualReturns.entrySet()) {
+            totalAnnualReturns += entry.getValue();
         }
-        return sum / (stockReturns.length - 1);
-    }
+        double averageAnnualReturns = totalAnnualReturns / numYear;
 
-    //
-    // // Calculate portfolio's mean
-    public double calcMean(double[] stockReturns) {
-        double sum = 0.0;
-        for (double stockReturn : stockReturns) {
-            sum += stockReturn;
+        // Calculate the variance
+        double marginOfError = 0;
+        for (Map.Entry<String, Double> entry : annualReturns.entrySet()) {
+            marginOfError += Math.pow(entry.getValue() - averageAnnualReturns, 2);
         }
-        return sum / stockReturns.length;
+        double variance = marginOfError / numYear;
+
+        return Math.sqrt(variance) * 100;
     }
 
-    //
-    // // Calculate portfolio's expected return
-    public double calculateExpectedReturn(double[] assetReturns, double[] weights) {
-        // //The expected return of a portfolio is a weighted sum of the expected
-        // returns of its individual assets,
-        // //where the weights represent the proportion of each asset in the portfolio
-        // if (assetReturns.length != weights.length) {
-        // // TODO - Handles exceptions
-        // throw new IllegalArgumentException("Arrays must have the same length.");
-        // }
-        double expectedReturn = 0;
-
-        for (int i = 0; i < assetReturns.length; i++) {
-            expectedReturn += assetReturns[i] * weights[i];
+    // Get Portfolio's Expected Returns -----------------------------------------------------------------------------------
+    // Formula: Total annual returns / number of years
+    public double getPortfolioExpectedReturns(int portfolioId) {
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        Map <String,Double> annualReturns = getPortfolioAnnualGrowth(portfolioId, portfolio.getStartDate().substring(0, 4));
+        int numYear = annualReturns.size();
+        double totalAnnualReturns = 0;
+        for (Map.Entry<String, Double> entry : annualReturns.entrySet()) {
+            totalAnnualReturns += entry.getValue();
         }
-        return expectedReturn;
+        return totalAnnualReturns / numYear;
     }
+
 
     public GetPortfolioDetails getPortfolioDetails(Integer porfolioId) {
         System.out.println("In portfolio posting service");
