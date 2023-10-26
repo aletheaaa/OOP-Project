@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8080";
 let token = sessionStorage.getItem("token");
+let userId = sessionStorage.getItem("id");
 
 export async function createPortfolioAPI(requestBody) {
   try {
@@ -13,34 +14,11 @@ export async function createPortfolioAPI(requestBody) {
       },
     };
     const response = await axios.post(
-      BASE_URL + "/portfolio/createPortfolio",
+      BASE_URL + "/portfolio/createPortfolio/" + userId,
       requestBody,
       config
     );
     return response;
-  } catch (error) {
-    console.log("Error in createPortfolio API: ");
-    console.log(error);
-    return error;
-  }
-}
-
-// TODO: to connect to finalied API
-export async function getStockSectorAPI(stockSymbol) {
-  try {
-    console.log("this is stocksymbol from api", stockSymbol);
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // };
-    // const response = await axios.get(
-    //   BASE_URL + "/getStockSector/" + stockSymbol,
-    //   config
-    // );
-    // return response;
-    return "Technology";
   } catch (error) {
     console.log("Error in createPortfolio API: ");
     console.log(error);
@@ -84,6 +62,7 @@ export async function getPortfolioDetailsAPI(portfolioId) {
   };
 }
 
+// asset allocation for indiv stocks & sectors
 export async function getAssetAllocationAPI(portfolioId) {
   try {
     const config = {
@@ -92,11 +71,8 @@ export async function getAssetAllocationAPI(portfolioId) {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(
+    const response = await axios.get(
       BASE_URL + "/portfolio/assetsAllocation/" + portfolioId,
-      {
-        portfolioId: Number(portfolioId),
-      },
       config
     );
     return response;
@@ -107,6 +83,7 @@ export async function getAssetAllocationAPI(portfolioId) {
   }
 }
 
+// this performance summary is used in the cards in the portfolio page
 export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
   try {
     const config = {
@@ -115,16 +92,93 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
         "Content-Type": "application/json",
       },
     };
-    const response = await axios.post(
+    const response = await axios.get(
       BASE_URL + "/portfolio/performanceSummary/" + portfolioId,
-      {
-        portfolioId: Number(portfolioId),
-      },
       config
     );
     return response;
   } catch (error) {
     console.log("Error in getPortfolioPerformanceSummary API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+// get annual portfolio growth for the line chart
+export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioAnnualGrowth/" +
+        portfolioId +
+        "/" +
+        startYear,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioGrowthByYear API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+// get monthly portfolio growth for the line chart
+export async function getPortfolioGrowthByMonthAPI(
+  portfolioId,
+  startYear,
+  monthIndex
+) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioMonthlyGrowth/" +
+        portfolioId +
+        "/" +
+        startYear +
+        "/" +
+        monthIndex,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioGrowthByMonth API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+export async function getPortfolioAnnualReturnsAPI(portfolioId, startYear) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioAnnualReturns/" +
+        portfolioId +
+        "/" +
+        startYear,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioAnnualReturns API: ");
     console.log(error);
     return error;
   }

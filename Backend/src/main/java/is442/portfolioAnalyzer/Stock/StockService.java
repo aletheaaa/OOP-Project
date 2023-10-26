@@ -1,49 +1,45 @@
-// package is442.portfolioAnalyzer.Stock;
+package is442.portfolioAnalyzer.Stock;
 
-// import com.crazzyghost.alphavantage.AlphaVantage;
-// import com.crazzyghost.alphavantage.Config;
-// import com.crazzyghost.alphavantage.parameters.DataType;
-// import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
-// import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.stereotype.Service;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-// @Service
-// public class StockService {
-//     @Autowired
-//     StockDAO stockDAO;
-//     @Autowired
-//     ExternalApiService externalApiService;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-//     // GET stock price from API
-//     public ResponseEntity<?> updateStockLatestPrice(String symbol) {
-//         // Get the stock price from the API
-//         TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getDailyStockPrice(symbol).getBody();
+@Service
+public class StockService {
+    private final StockDAO stockDAO;
 
-//         // Extract the relevant information from the response
-//         try {
-//             double lastUpdatedPrice =  response.getStockUnits().get(0).getClose();
-//             String lastUpdatedTime = response.getStockUnits().get(0).getDate();
-//             String stockSymbol = response.getMetaData().getSymbol();
-//             System.out.println("Stock symbol: " + stockSymbol);
-//             System.out.println("Last updated price: " + lastUpdatedPrice);
-//             System.out.println("Last updated time: " + lastUpdatedTime);
+    @Autowired
+    public StockService(StockDAO stockDAO) {
+        this.stockDAO = stockDAO;
+    }
 
-//             // Save the stock information to the database
-//             Stock stock = new Stock();
-//             stock.setStockSymbol(stockSymbol);
-//             stock.setLastUpdatedPrice(lastUpdatedPrice);
-//             stock.setLastUpdatedTime(lastUpdatedTime);
-//             stockDAO.save(stock);
+    public void populateTableFromExcel(String excelFilePath) throws IOException {
+        FileInputStream excelFile = new FileInputStream(new File(excelFilePath));
+        XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+        XSSFSheet sheet = workbook.getSheetAt(0);
 
-//         } catch (Exception e) {
-//             return ResponseEntity.badRequest().body("Invalid stock symbol");
-//         }
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) {
+                continue; // Skip the header row
+            }
 
-//     return ResponseEntity.ok(response);
-//     }
+            Stock entity = new Stock();
+            entity.setSymbol(row.getCell(0).getStringCellValue());
+            entity.setName(row.getCell(1).getStringCellValue());
+            entity.setCountry(row.getCell(2).getStringCellValue());
+            entity.setSector(row.getCell(3).getStringCellValue());
+            entity.setIndustry(row.getCell(4).getStringCellValue());
 
+            stockDAO.save(entity);
+        }
 
-
-// }
+        workbook.close();
+        excelFile.close();
+    }
+}

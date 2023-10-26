@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AssetModel {
     private double value;
-    private List<Stock> stocks;
+    private List<StockModel> stocks;
 
     // Getters and setters
 }

@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface UserDTO extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
+    Optional<User> findById(Integer id);
 }
 

@@ -21,18 +21,18 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    // title: {
-    //   display: true,
-    //   text: "Returns",
-    // },
-  },
-};
+// export const options = {
+//   responsive: true,
+//   plugins: {
+//     legend: {
+//       position: "top",
+//     },
+//     // title: {
+//     //   display: true,
+//     //   text: "Returns",
+//     // },
+//   },
+// };
 
 // export const options = {
 //   maintainAspectRatio: false,
@@ -73,10 +73,40 @@ export const options = {
 //   },
 // };
 
-export default function AreaChart(data) {
+export default function AreaChart({ data, options }) {
+  // const data = {
+  //   labels: ["2021-01", "2021-02", "2021-03", "2022-01", "2022-02", "2022-03"],
+  //   datasets: [
+  //     {
+  //       label: "Data Points",
+  //       data: [10, 20, 15, 30, 25, 40],
+  //       borderColor: "blue",
+  //       fill: false,
+  //     },
+  //   ],
+  // };
+
+  // const options = {
+  //   scales: {
+  //     x: {
+  //       ticks: {
+  //         // Include a dollar sign in the ticks
+  //         callback: function (value, index, ticks) {
+  //           console.log("value", value);
+  //           let dataPoint = this.getLabelForValue(value).split("-");
+  //           if (dataPoint[1] == "01") {
+  //             return dataPoint[0];
+  //           } else {
+  //             return "";
+  //           }
+  //         },
+  //       },
+  //     },
+  //   },
+  // };
   return (
     <div>
-      <Line options={options} data={data.data} />
+      <Line options={options} data={data} />
     </div>
   );
 }
