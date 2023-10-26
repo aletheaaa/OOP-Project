@@ -38,9 +38,7 @@ public class User implements UserDetails { // UserDetails contains methods from 
     private String lastName;
     @Column(name = "email")
     private String email;
-    @NotNull
-    @Size(min = 8, max = 25)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>?]).{8,25}$", message = "Invalid password")
+
     private String password;
 
 
@@ -83,6 +81,10 @@ public class User implements UserDetails { // UserDetails contains methods from 
     @JsonIgnore
     public String getFirstname() {
         return firstName;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Override
