@@ -1,7 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
-import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;

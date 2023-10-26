@@ -11,5 +11,4 @@ public class AssetCreation {
 
     private String Symbol;
     private double Allocation;
-    private String Sector;
 }

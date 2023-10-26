@@ -1,13 +1,11 @@
 package is442.portfolioAnalyzer.Portfolio;
-
+import is442.portfolioAnalyzer.JsonModels.*;
 import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.AssetModel;
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
-import is442.portfolioAnalyzer.JsonModels.Stock;
 import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
-import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
@@ -16,12 +14,13 @@ import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import is442.portfolioAnalyzer.Stock.*;
+
 import is442.portfolioAnalyzer.Asset.*;
 
 import java.time.Year;
 import java.util.*;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 @Service
 public class PortfolioService {
@@ -36,6 +35,9 @@ public class PortfolioService {
 
     @Autowired
     AssetService assetService;
+
+    @Autowired
+    StockDAO stockDAO;
 
 
     // RETRIEVING PORTFOLIO DETAILS
@@ -141,7 +143,17 @@ public class PortfolioService {
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
 
-            asset.setSector(assetCreation.getSector());
+            // Get the sector of the asset
+            if (symbol.equals("CASHALLOCATION")) {
+                asset.setSector("CASHALLOCATION");
+            } else {
+                Stock stock = stockDAO.findBySymbol(symbol);
+                String sector = stock.getSector();
+                asset.setSector(sector);
+            }
+            
+
+            // Set the allocation of the asset
             asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
@@ -242,7 +254,16 @@ public class PortfolioService {
                     assetId.setPortfolioId(portfolioId);
                     assetId.setStockSymbol(symbol);
                     newAsset.setAssetId(assetId);
-                    newAsset.setSector(assetCreation.getSector());
+
+
+                    // Get the sector of the asset
+                    Stock stock = stockDAO.findBySymbol(symbol);
+                    String sector = stock.getSector();
+
+                    // Set the sector of the asset
+                    newAsset.setSector(sector);
+
+
                     newAsset.setAllocation(assetCreation.getAllocation());
                     newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
                     newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
@@ -590,7 +611,7 @@ public class PortfolioService {
 
         for (String sector : sectors) {
             double totalAllocation = 0;
-            List<Stock> stocks = new ArrayList<>();
+            List<StockModel> stocks = new ArrayList<>();
 
             // code block
             for (Asset asset : portfolio.getAssets()) {
@@ -601,7 +622,7 @@ public class PortfolioService {
 
                     // Create a list of stocks
                     String symbol = asset.getAssetId().getStockSymbol();
-                    stocks.add(new Stock(symbol, allocation));
+                    stocks.add(new StockModel(symbol, allocation));
                 }
             }
             // Create an AssetModel instance

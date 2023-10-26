@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StockDAO extends JpaRepository<Stock, String> {
+    Stock findBySymbol(String symbol);
 }
 
 
