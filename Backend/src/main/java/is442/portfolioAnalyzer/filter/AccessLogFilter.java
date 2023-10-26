@@ -63,7 +63,6 @@ public class AccessLogFilter extends OncePerRequestFilter {
                 accessLogService.addToAccessLog(String.format("%s %s %s %s %sms", remoteIpAddress, request.getMethod(), request.getRequestURI(),
                         response.getStatus(), time));
 
-                System.out.println("Full access log list: " + accessLogService.getAccessLogList());
 
             }
         }
