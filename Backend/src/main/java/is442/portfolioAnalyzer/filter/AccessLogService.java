@@ -38,7 +38,7 @@ public class AccessLogService {
                 return accessLogList; // Return logs for admin
             } else {
 
-                return new ArrayList<>();
+                throw new AccessDeniedException("Access to access logs is restricted to admin users");
             }
         } else {
             throw new UserNotFoundException("User not found for email: " + email);
