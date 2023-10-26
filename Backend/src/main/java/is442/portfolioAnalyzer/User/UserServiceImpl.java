@@ -34,11 +34,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found by ID: " + id));
     }
 
-    public void isPasswordValid(String password) throws InvalidPasswordException {
+    public boolean isPasswordValid(String password) throws InvalidPasswordException {
 
         if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,25}$")) {
-            throw new InvalidPasswordException("Password must meet the specified criteria.");
+//            throw new InvalidPasswordException("Password must meet the specified criteria.");
+            return false;
         }
+        return true;
     }
 
     public String changePassword(String email, String newPassword) {
