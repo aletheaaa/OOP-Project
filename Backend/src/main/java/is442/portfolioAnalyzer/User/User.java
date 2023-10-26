@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import is442.portfolioAnalyzer.Asset.Asset;
 import is442.portfolioAnalyzer.Portfolio.Portfolio;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 
 
 @Data // Generate Getter and Setter
@@ -64,6 +66,10 @@ public class User implements UserDetails { // UserDetails contains methods from 
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return email;
@@ -103,7 +109,12 @@ public class User implements UserDetails { // UserDetails contains methods from 
 @Data
 class ChangePasswordRequest {
     private String email;
+
+    @NotNull
+    @Size(min = 8, max = 25)
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>?]).{8,25}$", message = "Invalid password")
     private String newPassword;
+
 
     public String getEmail() {
         return email;

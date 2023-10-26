@@ -8,6 +8,7 @@ import is442.portfolioAnalyzer.Exception.*;
 import is442.portfolioAnalyzer.config.*;
 import org.springframework.http.MediaType;
 
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -35,9 +36,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("/id/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
-        String message = userServiceImpl.changePassword(request.getEmail(), request.getNewPassword());
+    @PostMapping(value = "/change-password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        userServiceImpl.changePassword(request.getEmail(), request.getNewPassword());
+
+        String message = "Password changed successfully";
         return ResponseEntity.ok(message);
     }
 
