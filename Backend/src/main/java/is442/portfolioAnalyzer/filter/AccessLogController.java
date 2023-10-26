@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,10 +33,9 @@ public class AccessLogController {
         this.accessLogService = accessLogService;
     }
 
-    @PostMapping("/accessLogs")
+    @GetMapping("/accessLogs")
 
-    public ResponseEntity<List<String>> getAccessLogs(@RequestBody Map<String, String> requestBody) {
-        String email = requestBody.get("email");
+    public ResponseEntity<List<String>> getAccessLogs(@RequestParam String email) {
         List<String> accessLogList = accessLogService.getAccessLogList(email);
         return new ResponseEntity<>(accessLogList, HttpStatus.OK);
     }

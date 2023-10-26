@@ -27,7 +27,6 @@ public class AccessLogService {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             Role userRole = user.getRole();
