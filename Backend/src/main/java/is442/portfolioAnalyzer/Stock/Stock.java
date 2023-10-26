@@ -1,20 +1,16 @@
 package is442.portfolioAnalyzer.Stock;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Data;
+import jakarta.persistence.*;
 
 @Data
-@Entity
-@Table(name = "stocks")
+@Entity 
 public class Stock {
-
     @Id
-    private String stockSymbol;
-    private String Sector;
-    private String Industry;
-    private String Country;
-    private String Currency;
-
+    private String symbol;
+    private String name;
+    private String country;
+    private String sector;
+    private String industry; 
 }

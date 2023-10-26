@@ -1,55 +1,45 @@
 package is442.portfolioAnalyzer.Stock;
 
-import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
-import java.util.HashMap;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StockService {
+    private final StockDAO stockDAO;
+
     @Autowired
-    StockDAO stockDAO;
-    @Autowired
-    ExternalApiService externalApiService;
-
-   
-    //Get all stocks and their Industries
-    public Map<String, String> getAllStocksAndIndustries() {
-        List<Stock> stocks = stockDAO.findAll();
-        Map<String, String> industryMap = new HashMap<>();
-
-        for (Stock stock : stocks) {
-            industryMap.put(stock.getStockSymbol(), stock.getIndustry());
-        }
-
-        return industryMap;
+    public StockService(StockDAO stockDAO) {
+        this.stockDAO = stockDAO;
     }
 
-    //Get all stocks and their countries
-    public Map<String, String> getAllStocksAndCountries() {
-        List<Stock> stocks = stockDAO.findAll();
-        Map<String, String> countryMap = new HashMap<>();
+    public void populateTableFromExcel(String excelFilePath) throws IOException {
+        FileInputStream excelFile = new FileInputStream(new File(excelFilePath));
+        XSSFWorkbook workbook = new XSSFWorkbook(excelFile);
+        XSSFSheet sheet = workbook.getSheetAt(0);
 
-        for (Stock stock : stocks) {
-            countryMap.put(stock.getStockSymbol(), stock.getCountry());
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) {
+                continue; // Skip the header row
+            }
+
+            Stock entity = new Stock();
+            entity.setSymbol(row.getCell(0).getStringCellValue());
+            entity.setName(row.getCell(1).getStringCellValue());
+            entity.setCountry(row.getCell(2).getStringCellValue());
+            entity.setSector(row.getCell(3).getStringCellValue());
+            entity.setIndustry(row.getCell(4).getStringCellValue());
+
+            stockDAO.save(entity);
         }
 
-        return countryMap;
+        workbook.close();
+        excelFile.close();
     }
-
-    //Get all stocks and their currencies
-    public Map<String, String> getAllStocksAndCurrencies() {
-        List<Stock> stocks = stockDAO.findAll();
-        Map<String, String> countryMap = new HashMap<>();
-
-        for (Stock stock : stocks) {
-            countryMap.put(stock.getStockSymbol(), stock.getCurrency());
-        }
-
-        return countryMap;
-    }
-
-
-
 }
