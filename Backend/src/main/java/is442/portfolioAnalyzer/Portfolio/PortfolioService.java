@@ -90,7 +90,6 @@ public class PortfolioService {
     }
 
 
-    public 
 
     // CREATE PORTFOLIO
     // ---------------------------------------------------------------------------------------------------
@@ -102,11 +101,10 @@ public class PortfolioService {
         // Get the userId add into portfolio
         User user = userServiceImpl.getUserById(userId);
         portfolio.setUser(user);
-        // Get the portfolioName, capital, timePeriod, description, startDate and add
+        // Get the portfolioName, capital, description, startDate and add
         // into portfolio
         portfolio.setPortfolioName(portfolioCreation.getPortfolioName());
         portfolio.setCapital(portfolioCreation.getCapital());
-        portfolio.setTimePeriod(portfolioCreation.getTimePeriod());
         portfolio.setDescription(portfolioCreation.getDescription());
         portfolio.setStartDate(portfolioCreation.getStartDate());
 
@@ -184,7 +182,6 @@ public class PortfolioService {
         portfolio.setCapital(portfolioUpdate.getCapital());
         portfolio.setDescription(portfolioUpdate.getDescription());
         portfolio.setStartDate(portfolioUpdate.getStartDate());
-        portfolio.setTimePeriod(portfolioUpdate.getTimePeriod());
 
         // Get the assetList from the portfolioCreation
         List<AssetCreation> assetList = portfolioUpdate.getAssetList();
@@ -650,7 +647,6 @@ public class PortfolioService {
         portfolioDetails.put("description", portfolio.getDescription());
         portfolioDetails.put("portfolio_name", portfolio.getPortfolioName());
         portfolioDetails.put("start_date", portfolio.getStartDate());
-        portfolioDetails.put("time_period", portfolio.getTimePeriod());
         portfolioDetails.put("id", portfolio.getUser().getId()); // Assuming you want to include user ID
 
         return portfolioDetails;
