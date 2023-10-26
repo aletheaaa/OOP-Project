@@ -54,3 +54,7 @@ export async function authenticate(registering, email, password) {
     return error;
   }
 }
+
+export async function resetPassword(email) {
+  console.log("[Forgot Password] " + email);
+}

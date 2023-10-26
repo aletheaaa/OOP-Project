@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AreaChart from "../../components/Common/AreaChart";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
@@ -12,19 +11,17 @@ import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
 import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowthLineGraph";
+import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
   const [chosenPortfolio, setChosenPortfolio] = useState(0);
-  const [chartData, setChartData] = useState([]);
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
   const [
     asssetAllocationByIndividualStock,
     setAssetAllocationByIndividualStock,
   ] = useState({});
-  const [barChartConfig, setBarChartConfig] = useState("annual");
-  const [barChartDataByYear, setBarChartDataByYear] = useState({});
-  const [barChartDataByQuarter, setBarChartDataByQuarter] = useState({});
 
   const { portfolioId } = useParams(); // get portfolioID from url
 
@@ -37,44 +34,6 @@ export default function Portfolios() {
       setChosenPortfolio(portfolioDetails);
     };
     getPortfolioDetails();
-
-    // TODO: get the user's portfolio from backend
-    // getting the area line chart data
-    const labels = [
-      "November",
-      "December",
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-    ];
-    const data = {
-      labels,
-      datasets: [
-        {
-          label: "TSLA",
-          data: [
-            227.82, 194.7, 108.1, 181.41, 202.77, 194.77, 161.83, 207.52,
-            179.82, 261.07, 245.01, 251.6,
-          ],
-          borderColor: "rgb(255, 99, 132)",
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-          label: "Index",
-          data: [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200],
-          borderColor: "rgb(53, 162, 235)",
-          backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-      ],
-    };
-    setChartData(data);
 
     const getAssetAllocation = async () => {
       let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
@@ -97,7 +56,7 @@ export default function Portfolios() {
           labels: Object.keys(assetAllocationFromServer),
           datasets: [
             {
-              label: "% of Capital Allocated to Different Sector",
+              label: "% of Capital Allocated",
               data: Object.keys(assetAllocationFromServer).map(
                 (element) => assetAllocationFromServer[element].value
               ),
@@ -132,7 +91,7 @@ export default function Portfolios() {
           labels: stockLabel,
           datasets: [
             {
-              label: "% of Capital Allocated to Different Stocks",
+              label: "% of Capital Allocated",
               data: stockData,
               backgroundColor: doughnutBackgroundColors,
               borderColor: doughnutBorderColors,
@@ -146,65 +105,6 @@ export default function Portfolios() {
     };
     getAssetAllocation();
   }, [portfolioId]);
-
-  // TODO: to connect to backend
-  // get data for bar chart
-  useEffect(() => {
-    const getPortfolioReturns = async () => {
-      let options = {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
-          title: {
-            display: true,
-            text: "Chart.js Bar Chart",
-          },
-        },
-      };
-
-      const labels = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-      ];
-
-      let data = {
-        labels,
-        datasets: [
-          {
-            label: chosenPortfolio.name,
-            data: labels.map(() => Math.floor(Math.random() * 1001) + 0),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },
-        ],
-      };
-      setBarChartDataByYear({
-        options: options,
-        data: data,
-      });
-      let data2 = {
-        labels,
-        datasets: [
-          {
-            label: chosenPortfolio.name,
-            data: labels.map(() => Math.floor(Math.random() * 500) + 0),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },
-        ],
-      };
-      setBarChartDataByQuarter({
-        options: options,
-        data: data2,
-      });
-    };
-    getPortfolioReturns();
-  }, [chosenPortfolio]);
 
   const handleGetCurrentBalance = (balance) => {
     setCurrentBalance(balance);
@@ -260,73 +160,19 @@ export default function Portfolios() {
           {/* Portfolio Growth Line Graph */}
           <div className="row mt-5 px-5">
             <div className="col">
-              <div className="card position-static shadow mb-4">
-                <div className="card-header py-3 d-flex justify-content-between">
-                  <h6 className="m-0 font-weight-bold text-primary">
-                    Portfolio Growth
-                  </h6>
-                  <select
-                    className="form-select w-25"
-                    aria-label="Default select example"
-                    onChange={(e) => {
-                      console.log("e", e.target.value);
-                      setBarChartConfig(e.target.value);
-                    }}
-                  >
-                    <option value="annual">Annual Returns</option>
-                    <option value="quarter">Quarter Returns</option>
-                  </select>
-                </div>
-                <div className="card-body row">
-                  <div className="chart-area">
-                    {chartData &&
-                      chartData.datasets &&
-                      chartData.datasets.length > 0 && (
-                        <AreaChart data={chartData} />
-                      )}
-                  </div>
-                </div>
-              </div>
+              <PortfolioGrowthLineGraph
+                portfolioId={portfolioId}
+                portfolioName={chosenPortfolio.name}
+              />
             </div>
           </div>
           {/* Returns Bar Chart */}
           <div className="row mt-3 px-5">
             <div className="col">
-              <div className="card position-static shadow mb-4">
-                <div className="card-header py-3 d-flex justify-content-between">
-                  <h6 className="m-0 font-weight-bold text-primary">
-                    Portfolio Returns
-                  </h6>
-                  <select
-                    className="form-select w-25"
-                    aria-label="Default select example"
-                    onChange={(e) => {
-                      console.log("e", e.target.value);
-                      setBarChartConfig(e.target.value);
-                    }}
-                  >
-                    <option value="annual">Annual Returns</option>
-                    <option value="quarter">Quarter Returns</option>
-                  </select>
-                </div>
-                <div className="card-body row">
-                  <div className="chart-area">
-                    {barChartConfig == "annual"
-                      ? barChartDataByYear &&
-                        barChartDataByYear.data &&
-                        barChartDataByYear.data.datasets &&
-                        barChartDataByYear.data.datasets.length > 0 && (
-                          <BarChart data={barChartDataByYear.data} />
-                        )
-                      : barChartDataByQuarter &&
-                        barChartDataByQuarter.data &&
-                        barChartDataByQuarter.data.datasets &&
-                        barChartDataByQuarter.data.datasets.length > 0 && (
-                          <BarChart data={barChartDataByQuarter.data} />
-                        )}
-                  </div>
-                </div>
-              </div>
+              <PortfolioReturnsBarChart
+                portfolioId={portfolioId}
+                portfolioName={chosenPortfolio.name}
+              />
             </div>
           </div>
         </div>

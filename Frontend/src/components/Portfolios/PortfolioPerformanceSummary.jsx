@@ -9,12 +9,21 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
   const [CAGR, setCAGR] = useState([]);
   const [SharpeRatio, setSharpeRatio] = useState([]);
   const [SortinoRatio, setSortinoRatio] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getPortfolioDetails = async () => {
       let portfolioDetails = await getPortfolioPerformanceSummaryAPI(
         portfolioId
       );
+      if (portfolioDetails.status != 200) {
+        console.log("Error in fetching portfolio details");
+        setErrorMessage(
+          "Error in fetching portfolio details: ",
+          portfolioDetails.response.data
+        );
+        return;
+      }
       portfolioDetails = portfolioDetails.data;
       setInitialBalance(portfolioDetails.InitialBalance);
       setFinalBalance(portfolioDetails.FinalBalance);
@@ -29,38 +38,46 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
 
   return (
     <>
-      <div className="col-6 col-lg-3 mb-4 ">
-        <DashboardCard
-          title="Net Profit"
-          value={netProfit}
-          iconClassName="bi-cash-coin"
-          colorClassName="primary"
-        />
-      </div>
-      <div className="col-6 col-lg-3 mb-4">
-        <DashboardCard
-          title="CAGR"
-          value={CAGR}
-          iconClassName="bi-cash"
-          colorClassName="secondary"
-        />
-      </div>
-      <div className="col-6 col-lg-3 mb-4">
-        <DashboardCard
-          title="Sharpe Ratio"
-          value={SharpeRatio}
-          iconClassName="bi-coin"
-          colorClassName="info"
-        />
-      </div>
-      <div className="col-6 col-lg-3 mb-4">
-        <DashboardCard
-          title="Sortino Ratio"
-          value={SortinoRatio}
-          iconClassName="bi-cash-coin"
-          colorClassName="info"
-        />
-      </div>
+      {errorMessage ? (
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      ) : (
+        <>
+          <div className="col-6 col-lg-3 mb-4 ">
+            <DashboardCard
+              title="Net Profit"
+              value={netProfit}
+              iconClassName="bi-cash-coin"
+              colorClassName="primary"
+            />
+          </div>
+          <div className="col-6 col-lg-3 mb-4">
+            <DashboardCard
+              title="CAGR"
+              value={CAGR}
+              iconClassName="bi-cash"
+              colorClassName="secondary"
+            />
+          </div>
+          <div className="col-6 col-lg-3 mb-4">
+            <DashboardCard
+              title="Sharpe Ratio"
+              value={SharpeRatio}
+              iconClassName="bi-coin"
+              colorClassName="info"
+            />
+          </div>
+          <div className="col-6 col-lg-3 mb-4">
+            <DashboardCard
+              title="Sortino Ratio"
+              value={SortinoRatio}
+              iconClassName="bi-cash-coin"
+              colorClassName="info"
+            />
+          </div>
+        </>
+      )}
     </>
   );
 }
