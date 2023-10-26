@@ -110,14 +110,16 @@ public class User implements UserDetails { // UserDetails contains methods from 
 class ChangePasswordRequest {
     private String email;
 
-    @NotNull
-    @Size(min = 8, max = 25)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>?]).{8,25}$", message = "Invalid password")
+    private String currentPassword;
     private String newPassword;
 
 
     public String getEmail() {
         return email;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
     }
 
     public String getNewPassword() {

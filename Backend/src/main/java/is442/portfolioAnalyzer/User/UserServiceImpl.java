@@ -43,27 +43,25 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    public String changePassword(String email, String newPassword) {
+    public boolean isCurrentPasswordValid(String password, String currentPassword) {
+        return passwordEncoder.matches(currentPassword, password);
+    }
+    public String changePassword(String email, String currentPassword, String newPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            try {
-                isPasswordValid(newPassword);
-                user.setPassword(passwordEncoder.encode(newPassword));
-                userRepository.save(user);
-
-                return "Password changed successfully.";
-
-            } catch (InvalidPasswordException e) {
-
-                return "Password change failed: " + e.getMessage();
-
-            } finally {
-                System.out.println("Checking if it jumps to finally");
+            // Verify that the provided current password matches the stored password
+            if (!isCurrentPasswordValid(user.getPassword(), currentPassword) || !isPasswordValid(newPassword)) {
+                throw new InvalidPasswordException("Invalid Password");
             }
 
+            // Update the user's password with the new hashed password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+
+            return "Password changed successfully";
         } else {
             throw new UserNotFoundException("User not found");
         }
