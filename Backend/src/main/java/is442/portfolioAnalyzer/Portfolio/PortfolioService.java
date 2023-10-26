@@ -612,13 +612,6 @@ public class PortfolioService {
         for (Asset asset : portfolio.getAssets()) {
             // populate json models less GetPortfolioDetails
 
-<<<<<<< Updated upstream
-=======
-            
-
-
-
->>>>>>> Stashed changes
         }
 
         // populate GetPortfoilioDetails
