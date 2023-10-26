@@ -1,11 +1,8 @@
 package is442.portfolioAnalyzer.ExceptionHandler;
 
 import com.crazzyghost.alphavantage.AlphaVantageException;
-import is442.portfolioAnalyzer.Exception.ErrorResponse;
-import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
-import is442.portfolioAnalyzer.Exception.UserNotFoundException;
+import is442.portfolioAnalyzer.Exception.*;
 
-import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +37,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AlphaVantageException.class)
     public ResponseEntity<ErrorResponse> handleAlphaVantageException(AlphaVantageException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPasswordException(InvalidPasswordException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
