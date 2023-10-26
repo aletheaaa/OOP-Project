@@ -663,7 +663,7 @@ public class PortfolioService {
         portfolioDetails.put("description", portfolio.getDescription());
         portfolioDetails.put("portfolio_name", portfolio.getPortfolioName());
         portfolioDetails.put("start_date", portfolio.getStartDate());
-        portfolioDetails.put("id", portfolio.getUser().getId()); // Assuming you want to include user ID
+        portfolioDetails.put("user_id", portfolio.getUser().getId()); // Assuming you want to include user ID
 
         return portfolioDetails;
     }
