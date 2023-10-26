@@ -127,7 +127,7 @@ export default function CreatePortfolioModal() {
       ...portfolioDetails,
       AssetList: chosenStockAllocationFiltered,
     };
-    console.log(requestBody);
+    console.log("reqbody", requestBody);
     // send to backend
     setIsLoading(true);
     const response = await createPortfolioAPI(requestBody);
@@ -354,9 +354,6 @@ export default function CreatePortfolioModal() {
                             type="text"
                             id={`stock-${index}`}
                             className={`form-control`}
-                            onChange={(event) =>
-                              handleStockChange(event, index)
-                            }
                             placeholder={ele.Symbol.toUpperCase()}
                             onBlur={(event) => {
                               console.log("e");
