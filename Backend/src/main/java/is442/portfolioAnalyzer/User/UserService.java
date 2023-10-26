@@ -13,6 +13,7 @@ public interface UserService {
     UserDetails getUserByEmail(String email) throws UserNotFoundException;
     UserDetails getUserById(Integer id) throws UserNotFoundException;
     String changePassword(String email, String newPassword);
+    void isPasswordValid(String password) throws InvalidPasswordException;
 }
 
 

@@ -33,20 +33,44 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found by ID: " + id));
     }
 
+    public void isPasswordValid(String password) throws InvalidPasswordException {
+
+        if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,25}$")) {
+            throw new InvalidPasswordException("Password must meet the specified criteria.");
+        }
+    }
+
     public String changePassword(String email, String newPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setPassword(newPassword);
-            // encrypt
 
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            return "Password changed successfully.";
+            try {
+                isPasswordValid(newPassword);
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+
+                return "Password changed successfully.";
+
+            } catch (InvalidPasswordException e) {
+
+                return "Password change failed: " + e.getMessage();
+
+            } finally {
+                System.out.println("Checking if it jumps to finally");
+            }
+
         } else {
             throw new UserNotFoundException("User not found");
         }
     }
+
+
+
 }
+
+
+
+
 
