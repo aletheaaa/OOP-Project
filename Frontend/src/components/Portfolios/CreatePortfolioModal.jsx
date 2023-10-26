@@ -9,7 +9,6 @@ export default function CreatePortfolioModal() {
   const [validStocks, setValidStocks] = useState([]);
   const [portfolioDetails, setPortfolioDetails] = useState({
     Capital: 0,
-    TimePeriod: "Monthly",
     StartDate: "",
     PortfolioName: "",
     Description: "",
@@ -142,7 +141,9 @@ export default function CreatePortfolioModal() {
       setErrorMessage("");
       setSuccessMessage("Portfolio created successfully.");
     } else {
-      setErrorMessage("Error creating portfolio: " + response.response.data.message);
+      setErrorMessage(
+        "Error creating portfolio: " + response.response.data.message
+      );
       setIsLoading(false);
       return;
     }
@@ -156,6 +157,7 @@ export default function CreatePortfolioModal() {
 
   // function to validate the input fields of the form
   const validateField = (e, condition, elementId) => {
+    console.log("condition", condition);
     if (condition) {
       let node = document.getElementById(elementId);
       node.classList.remove("is-invalid");
@@ -301,32 +303,8 @@ export default function CreatePortfolioModal() {
                     id="validationServerCapitalFeedback"
                     className="invalid-feedback"
                   >
-                    Please enter a capital.
+                    Please enter a valid positive capital.
                   </div>
-                </div>
-              </div>
-              {/* timePeriod */}
-              <div className="row p-1">
-                <div className="col-3">
-                  <label htmlFor="timePeriod" className="col-form-label">
-                    Time Period
-                  </label>
-                </div>
-                <div className="col-9">
-                  <select
-                    id="timePeriod"
-                    className="form-select"
-                    onSelect={(event) => {
-                      setPortfolioDetails({
-                        ...portfolioDetails,
-                        TimePeriod: event.target.value,
-                      });
-                    }}
-                  >
-                    <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
-                    <option value="Yearly">Yearly</option>
-                  </select>
                 </div>
               </div>
               {/* Start Date */}
@@ -389,11 +367,17 @@ export default function CreatePortfolioModal() {
                             }
                             placeholder={ele.Symbol.toUpperCase()}
                             onBlur={(event) => {
+                              console.log(chosenStockAllocation);
                               const isValid = validateField(
                                 event,
                                 validStocks.includes(
                                   event.target.value.toUpperCase()
-                                ),
+                                ) &&
+                                  !chosenStockAllocation.some(
+                                    (obj) =>
+                                      obj.Symbol ==
+                                      event.target.value.toUpperCase()
+                                  ),
                                 `stock-${index}`
                               );
                               if (isValid) {
@@ -408,7 +392,7 @@ export default function CreatePortfolioModal() {
                             id="validationServerStockFeedback"
                             className="invalid-feedback"
                           >
-                            Please enter a valid stock symbol.
+                            Please enter a valid, non-duplicate stock symbol.
                           </div>
                         </div>
                         <div className="col">
