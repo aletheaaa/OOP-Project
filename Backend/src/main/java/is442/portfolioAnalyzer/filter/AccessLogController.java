@@ -1,7 +1,5 @@
 package is442.portfolioAnalyzer.filter;
 
-import is442.portfolioAnalyzer.*;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

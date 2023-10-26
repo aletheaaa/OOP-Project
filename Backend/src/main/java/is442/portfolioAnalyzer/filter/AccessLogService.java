@@ -1,7 +1,7 @@
 package is442.portfolioAnalyzer.filter;
 
 import org.springframework.stereotype.Service;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import is442.portfolioAnalyzer.*;
 
@@ -10,8 +10,7 @@ import java.util.List;
 
 @Service
 public class AccessLogService {
-    private final List<String> accessLogList = new ArrayList<>();
-
+    private final List<String> accessLogList = new CopyOnWriteArrayList<>();
     public List<String> getAccessLogList() {
         return accessLogList;
     }
