@@ -1,7 +1,6 @@
 package is442.portfolioAnalyzer.Portfolio;
 
 import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
-import is442.portfolioAnalyzer.JsonModels.GetPortfolioDetails;
 import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
@@ -29,11 +28,16 @@ public class PortfolioController {
     @Autowired
     AssetDAO AssetDAO;
 
+
+
+
+
     @GetMapping("hello")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello, Just testing123!");
     }
 
+    
     @GetMapping("allPortfolios")
     public ResponseEntity<List<Portfolio>> getAllPortfolios() {
         // return ResponseEntity.ok("Connect to Portfolio Service!");
@@ -61,7 +65,6 @@ public class PortfolioController {
     }
 
     // Get portfolio by name and userid
-    
     @GetMapping("{portfolioId}/{userId}")
     public ResponseEntity<Portfolio> getPortfolioByIds(
         @PathVariable Integer portfolioId,
@@ -104,20 +107,17 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Deleted!");
     }
 
-
+    // Get portfolio details ----------------------------------------------------------------------------------------------
     @GetMapping(value = "/getPortfolioDetails/{portfolioId}", produces = "application/json")
-    public ResponseEntity<GetPortfolioDetails> getPortfolioDetails(@PathVariable Integer portfolioId) {
-        GetPortfolioDetails portfolioDetails = portfolioService.getPortfolioDetails(portfolioId);
-        System.out.println("In posting controller");
-        if (portfolioDetails != null) {
-            return ResponseEntity.ok(portfolioDetails);
-        } else {
-            // Handle errors and return an appropriate error response.
-            System.out.println("Portfolio not found!");
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Map<String, Object>> getPortfolioDetails(@PathVariable Integer portfolioId) {
+        Map<String, Object> portfolioDetails = portfolioService.getPortfolioDetails(portfolioId);
 
+        if (portfolioDetails == null) {
+            // Handle the case where the data is not found or invalid inputs.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
+
+        return ResponseEntity.ok(portfolioDetails);
     }
     
     //Get Portfolio Annual Growth by portfolioId and startYear

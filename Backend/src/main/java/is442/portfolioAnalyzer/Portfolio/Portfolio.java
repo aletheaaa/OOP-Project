@@ -24,7 +24,6 @@ public class Portfolio {
     private String portfolioName;
     
     private Double capital;
-    private String timePeriod;
     private String startDate;
     private String description;
 
