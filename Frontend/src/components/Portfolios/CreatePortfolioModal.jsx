@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   createPortfolioAPI,
-  getStockSectorAPI,
   getValidStockSymbolsAPI,
 } from "../../api/portfolio";
 
@@ -17,7 +16,7 @@ export default function CreatePortfolioModal() {
   });
   const [numStockFields, setNumStockFields] = useState(1);
   const [chosenStockAllocation, setChosenStockAllocation] = useState([
-    { Symbol: "", Allocation: 0, id: 0, Sector: "" },
+    { Symbol: "", Allocation: 0, id: 0 },
   ]);
   const [totalStockAlloc, setTotalStockAlloc] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
@@ -59,8 +58,6 @@ export default function CreatePortfolioModal() {
 
   const handleSubmit = async () => {
     console.log("hre");
-    // console.log(portfolioDetails);
-    // console.log(chosenStockAllocation);
 
     // validation
     let isValid = true;
@@ -117,7 +114,6 @@ export default function CreatePortfolioModal() {
       return {
         Symbol: ele.Symbol,
         Allocation: Number(ele.Allocation),
-        Sector: ele.Sector,
       };
     });
     // adding allocation of cash if the total allocation is less than 100
@@ -125,7 +121,6 @@ export default function CreatePortfolioModal() {
       chosenStockAllocationFiltered.push({
         Symbol: "CASHALLOCATION",
         Allocation: 100 - totalStockAlloc,
-        Sector: "CASH",
       });
     }
     const requestBody = {
@@ -171,13 +166,10 @@ export default function CreatePortfolioModal() {
 
   // function to add stock allocation to portfolioDetails
   const addStockAllocToPortfolio = async (stockSymbol, index) => {
-    // setting sector to portfolioDetails to relevant stock
-    const sector = await getStockSectorAPI(stockSymbol);
     const updatedStockAllocation = [...chosenStockAllocation];
     updatedStockAllocation.forEach((ele) => {
       if (ele.id === index) {
         ele.Symbol = stockSymbol.toUpperCase();
-        ele.Sector = sector;
       }
     });
     setChosenStockAllocation(updatedStockAllocation);
@@ -367,6 +359,7 @@ export default function CreatePortfolioModal() {
                             }
                             placeholder={ele.Symbol.toUpperCase()}
                             onBlur={(event) => {
+                              console.log("e");
                               console.log(chosenStockAllocation);
                               const isValid = validateField(
                                 event,

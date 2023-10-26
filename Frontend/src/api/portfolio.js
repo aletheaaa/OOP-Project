@@ -27,29 +27,6 @@ export async function createPortfolioAPI(requestBody) {
 }
 
 // TODO: to connect to finalied API
-export async function getStockSectorAPI(stockSymbol) {
-  try {
-    console.log("this is stocksymbol from api", stockSymbol);
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // };
-    // const response = await axios.get(
-    //   BASE_URL + "/getStockSector/" + stockSymbol,
-    //   config
-    // );
-    // return response;
-    return "Technology";
-  } catch (error) {
-    console.log("Error in createPortfolio API: ");
-    console.log(error);
-    return error;
-  }
-}
-
-// TODO: to connect to finalied API
 export async function getValidStockSymbolsAPI() {
   try {
     // const config = {
