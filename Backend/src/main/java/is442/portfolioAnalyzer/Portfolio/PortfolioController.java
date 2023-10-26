@@ -29,11 +29,16 @@ public class PortfolioController {
     @Autowired
     AssetDAO AssetDAO;
 
+
+
+
+
     @GetMapping("hello")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello, Just testing123!");
     }
 
+    
     @GetMapping("allPortfolios")
     public ResponseEntity<List<Portfolio>> getAllPortfolios() {
         // return ResponseEntity.ok("Connect to Portfolio Service!");
@@ -61,7 +66,6 @@ public class PortfolioController {
     }
 
     // Get portfolio by name and userid
-    
     @GetMapping("{portfolioId}/{userId}")
     public ResponseEntity<Portfolio> getPortfolioByIds(
         @PathVariable Integer portfolioId,

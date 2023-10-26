@@ -1,36 +1,55 @@
-// package is442.portfolioAnalyzer.Stock;
+package is442.portfolioAnalyzer.Stock;
 
-// import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
-// import lombok.RequiredArgsConstructor;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.*;
+import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
+import is442.portfolioAnalyzer.Portfolio.Portfolio;
+import lombok.RequiredArgsConstructor;
 
-// @RestController
-// @RequestMapping("stock")
-// @RequiredArgsConstructor
-// public class StockController {
+import java.util.Map;
 
-//     @Autowired
-//     StockService stockService;
-//     @Autowired
-//     ExternalApiService externalApiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-//     @GetMapping("getDailyStockPrice/{symbol}")
-//     public ResponseEntity<?> getStockDailyPrice(@PathVariable String symbol) {
-//         return ResponseEntity.ok(externalApiService.getDailyStockPrice(symbol));
-//     }
-
-//     @GetMapping("getMonthlyStockPrice/{symbol}")
-//     public ResponseEntity<?> getStockMonthlyPrice(@PathVariable String symbol) {
-//         return ResponseEntity.ok(externalApiService.getMonthlyStockPrice(symbol));
-//     }
+@RestController
+@RequestMapping("stock")
+@RequiredArgsConstructor
+public class StockController {
 
 
-//     // This method is used to get the stock price of a particular stock symbol From API
-//     @GetMapping("updateLatestStockPrice/{symbol}")
-//     public ResponseEntity<?> updateStockLatestPrice(@PathVariable String symbol) {
-//         return ResponseEntity.ok(stockService.updateStockLatestPrice(symbol));
-//     }
+
+    @Autowired
+    StockService stockService;
+
+
+    //Get All Stocks and their Industries
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("getAllStocksAndIndustries")
+    public ResponseEntity<Map<String, String>> getAllStocksAndIndustries() {
+        Map<String, String> industryMap = stockService.getAllStocksAndIndustries();
+        return ResponseEntity.ok(industryMap);
+    }
+
+    //Get All Stocks and their Countries
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("getAllStocksAndCountries")
+    public ResponseEntity<Map<String, String>> getAllStocksAndCountries() {
+        Map<String, String> countryMap = stockService.getAllStocksAndCountries();
+        return ResponseEntity.ok(countryMap);
+    }
+
+
+    //Get All Stocks and their Countries
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("getAllStocksAndCurrencies")
+    public ResponseEntity<Map<String, String>> getAllStocksAndCurrencies() {
+        Map<String, String> currencyMap = stockService.getAllStocksAndCurrencies();
+        return ResponseEntity.ok(currencyMap);
+    }
+
+
     
-// }
+
+
+    
+    
+}
