@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AreaChart from "../../components/Common/AreaChart";
 import DashboardCard from "../../components/Common/DashboardCard";
-import { getPortfolioGrowthByYearAPI } from "../../api/portfolio";
+import {
+  getPortfolioGrowthByYearAPI,
+  getPortfolioGrowthByMonthAPI,
+} from "../../api/portfolio";
 
 export default function PortfolioGrowthLineGraph({
   portfolioId,
@@ -9,18 +12,21 @@ export default function PortfolioGrowthLineGraph({
 }) {
   const [chartData, setChartData] = useState({});
   const [lineGraphConfig, setLineGraphConfig] = useState("annual");
+  const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
+    if (portfolioId == null || portfolioId == null) return;
     const getPortfolioGrowth = async () => {
+      let labels = [];
+      let datasets = [];
       if (lineGraphConfig == "annual") {
         const response = await getPortfolioGrowthByYearAPI(portfolioId, "2021");
         if (response.status != 200) {
           console.log("Error in fetching portfolio growth");
           return;
         }
-
-        const labels = Object.keys(response.data);
-        const datasets = [
+        labels = Object.keys(response.data);
+        datasets = [
           {
             label: portfolioName,
             data: Object.values(response.data),
@@ -32,11 +38,81 @@ export default function PortfolioGrowthLineGraph({
           labels,
           datasets: datasets,
         };
+        const options = {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            title: {
+              display: true,
+              text: "Returns",
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                callback: function (value, index, ticks) {
+                  return this.getLabelForValue(value);
+                },
+              },
+            },
+          },
+        };
+        setChartData(data);
+        setChartOptions(options);
+      } else if (lineGraphConfig == "monthly") {
+        const response = await getPortfolioGrowthByMonthAPI(
+          portfolioId,
+          "2021",
+          "11"
+        );
+        if (response.status != 200) {
+          console.log("Error in fetching portfolio growth");
+          return;
+        }
+        let labels = [];
+        let datasets = [];
+        for (let year of Object.keys(response.data)) {
+          for (let month of Object.keys(response.data[year])) {
+            labels.push(year + "-" + month);
+            datasets.push(response.data[year][month]);
+          }
+        }
+        const data = {
+          labels: labels,
+          datasets: [
+            {
+              label: portfolioName,
+              data: datasets,
+              borderColor: "blue",
+              fill: false,
+            },
+          ],
+        };
+
+        const options = {
+          scales: {
+            x: {
+              ticks: {
+                callback: function (value, index, ticks) {
+                  let dataPoint = this.getLabelForValue(value).split("-");
+                  if (dataPoint[1] == "January") {
+                    return dataPoint[0];
+                  } else {
+                    return "";
+                  }
+                },
+              },
+            },
+          },
+        };
+        setChartOptions(options);
         setChartData(data);
       }
     };
     getPortfolioGrowth();
-  }, []);
+  }, [lineGraphConfig, portfolioId, portfolioName]);
 
   return (
     <div className="card position-static shadow mb-4">
@@ -46,19 +122,22 @@ export default function PortfolioGrowthLineGraph({
           className="form-select w-25"
           aria-label="Default select example"
           onChange={(e) => {
-            console.log("e", e.target.value);
             setLineGraphConfig(e.target.value);
           }}
         >
-          <option value="annual">Annual Returns</option>
-          <option value="quarter">Quarter Returns</option>
+          <option value="annual">Annual Growth</option>
+          <option value="monthly">Monthly Growth</option>
         </select>
       </div>
       <div className="card-body row">
         <div className="chart-area">
-          {chartData && chartData.datasets && chartData.datasets.length > 0 && (
-            <AreaChart data={chartData} />
-          )}
+          {chartData &&
+            chartOptions &&
+            chartData.datasets &&
+            chartData.datasets.length > 0 &&
+            Object.keys(chartOptions).length !== 0 && (
+              <AreaChart data={chartData} options={chartOptions} />
+            )}
         </div>
       </div>
     </div>

@@ -127,7 +127,7 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
   }
 }
 
-// get portfolio growth for the line chart
+// get annual portfolio growth for the line chart
 export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
   try {
     const config = {
@@ -147,6 +147,37 @@ export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
     return response;
   } catch (error) {
     console.log("Error in getPortfolioGrowthByYear API: ");
+    console.log(error);
+    return error;
+  }
+}
+
+// get monthly portfolio growth for the line chart
+export async function getPortfolioGrowthByMonthAPI(
+  portfolioId,
+  startYear,
+  monthIndex
+) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioMonthlyGrowth/" +
+        portfolioId +
+        "/" +
+        startYear +
+        "/" +
+        monthIndex,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioGrowthByMonth API: ");
     console.log(error);
     return error;
   }
