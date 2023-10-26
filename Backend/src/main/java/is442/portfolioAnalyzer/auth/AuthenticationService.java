@@ -12,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+
 import java.util.Optional;
 import java.util.NoSuchElementException;
 
@@ -29,20 +31,33 @@ public class AuthenticationService {
 
     // Create the user, save to the database and return generated token out of it
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .firstName(request.getFirstname())
-                .lastName(request.getLastname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
-        repository.save(user);
-        User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .id(userInfo.getId())
-                .build();
+        try {
+            userserviceimpl.isPasswordValid(request.getPassword());
+
+            var user = User.builder()
+                    .firstName(request.getFirstname())
+                    .lastName(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.USER)
+                    .build();
+
+            repository.save(user);
+            User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
+            var jwtToken = jwtService.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .id(userInfo.getId())
+                    .status("200")
+                    .build();
+        } catch (InvalidPasswordException e) {
+            // Handle the exception and return a 400 Bad Request response
+            return AuthenticationResponse.builder()
+                    .token(null)
+                    .id(null)
+                    .status("400")
+                    .build();
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -60,6 +75,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
+                .status("400")
                 .build();
     }
 }

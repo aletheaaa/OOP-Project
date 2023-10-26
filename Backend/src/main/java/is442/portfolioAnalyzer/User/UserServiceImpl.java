@@ -15,6 +15,7 @@ public class UserServiceImpl implements UserService {
 
 
     private UserDTO userRepository;
+    private UserServiceImpl userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
