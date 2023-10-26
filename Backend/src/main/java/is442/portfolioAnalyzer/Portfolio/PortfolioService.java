@@ -351,44 +351,45 @@ public class PortfolioService {
 
     // Get list of portfolio values by year and month from the starting year and
     // month until the current year and month
-    public Map<String, Map<String, Integer>> getPortfolioMonthlyGrowth(int portfolioId, String startYear,
-            String startMonth) {
+    public Map<String, Map<String, Integer>> getPortfolioMonthlyGrowth(int portfolioId, String startYear, String startMonth) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-
+    
         if (portfolio == null) {
             // Handle the case where the portfolio with the given ID is not found.
             return null;
         }
-
+    
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1; // Adjust for 0-based index
-
+    
         int startYearInt = Integer.parseInt(startYear);
         int startMonthInt = Integer.parseInt(startMonth);
-
+    
         if (startYearInt > currentYear || (startYearInt == currentYear && startMonthInt > currentMonth)) {
             // Handle the case where the start year and month are in the future.
             return null;
         }
-
+    
         Map<String, Map<String, Integer>> portfolioMonthlyValues = new HashMap<>();
-
+    
         for (int year = startYearInt; year <= currentYear; year++) {
             Map<String, Integer> monthlyValues = new LinkedHashMap<>();
+            int startMonthOfYear = (year == startYearInt) ? startMonthInt : 1;
             int endMonth = (year == currentYear) ? currentMonth : 12;
-
-            for (int month = startMonthInt; month <= endMonth; month++) {
+    
+            for (int month = startMonthOfYear; month <= endMonth; month++) {
                 String monthName = getMonthName(month - 1); // Adjust for 0-based index
                 String yearString = Integer.toString(year);
                 int portfolioValue = getPortfolioValueByYearAndMonth(portfolioId, yearString, monthName);
                 monthlyValues.put(monthName, portfolioValue);
             }
-
+    
             portfolioMonthlyValues.put(Integer.toString(year), monthlyValues);
         }
-
+    
         return portfolioMonthlyValues;
     }
+    
 
     // Get the portfolio value at the end of the specified year and month
     public int getPortfolioValueByYearAndMonth(Integer portfolioId, String year, String month) {
@@ -611,6 +612,10 @@ public class PortfolioService {
 
         for (Asset asset : portfolio.getAssets()) {
             // populate json models less GetPortfolioDetails
+
+            
+
+
 
         }
 
