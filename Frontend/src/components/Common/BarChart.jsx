@@ -50,6 +50,6 @@ ChartJS.register(
 //   ],
 // };
 
-export default function BarChart(data) {
-  return <Bar options={data.options} data={data.data} />;
+export default function BarChart({ data, options }) {
+  return <Bar options={options} data={data} />;
 }

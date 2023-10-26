@@ -104,7 +104,6 @@ export default function AreaChart({ data, options }) {
   //     },
   //   },
   // };
-  console.log("topions", options);
   return (
     <div>
       <Line options={options} data={data} />

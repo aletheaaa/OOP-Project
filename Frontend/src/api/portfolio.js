@@ -182,3 +182,27 @@ export async function getPortfolioGrowthByMonthAPI(
     return error;
   }
 }
+
+export async function getPortfolioAnnualReturnsAPI(portfolioId, startYear) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getPortfolioAnnualReturns/" +
+        portfolioId +
+        "/" +
+        startYear,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioAnnualReturns API: ");
+    console.log(error);
+    return error;
+  }
+}
