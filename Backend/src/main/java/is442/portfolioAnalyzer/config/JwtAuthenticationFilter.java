@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.config;
 
+import is442.portfolioAnalyzer.Token.TokenDAO;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // Get the J
     @Autowired
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenDAO tokenDao;
     @Override
     protected void doFilterInternal(
             @Nonnull HttpServletRequest request,
@@ -47,8 +49,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // Get the J
             // Check if user is in the database
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
+            // Check if user's token has not be revoked or expired
+            var isTokenValid = tokenDao.findByToken(jwt)
+                    .map(token -> !token.isExpired() && !token.isRevoked())
+                    .orElse(false); // return false if no usable token
+
             // Check for valid JWT
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 // Update security context for user with valid JWT
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
