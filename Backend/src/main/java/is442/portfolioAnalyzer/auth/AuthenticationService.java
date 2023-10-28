@@ -12,8 +12,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.NoSuchElementException;
+// import java.util.Optional;
+// import java.util.NoSuchElementException;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
 @Service
 @RequiredArgsConstructor
@@ -50,20 +53,31 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
-                        request.getPassword()
-                )
-        );
+                        request.getPassword()));
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + request.getEmail()));
 
-        var jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
                 .build();
     }
+
+    // INCOMPLETE
+    public String getTokenByEmail(String email) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+
+        String jwtToken = jwtService.generateToken(user);
+
+        return jwtToken;
+    }
+
+    public boolean validateEmailWithToken(String email, String token) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+
+        return false;
+    }
 }
-
-
-
-
