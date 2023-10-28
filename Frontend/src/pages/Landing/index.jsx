@@ -9,12 +9,16 @@ export default function Dashboard() {
   useEffect(() => {
     const getUserInfo = async () => {
       const portfolios = await getPortfolios();
+      if (portfolios.status != 200) {
+        console.log("error getting user portfolios");
+        return;
+      }
       setUserName(userName);
       if (portfolios === null) {
         return;
       }
       console.log("portfolios", portfolios.userPortfolios);
-      setPortfolios(portfolios.userPortfolios);
+      setPortfolios(portfolios.data.userPortfolios);
     };
     getUserInfo();
   }, []);

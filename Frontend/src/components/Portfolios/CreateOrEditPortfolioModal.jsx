@@ -35,7 +35,6 @@ export default function CreateOrEditPortfolioModal({
     // loading portfolio details if any if mode is edit
     if (mode) {
       setModeOfModal(mode);
-      // setModeOfModal("Edit");
       const formattedPortfolioDetails = {
         UserId: Number(userId),
         PortfolioName: originalPortfolioDetails.portfolio_name,
@@ -51,16 +50,10 @@ export default function CreateOrEditPortfolioModal({
     // get all valid stock symbols
     const getValidStocks = async () => {
       const response = await getValidStockSymbolsAPI();
-      // checking if axios got error
-      if ("response" in Object.keys(response)) {
-        console.log(
-          "error getting portfolio details: ",
-          response.response.data
-        );
-        return;
-      }
-      if (response.status === 200) {
+      if (response.status == 200) {
         setValidStocks(response.data);
+      } else {
+        setErrorMessage("Error getting valid stock symbols: " + response.data);
       }
     };
     getValidStocks();

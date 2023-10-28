@@ -16,7 +16,6 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
       let portfolioDetails = await getPortfolioPerformanceSummaryAPI(
         portfolioId
       );
-      console.log("portfolioDetails: ", portfolioDetails);
       if (portfolioDetails.status != 200) {
         console.log("Error in fetching portfolio details");
         setErrorMessage(
@@ -44,6 +43,14 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
         </div>
       ) : (
         <>
+          <div className="col-6 col-lg-3 mb-4">
+            <DashboardCard
+              title="Initial Balance"
+              value={InitialBalance}
+              iconClassName="bi-cash-coin"
+              colorClassName="info"
+            />
+          </div>
           <div className="col-6 col-lg-3 mb-4 ">
             <DashboardCard
               title="Net Profit"
@@ -65,14 +72,6 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
               title="Sharpe Ratio"
               value={SharpeRatio}
               iconClassName="bi-coin"
-              colorClassName="info"
-            />
-          </div>
-          <div className="col-6 col-lg-3 mb-4">
-            <DashboardCard
-              title="Sortino Ratio"
-              value={SortinoRatio}
-              iconClassName="bi-cash-coin"
               colorClassName="info"
             />
           </div>

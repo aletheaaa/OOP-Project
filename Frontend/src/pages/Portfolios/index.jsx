@@ -13,6 +13,7 @@ import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowt
 import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
 import DeletePortfolioButton from "../../components/Portfolios/DeletePortfolioButton";
 import CreateOrEditPortfolioModal from "../../components/Portfolios/CreateOrEditPortfolioModal";
+import DeletePortfolioModal from "../../components/Portfolios/DeletePortfolioModal";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -179,6 +180,7 @@ export default function Portfolios() {
           />
           <div style={{ marginLeft: "10px" }}></div>
           <DeletePortfolioButton />
+          <DeletePortfolioModal portfolioId={portfolioId} />
         </div>
         <div className="row mb-3 mt-3">
           <div className="col">

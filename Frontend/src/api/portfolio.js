@@ -39,9 +39,11 @@ export async function getValidStockSymbolsAPI() {
     );
     return response;
   } catch (error) {
-    console.log("Error in getValidStockSymbols API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getValidStockSymbols API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -198,6 +200,29 @@ export async function getPortfolioAnnualReturnsAPI(portfolioId, startYear) {
     return response;
   } catch (error) {
     console.log("Error in getPortfolioAnnualReturns API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
+
+// delete portfolio
+export async function deletePortfolioAPI(portfolioId) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.delete(
+      BASE_URL + "/portfolio/deletePortfolio/" + userId + "/" + portfolioId,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in deletePortfolioAPI API: ", error);
     return {
       status: error.response.status,
       data: error.response.data.message,
