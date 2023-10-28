@@ -31,7 +31,6 @@ public class PortfolioController {
 
 
 
-
     @GetMapping("hello")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello, Just testing123!");
@@ -135,8 +134,8 @@ public class PortfolioController {
     }
 
     //Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
-    @GetMapping("/getPortfolioMonthlyGrowth/{portfolioId}/{startYear}/{startMonth}")
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
+    @GetMapping("/getPortfolioMonthlyGrowth/{portfolioId}/{startYear}/{startMonth}")
     public ResponseEntity<Map<String, Map<String, Integer>>> getPortfolioMonthlyGrowth(
         @PathVariable Integer portfolioId,
         @PathVariable String startYear,
@@ -197,5 +196,30 @@ public class PortfolioController {
     }
     
     
+
+    //Get Countries and Allocations by portfolioID
+    // @GetMapping("getCountries/{portfolioId}")
+    // public ResponseEntity<Map<String, Double>> getCountries(@PathVariable Integer portfolioId) {
+    //     Map<String, Double> countries = portfolioService.getCountries(portfolioId);
+    
+    //     if (countries != null) {
+    //         return ResponseEntity.ok(countries);
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 

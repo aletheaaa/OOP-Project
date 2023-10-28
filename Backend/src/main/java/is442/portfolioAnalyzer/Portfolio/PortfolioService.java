@@ -143,13 +143,24 @@ public class PortfolioService {
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
 
-            // Get the sector of the asset
+            // Get the industry,sector and country of the asset
             if (symbol.equals("CASHALLOCATION")) {
                 asset.setSector("CASHALLOCATION");
+                asset.setIndustry("CASHALLOCATION");
+                asset.setCountry("CASHALLOCATION");
+
             } else {
                 Stock stock = stockDAO.findBySymbol(symbol);
                 String sector = stock.getSector();
                 asset.setSector(sector);
+
+                // Get the industry of the asset
+                String industry = stock.getIndustry();
+                asset.setIndustry(industry);
+
+                // Get the country of the asset
+                String country = stock.getCountry();
+                asset.setCountry(country);
             }
 
 
@@ -260,10 +271,19 @@ public class PortfolioService {
                     Stock stock = stockDAO.findBySymbol(symbol);
                     String sector = stock.getSector();
 
-                    // Set the sector of the asset
+                    //Get the industry of the asset
+                    String industry = stock.getIndustry();
+
+                    //Get the country of the asset
+                    String country = stock.getCountry();
+
+                    // Set the sector, industry, country of the asset
                     newAsset.setSector(sector);
+                    newAsset.setIndustry(industry);
+                    newAsset.setCountry(country);
 
 
+                
                     newAsset.setAllocation(assetCreation.getAllocation());
                     newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
                     newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));

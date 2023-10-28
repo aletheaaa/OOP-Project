@@ -20,4 +20,7 @@ public class StockController {
     public List<String> getAllStockSymbols() {
         return stockService.getAllStockSymbols();
     }
+
+
+
 }
