@@ -36,8 +36,8 @@ public class ForgotPasswordEmail {
    */
 
   public static void forgotPassword(String toEmail, String url) {
-    final String fromEmail = "douglastoh99@gmail.com";
-    final String password = "eodfvguifpoxzkqu";
+    final String fromEmail = "uchef216@gmail.com";
+    final String password = "cnhpdfukrpwseoic";
 
     System.out.println("forgotPassword Start");
     Properties props = new Properties();

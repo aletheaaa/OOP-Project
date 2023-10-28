@@ -40,6 +40,8 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    // REGISTER
+    // ----------------------------------------------------------------------------------------
     // Create the user, save to the database and return generated token out of it
     public AuthenticationResponse register(RegisterRequest request) {
 
@@ -82,6 +84,8 @@ public class AuthenticationService {
 
     }
 
+    // AUTHENTICATE
+    // ----------------------------------------------------------------------------------------
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // Authenticate the user, else will throw exception
         authenticationManager.authenticate(
@@ -101,6 +105,8 @@ public class AuthenticationService {
                 .build();
     }
 
+    // USER TOKENS FUNCTIONALITY
+    // ----------------------------------------------------------------------------------------
     private void revokeAllUserTokens(User user) {
         var validUserToken = tokenDao.findALlValidTokensByUserId(user.getId());
         if (validUserToken.isEmpty()) {
@@ -125,12 +131,22 @@ public class AuthenticationService {
         tokenDao.save(token);
     }
 
-    public void forgotPassword(String email) {
+    // FORGOT PASSWORD
+    // ---------------------------------------------------------------------------------
+    public void forgotPassword(String email, String newPassword, String confirmPassword) {
+
+    }
+
+    public boolean sendPasswordResetLink(String email) {
         String token = getTokenForEmail(email);
-        if (validateEmailWithToken(email, token)) {
-            String url = "http://localhost:8080/forgotPassword?token=" + token;
+        Optional<User> existingUser = repository.findByEmail(email);
+        // Check if user already exists
+        if (existingUser.isPresent()) {
+            String url = "http://localhost:3000/forgotPassword/" + token;
             ForgotPasswordEmail.forgotPassword(email, url);
+            return true;
         }
+        return false;
     }
 
     public String getTokenForEmail(String email) {
@@ -149,7 +165,8 @@ public class AuthenticationService {
         List<Token> tokens = tokenDao.findALlValidTokensByUserId(user.getId());
 
         for (Token existingToken : tokens) {
-            if (existingToken.getToken().equals(token) && !existingToken.isExpired() && !existingToken.isRevoked()) {
+            if (existingToken.getToken().equals(token) && !existingToken.isExpired() && !existingToken.isRevoked()
+                    && existingToken.getUser().equals(user)) {
                 return true;
             }
         }
