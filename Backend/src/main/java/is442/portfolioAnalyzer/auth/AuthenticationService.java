@@ -97,7 +97,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
-                .status("400")
+                .status("200")
                 .build();
     }
 
