@@ -177,9 +177,8 @@ public class PortfolioController {
     }
 
     //Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
-    @GetMapping("/getPortfolioMonthlyGrowth/{userId}/{portfolioId}/{startYear}/{startMonth}")
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
-    @GetMapping("/getPortfolioMonthlyGrowth/{portfolioId}/{startYear}/{startMonth}")
+    @GetMapping("/getPortfolioMonthlyGrowth/{userId}/{portfolioId}/{startYear}/{startMonth}")
     public ResponseEntity<Map<String, Map<String, Integer>>> getPortfolioMonthlyGrowth(
         @PathVariable Integer portfolioId,
         @PathVariable String startYear,
@@ -265,14 +264,28 @@ public class PortfolioController {
         }
     }
     
-    @GetMapping("getIndustries/{portfolioId}")
-    public Map<String,Double> getIndustryAllocation(@PathVariable Integer portfolioId) {
+    @GetMapping("getIndustries/{userId}/{portfolioId}")
+    public Map<String,Double> getIndustryAllocation(
+            @PathVariable Integer portfolioId,
+            @PathVariable Integer userId,
+            @RequestHeader("Authorization") String authHeader) {
+
+        tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
+
         Map<String,Double> getIndustryAllocation = portfolioService.getIndustryAllocation(portfolioId);
         return getIndustryAllocation;
     }
 
-    @GetMapping("getCountries/{portfolioId}")
-    public Map<String,Double> getCountryAllocation(@PathVariable Integer portfolioId) {
+    @GetMapping("getCountries/{userId}/{portfolioId}")
+    public Map<String,Double> getCountryAllocation(
+            @PathVariable Integer portfolioId,
+            @PathVariable Integer userId,
+            @RequestHeader("Authorization") String authHeader) {
+
+        tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
+        portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
+        
         Map<String,Double> getCountryAllocation = portfolioService.getCountryAllocation(portfolioId);
         return getCountryAllocation;
     }
