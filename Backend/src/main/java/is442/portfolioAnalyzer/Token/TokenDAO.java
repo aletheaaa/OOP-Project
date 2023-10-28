@@ -12,7 +12,7 @@ public interface TokenDAO extends JpaRepository<Token, Integer> {
             SELECT t from Token t inner join User u on t.user.id = u.id
             WHERE u.id = :userId AND (t.expired = false OR t.revoked = false)
             """)
-    List<Token> findALlValidTokensByUserId(Integer userId);
+    List<Token> findAllValidTokensByUserId(Integer userId);
 
     Optional<Token> findByToken(String token);
 }
