@@ -96,9 +96,9 @@ export default function PortfolioGrowthLineGraph({
             x: {
               ticks: {
                 callback: function (value, index, ticks) {
-                  let dataPoint = this.getLabelForValue(value).split("-");
-                  if (dataPoint[1] == "January") {
-                    return dataPoint[0];
+                  let dataPoint = this.getLabelForValue(value).split(",");
+                  if (dataPoint[0] == "January") {
+                    return dataPoint[1];
                   } else {
                     return "";
                   }

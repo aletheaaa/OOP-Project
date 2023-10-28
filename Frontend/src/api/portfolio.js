@@ -6,7 +6,6 @@ let userId = sessionStorage.getItem("id");
 
 export async function createPortfolioAPI(requestBody) {
   try {
-    // console.log("this is req body", requestBody);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,15 +50,24 @@ export async function getValidStockSymbolsAPI() {
   }
 }
 
-// TODO: to connect to finalied API
 export async function getPortfolioDetailsAPI(portfolioId) {
-  return {
-    portfolioId: "1",
-    name: "Retirement",
-    description: "retirement plan",
-    totalCapital: 1000,
-    Trades: [],
-  };
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL + "/portfolio/getPortfolioDetails/" + portfolioId,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getPortfolioDetails API: ");
+    console.log(error);
+    return error;
+  }
 }
 
 // asset allocation for indiv stocks & sectors
