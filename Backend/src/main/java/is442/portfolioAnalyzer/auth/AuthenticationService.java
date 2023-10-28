@@ -142,7 +142,7 @@ public class AuthenticationService {
         Optional<User> existingUser = repository.findByEmail(email);
         // Check if user already exists
         if (existingUser.isPresent()) {
-            String url = "http://localhost:3000/forgotPassword/" + token;
+            String url = "http://localhost:3000/resetPassword?token=" + token;
             ForgotPasswordEmail.forgotPassword(email, url);
             return true;
         }

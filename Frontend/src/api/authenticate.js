@@ -71,3 +71,23 @@ export async function resetPassword(email) {
     return error;
   }
 }
+
+export async function confirmResetPassword(email, token) {
+  console.log("[Confirm Reset Password] " + email + " " + token);
+  let requestBody = {
+    email: email,
+    token: token,
+  }
+  try {
+    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", requestBody);
+
+    if (response.status == "200") {
+      console.log(response);
+      return response;
+    }
+    return { code: code, message: message }
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}

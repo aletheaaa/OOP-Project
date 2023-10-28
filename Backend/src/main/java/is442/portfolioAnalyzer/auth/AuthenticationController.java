@@ -45,13 +45,16 @@ public class AuthenticationController {
 
     }
 
+    // Does not work yet
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping("/forgotPassword/{authToken}")
-    public ResponseEntity<?> forgotPassword(@PathVariable String token, @RequestBody String email) {
-        if (service.validateEmailWithToken(email, token)) {
-            return ResponseEntity.ok("AuthToken Validated");
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody String email, @RequestBody String token) {
+        System.out.println(email);
+        System.out.println(token);
+        if (!service.validateEmailWithToken(email, token)) {
+            return ResponseEntity.badRequest().body("Invalid token!");
         }
-        return ResponseEntity.badRequest().body("Invalid token!");
+        return ResponseEntity.ok("AuthToken Validated");
 
     }
 }
