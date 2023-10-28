@@ -1,5 +1,6 @@
 package is442.portfolioAnalyzer.User;
 
+import is442.portfolioAnalyzer.Token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +49,9 @@ public class User implements UserDetails { // UserDetails contains methods from 
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

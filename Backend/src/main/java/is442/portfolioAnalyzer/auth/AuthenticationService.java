@@ -1,5 +1,8 @@
 package is442.portfolioAnalyzer.auth;
 
+import is442.portfolioAnalyzer.Token.Token;
+import is442.portfolioAnalyzer.Token.TokenDAO;
+import is442.portfolioAnalyzer.Token.TokenType;
 import is442.portfolioAnalyzer.User.UserServiceImpl;
 import is442.portfolioAnalyzer.config.*;
 import is442.portfolioAnalyzer.User.Role;
@@ -31,6 +34,7 @@ public class AuthenticationService {
     UserServiceImpl userserviceimpl;
 
     private final UserDTO repository;
+    private final TokenDAO tokenDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -40,11 +44,14 @@ public class AuthenticationService {
 
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
 
+        // Check if user already exists
         if (existingUser.isPresent()) {
-
             User user = userserviceimpl.getUserByEmail(request.getEmail());
             var jwtToken = jwtService.generateToken(user);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
             throw new UserAlreadyExistsException("User already exists");
         }
 
@@ -53,6 +60,7 @@ public class AuthenticationService {
             throw new InvalidPasswordException("Invalid Password");
         } else {
 
+            // Create the user
             var user = User.builder()
                     .firstName(request.getFirstname())
                     .lastName(request.getLastname())
@@ -61,9 +69,12 @@ public class AuthenticationService {
                     .role(Role.USER)
                     .build();
 
-            repository.save(user);
+            var savedUser = repository.save(user);
             User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
             var jwtToken = jwtService.generateToken(user);
+
+            saveUserToken(savedUser, jwtToken);
+
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .id(userInfo.getId())
@@ -72,6 +83,7 @@ public class AuthenticationService {
         }
 
     }
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // Authenticate the user, else will throw exception
@@ -82,7 +94,13 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + request.getEmail()));
 
+<<<<<<< HEAD
         String jwtToken = jwtService.generateToken(user);
+=======
+        var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
+>>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
@@ -90,6 +108,7 @@ public class AuthenticationService {
                 .build();
     }
 
+<<<<<<< HEAD
     // INCOMPLETE
     public String getTokenByEmail(String email) {
         var user = repository.findByEmail(email)
@@ -105,5 +124,29 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
 
         return false;
+=======
+    private void revokeAllUserTokens(User user) {
+        var validUserToken = tokenDao.findALlValidTokensByUserId(user.getId());
+        if (validUserToken.isEmpty()) {
+            return;
+        }
+        validUserToken.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+            tokenDao.save(token);
+        });
+    }
+
+    // Populate the token table with the generated token
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenDao.save(token);
+>>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
     }
 }
