@@ -233,6 +233,7 @@ export default function Portfolios() {
               <PortfolioReturnsBarChart
                 portfolioId={portfolioId}
                 portfolioName={chosenPortfolio.portfolio_name}
+                startDate={chosenPortfolio.start_date}
               />
             </div>
           </div>

@@ -197,8 +197,10 @@ export async function getPortfolioAnnualReturnsAPI(portfolioId, startYear) {
     );
     return response;
   } catch (error) {
-    console.log("Error in getPortfolioAnnualReturns API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getPortfolioAnnualReturns API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }

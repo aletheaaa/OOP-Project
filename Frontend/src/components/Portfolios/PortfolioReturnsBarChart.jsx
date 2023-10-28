@@ -5,9 +5,11 @@ import BarChart from "../Common/BarChart";
 export default function PortfolioReturnsBarChart({
   portfolioId,
   portfolioName,
+  startDate,
 }) {
   const [barChartDataByYear, setBarChartDataByYear] = useState({});
   const [barChartOptions, setBarChartOptions] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (!portfolioId) return;
@@ -15,10 +17,11 @@ export default function PortfolioReturnsBarChart({
     const getPortfolioReturns = async () => {
       let portfolioReturns = await getPortfolioAnnualReturnsAPI(
         portfolioId,
-        "2021"
+        startDate.split("-")[0]
       );
       if (portfolioReturns.status != 200) {
-        console.log("error getting portfolio returns");
+        console.log("error getting portfolio returns", portfolioReturns.data);
+        setErrorMessage(portfolioReturns.data);
         return;
       }
       let options = {
@@ -59,6 +62,11 @@ export default function PortfolioReturnsBarChart({
       </div>
       <div className="card-body row">
         <div className="chart-area">
+          {errorMessage && (
+            <div className="alert text-danger" role="alert">
+              {errorMessage}
+            </div>
+          )}
           {barChartDataByYear &&
             barChartDataByYear.datasets &&
             barChartDataByYear.datasets.length > 0 && (
