@@ -40,21 +40,18 @@ public class SecurityConfiguration {
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(withCorsConfiguration -> {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.addAllowedOrigin("*");
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.addAllowedMethod("*");
+                    withCorsConfiguration.configurationSource(request -> corsConfiguration);
+                })
                 .logout()
                 .logoutUrl("/api/v1/auth/logout")
                 .addLogoutHandler(logoutHandler)
                 .logoutSuccessHandler(
-                        ((request, response, authentication) ->
-                                SecurityContextHolder.clearContext())
-                );
-//                .cors(withCorsConfiguration -> {
-//                    CorsConfiguration corsConfiguration = new CorsConfiguration();
-//                    corsConfiguration.addAllowedOrigin("*");
-//                    corsConfiguration.addAllowedHeader("*");
-//                    corsConfiguration.addAllowedMethod("*");
-//                    withCorsConfiguration.configurationSource(request -> corsConfiguration);
-//                    }
-//                );
+                        ((request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();
     }
 }

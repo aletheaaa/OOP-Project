@@ -15,13 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-// import java.util.Optional;
-// import java.util.NoSuchElementException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -91,7 +92,6 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + request.getEmail()));
 
         String jwtToken = jwtService.generateToken(user);
-        var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
@@ -125,8 +125,15 @@ public class AuthenticationService {
         tokenDao.save(token);
     }
 
-    // INCOMPLETE
-    public String getTokenByEmail(String email) {
+    public void forgotPassword(String email) {
+        String token = getTokenForEmail(email);
+        if (validateEmailWithToken(email, token)) {
+            String url = token + "";
+            ForgotPasswordEmail.forgotPassword(email, url);
+        }
+    }
+
+    public String getTokenForEmail(String email) {
         var user = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
 
@@ -138,6 +145,14 @@ public class AuthenticationService {
     public boolean validateEmailWithToken(String email, String token) {
         var user = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+
+        List<Token> tokens = tokenDao.findALlValidTokensByUserId(user.getId());
+
+        for (Token existingToken : tokens) {
+            if (existingToken.getToken().equals(token) && !existingToken.isExpired() && !existingToken.isRevoked()) {
+                return true;
+            }
+        }
 
         return false;
     }
