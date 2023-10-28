@@ -55,6 +55,6 @@ public class ForgotPasswordEmail {
     };
     Session session = Session.getInstance(props, auth);
 
-    EmailUtil.sendEmail(session, fromEmail, toEmail, "Password Reset Request", token);
+    EmailUtil.sendEmail(session, fromEmail, toEmail, "Password Reset Request", url);
   }
 }

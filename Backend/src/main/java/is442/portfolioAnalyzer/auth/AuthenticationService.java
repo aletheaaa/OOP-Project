@@ -128,7 +128,7 @@ public class AuthenticationService {
     public void forgotPassword(String email) {
         String token = getTokenForEmail(email);
         if (validateEmailWithToken(email, token)) {
-            String url = token + "";
+            String url = "http://localhost:8080/forgotPassword?token=" + token;
             ForgotPasswordEmail.forgotPassword(email, url);
         }
     }
