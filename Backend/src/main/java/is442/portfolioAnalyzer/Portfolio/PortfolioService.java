@@ -537,13 +537,11 @@ public class PortfolioService {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         double finalBalance = getPortfolioFinalBalance(portfolioId);
         double initialBalance = portfolio.getCapital();
-
         // Calculate the time period from current
         int currentYearValue = Year.now().getValue();
         int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4)); // get the year e.g. 2005
         int timePeriod = currentYearValue - startYearValue;
-
-        double CAGR = Math.pow(finalBalance / initialBalance, 1 / timePeriod) - 1;
+        double CAGR = Math.pow(finalBalance / initialBalance, 1.0 / timePeriod) - 1;
         return CAGR * 100; // Convert to percentage
     }
 
@@ -654,6 +652,10 @@ public class PortfolioService {
 
         double finalBalance = this.getPortfolioFinalBalance(portfolioId);
         performanceSummary.setFinalBalance(finalBalance);
+
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+        double initialBalance = portfolio.getCapital();
+        performanceSummary.setInitialBalance(initialBalance);
 
         double cagr = this.getCAGR(portfolioId);
         performanceSummary.setCAGR(cagr);
