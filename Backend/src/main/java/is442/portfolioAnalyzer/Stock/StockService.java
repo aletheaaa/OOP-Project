@@ -3,6 +3,7 @@ package is442.portfolioAnalyzer.Stock;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -41,5 +42,9 @@ public class StockService {
 
         workbook.close();
         excelFile.close();
+    }
+
+    public List<String> getAllStockSymbols(){
+        return stockDAO.getAllStockSymbols();
     }
 }
