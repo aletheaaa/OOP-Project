@@ -3,6 +3,7 @@ package is442.portfolioAnalyzer.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +31,27 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
-    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
-    // "true")
-    // @PostMapping("/forgotPassword")
-    // public ResponseEntity<AuthenticationResponse> forgotPassword(
-    // @RequestBody String email) {
-    // return ResponseEntity.ok(service.forgotPassword(email));
-    // }
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping("/sendPasswordResetLink")
+    public ResponseEntity<?> sendPasswordResetLink(
+            @RequestBody String email) {
+        email = email.replace("%40", "@");
+        email = email.replace("=", "");
+        boolean response = service.sendPasswordResetLink(email);
+        if (!response) {
+            return ResponseEntity.badRequest().body("User not found!");
+        }
+        return ResponseEntity.ok().body("Email sent!");
+
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    @PostMapping("/forgotPassword/{authToken}")
+    public ResponseEntity<?> forgotPassword(@PathVariable String token, @RequestBody String email) {
+        if (service.validateEmailWithToken(email, token)) {
+            return ResponseEntity.ok("AuthToken Validated");
+        }
+        return ResponseEntity.badRequest().body("Invalid token!");
+
+    }
 }

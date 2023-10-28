@@ -2,13 +2,6 @@ package is442.portfolioAnalyzer.Portfolio;
 import is442.portfolioAnalyzer.JsonModels.*;
 import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
-import is442.portfolioAnalyzer.JsonModels.AssetCreation;
-import is442.portfolioAnalyzer.JsonModels.AssetModel;
-import is442.portfolioAnalyzer.JsonModels.AssetsAllocation;
-import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
-import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
-import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
-import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
 import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,13 +136,24 @@ public class PortfolioService {
             assetId.setStockSymbol(assetCreation.getSymbol());
             asset.setAssetId(assetId);
 
-            // Get the sector of the asset
+            // Get the industry,sector and country of the asset
             if (symbol.equals("CASHALLOCATION")) {
                 asset.setSector("CASHALLOCATION");
+                asset.setIndustry("CASHALLOCATION");
+                asset.setCountry("CASHALLOCATION");
+
             } else {
                 Stock stock = stockDAO.findBySymbol(symbol);
                 String sector = stock.getSector();
                 asset.setSector(sector);
+
+                // Get the industry of the asset
+                String industry = stock.getIndustry();
+                asset.setIndustry(industry);
+
+                // Get the country of the asset
+                String country = stock.getCountry();
+                asset.setCountry(country);
             }
 
 
@@ -260,10 +264,19 @@ public class PortfolioService {
                     Stock stock = stockDAO.findBySymbol(symbol);
                     String sector = stock.getSector();
 
-                    // Set the sector of the asset
+                    //Get the industry of the asset
+                    String industry = stock.getIndustry();
+
+                    //Get the country of the asset
+                    String country = stock.getCountry();
+
+                    // Set the sector, industry, country of the asset
                     newAsset.setSector(sector);
+                    newAsset.setIndustry(industry);
+                    newAsset.setCountry(country);
 
 
+                
                     newAsset.setAllocation(assetCreation.getAllocation());
                     newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
                     newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
@@ -667,4 +680,57 @@ public class PortfolioService {
 
         return portfolioDetails;
     }
+
+    public Map<String, Double> getIndustryAllocation(Integer portfolioId){
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+       
+
+        List<String> industries = new ArrayList<>();
+        for (Asset asset : portfolio.getAssets()) {
+            // Check if industry already exists in industries list before adding it
+            if (!industries.contains(asset.getIndustry())) {
+                industries.add(asset.getIndustry());
+            }
+        }
+         Map<String, Double> industryDetails = new HashMap<>();
+         for (String industry : industries) {
+            double totalAllocation = 0;
+             for (Asset asset : portfolio.getAssets()) {
+                if(asset.getIndustry().equals(industry)){
+                    Double allocation = asset.getAllocation();
+                    totalAllocation += allocation;
+                    industryDetails.put(industry,totalAllocation);
+                }
+            }
+         }
+       
+        return industryDetails;
+    }
+
+    public Map<String, Double> getCountryAllocation(Integer portfolioId){
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
+       
+
+        List<String> countries = new ArrayList<>();
+        for (Asset asset : portfolio.getAssets()) {
+            // Check if country already exists in countries list before adding it
+            if (!countries.contains(asset.getCountry())) {
+                countries.add(asset.getCountry());
+            }
+        }
+         Map<String, Double> countryDetails = new HashMap<>();
+         for (String country : countries) {
+            double totalAllocation = 0;
+             for (Asset asset : portfolio.getAssets()) {
+                if(asset.getCountry().equals(country)){
+                    Double allocation = asset.getAllocation();
+                    totalAllocation += allocation;
+                    countryDetails.put(country,totalAllocation);
+                }
+            }
+         }
+       
+        return countryDetails;
+    }
+
 }
