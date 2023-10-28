@@ -195,6 +195,7 @@ public class PortfolioController {
         }
     }
     
+<<<<<<< Updated upstream
     @GetMapping("getIndustries/{portfolioId}")
     public Map<String,Double> getIndustryAllocation(@PathVariable Integer portfolioId) {
         Map<String,Double> getIndustryAllocation = portfolioService.getIndustryAllocation(portfolioId);
@@ -206,6 +207,10 @@ public class PortfolioController {
         Map<String,Double> getCountryAllocation = portfolioService.getCountryAllocation(portfolioId);
         return getCountryAllocation;
     }
+=======
+    
+    
+>>>>>>> Stashed changes
 
     //Get Countries and Allocations by portfolioID
     // @GetMapping("getCountries/{portfolioId}")

@@ -633,6 +633,8 @@ public class PortfolioService {
                     stocks.add(new StockModel(symbol, allocation));
                 }
             }
+
+            
             // Create an AssetModel instance
             AssetModel am = new AssetModel(totalAllocation, stocks);
             // System.out.println(am);
