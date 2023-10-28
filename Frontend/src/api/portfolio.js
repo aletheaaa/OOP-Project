@@ -134,9 +134,11 @@ export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
     );
     return response;
   } catch (error) {
-    console.log("Error in getPortfolioGrowthByYear API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getPortfolioGrowthByYear API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -167,9 +169,11 @@ export async function getPortfolioGrowthByMonthAPI(
     );
     return response;
   } catch (error) {
-    console.log("Error in getPortfolioGrowthByMonth API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getPortfolioGrowthByMonth API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 

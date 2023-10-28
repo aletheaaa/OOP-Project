@@ -9,20 +9,29 @@ import {
 export default function PortfolioGrowthLineGraph({
   portfolioId,
   portfolioName,
+  startDate,
 }) {
   const [chartData, setChartData] = useState({});
   const [lineGraphConfig, setLineGraphConfig] = useState("annual");
   const [chartOptions, setChartOptions] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (portfolioId == null || portfolioId == null) return;
     const getPortfolioGrowth = async () => {
+      setErrorMessage("");
       let labels = [];
       let datasets = [];
       if (lineGraphConfig == "annual") {
-        const response = await getPortfolioGrowthByYearAPI(portfolioId, "2021");
+        const response = await getPortfolioGrowthByYearAPI(
+          portfolioId,
+          startDate.split("-")[0]
+        );
         if (response.status != 200) {
-          console.log("Error in fetching portfolio growth");
+          console.log("Error in fetching portfolio growth", response.data);
+          setChartData({});
+          setChartOptions({});
+          setErrorMessage(response.data);
           return;
         }
         labels = Object.keys(response.data);
@@ -64,11 +73,14 @@ export default function PortfolioGrowthLineGraph({
       } else if (lineGraphConfig == "monthly") {
         const response = await getPortfolioGrowthByMonthAPI(
           portfolioId,
-          "2021",
-          "11"
+          startDate.split("-")[0],
+          startDate.split("-")[1]
         );
         if (response.status != 200) {
-          console.log("Error in fetching portfolio growth");
+          console.log("Error in fetching portfolio growth", response.data);
+          setErrorMessage(response.data);
+          setChartData({});
+          setChartOptions({});
           return;
         }
         let labels = [];
@@ -112,7 +124,7 @@ export default function PortfolioGrowthLineGraph({
       }
     };
     getPortfolioGrowth();
-  }, [lineGraphConfig, portfolioId, portfolioName]);
+  }, [lineGraphConfig, portfolioId, portfolioName, startDate]);
 
   return (
     <div className="card position-static shadow mb-4">
@@ -130,6 +142,11 @@ export default function PortfolioGrowthLineGraph({
         </select>
       </div>
       <div className="card-body row">
+        {errorMessage && (
+          <div className="position-static text-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
         <div className="chart-area">
           {chartData &&
             chartOptions &&

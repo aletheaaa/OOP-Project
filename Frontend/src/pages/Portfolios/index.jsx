@@ -223,6 +223,7 @@ export default function Portfolios() {
               <PortfolioGrowthLineGraph
                 portfolioId={portfolioId}
                 portfolioName={chosenPortfolio.portfolio_name}
+                startDate={chosenPortfolio.start_date}
               />
             </div>
           </div>
