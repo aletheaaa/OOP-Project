@@ -16,11 +16,11 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
       let portfolioDetails = await getPortfolioPerformanceSummaryAPI(
         portfolioId
       );
+      console.log("portfolioDetails: ", portfolioDetails);
       if (portfolioDetails.status != 200) {
         console.log("Error in fetching portfolio details");
         setErrorMessage(
-          "Error in fetching portfolio details: ",
-          portfolioDetails.response.data
+          `Error in fetching portfolio details: ${portfolioDetails.data}`
         );
         return;
       }
@@ -39,7 +39,7 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
   return (
     <>
       {errorMessage ? (
-        <div className="alert alert-danger" role="alert">
+        <div className="position-static alert alert-danger" role="alert">
           {errorMessage}
         </div>
       ) : (
@@ -55,7 +55,7 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
           <div className="col-6 col-lg-3 mb-4">
             <DashboardCard
               title="CAGR"
-              value={CAGR}
+              value={Number.parseFloat(CAGR).toFixed(2) + "%"}
               iconClassName="bi-cash"
               colorClassName="secondary"
             />

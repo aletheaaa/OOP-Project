@@ -25,23 +25,18 @@ export async function createPortfolioAPI(requestBody) {
   }
 }
 
-// TODO: to connect to finalied API
 export async function getValidStockSymbolsAPI() {
   try {
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // };
-    // const response = await axios.get(
-    //   BASE_URL + "/portfolio/getValidStockSymbols",
-    //   config
-    // );
-    const response = {
-      status: 200,
-      data: ["AAPL", "MSFT", "GOOG", "AMZN", "FB", "TSLA"],
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     };
+    const response = await axios.get(
+      BASE_URL + "/stock/allStockSymbols",
+      config
+    );
     return response;
   } catch (error) {
     console.log("Error in getValidStockSymbols API: ");
@@ -59,14 +54,16 @@ export async function getPortfolioDetailsAPI(portfolioId) {
       },
     };
     const response = await axios.get(
-      BASE_URL + "/portfolio/getPortfolioDetails/" + portfolioId,
+      BASE_URL + "/portfolio/getPortfolioDetails/" + userId + "/" + portfolioId,
       config
     );
     return response;
   } catch (error) {
-    console.log("Error in getPortfolioDetails API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getPortfolioDetails API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -80,14 +77,16 @@ export async function getAssetAllocationAPI(portfolioId) {
       },
     };
     const response = await axios.get(
-      BASE_URL + "/portfolio/assetsAllocation/" + portfolioId,
+      BASE_URL + "/portfolio/assetsAllocation/" + userId + "/" + portfolioId,
       config
     );
     return response;
   } catch (error) {
-    console.log("Error in getAssetAllocationBySector API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getAssetAllocationBySector API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -101,14 +100,16 @@ export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
       },
     };
     const response = await axios.get(
-      BASE_URL + "/portfolio/performanceSummary/" + portfolioId,
+      BASE_URL + "/portfolio/performanceSummary/" + userId + "/" + portfolioId,
       config
     );
     return response;
   } catch (error) {
-    console.log("Error in getPortfolioPerformanceSummary API: ");
-    console.log(error);
-    return error;
+    console.log("Error in getPortfolioPerformanceSummary API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -124,6 +125,8 @@ export async function getPortfolioGrowthByYearAPI(portfolioId, startYear) {
     const response = await axios.get(
       BASE_URL +
         "/portfolio/getPortfolioAnnualGrowth/" +
+        userId +
+        "/" +
         portfolioId +
         "/" +
         startYear,
@@ -153,6 +156,8 @@ export async function getPortfolioGrowthByMonthAPI(
     const response = await axios.get(
       BASE_URL +
         "/portfolio/getPortfolioMonthlyGrowth/" +
+        userId +
+        "/" +
         portfolioId +
         "/" +
         startYear +
@@ -179,6 +184,8 @@ export async function getPortfolioAnnualReturnsAPI(portfolioId, startYear) {
     const response = await axios.get(
       BASE_URL +
         "/portfolio/getPortfolioAnnualReturns/" +
+        userId +
+        "/" +
         portfolioId +
         "/" +
         startYear,

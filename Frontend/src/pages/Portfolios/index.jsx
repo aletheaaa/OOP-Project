@@ -5,39 +5,44 @@ import {
   getAssetAllocationAPI,
   getPortfolioDetailsAPI,
 } from "../../api/portfolio";
-import StockPerformanceTable from "../../components/Portfolios/StockPerformance";
 import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
 import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPerformanceSummary";
-import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEditPortfolioButton";
 import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowthLineGraph";
 import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
-import EditPortfolioButton from "../../components/Portfolios/EditPortfolioButton";
-import EditPortfolioModal from "../../components/Portfolios/EditPortfolioModal";
+import DeletePortfolioButton from "../../components/Portfolios/DeletePortfolioButton";
+import CreateOrEditPortfolioModal from "../../components/Portfolios/CreateOrEditPortfolioModal";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
-  const [chosenPortfolio, setChosenPortfolio] = useState(0);
+  const [chosenPortfolio, setChosenPortfolio] = useState({
+    portfolio_name: "Loading...",
+    description: "Loading...",
+    capital: 0,
+    start_date: "Loading...",
+  });
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
   const [
     asssetAllocationByIndividualStock,
     setAssetAllocationByIndividualStock,
   ] = useState({});
+  const [assetListForEditPortfolio, setAssetListForEditPortfolio] = useState([
+    { Symbol: "", Allocation: 0, id: 0 },
+  ]);
 
   const { portfolioId } = useParams(); // get portfolioID from url
+  const [modeOfModal, setModeOfModal] = useState("Create");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (!portfolioId) return;
     // getting the user's portfolio
     const getPortfolioDetails = async () => {
       const response = await getPortfolioDetailsAPI(portfolioId);
-      console.log("this si repsonse", response);
-      // checking if axios got error
-      if ("response" in Object.keys(response)) {
-        console.log(
-          "error getting portfolio details: ",
-          response.response.data
-        );
+      if (response.status != 200) {
+        console.log("error getting portfolio details");
+        setErrorMessage(response.data);
         return;
       }
       setChosenPortfolio(response.data);
@@ -47,7 +52,11 @@ export default function Portfolios() {
     const getAssetAllocation = async () => {
       let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
       if (assetAllocationFromServer.status != 200) {
-        console.log("error getting asset allocation by sector");
+        console.log(
+          "error getting asset allocation: ",
+          assetAllocationFromServer.data
+        );
+        setErrorMessage(assetAllocationFromServer.data);
         return;
       }
       assetAllocationFromServer = assetAllocationFromServer.data.assets;
@@ -83,12 +92,25 @@ export default function Portfolios() {
       const assetAllocationByIndividualStock = () => {
         const stockLabel = [];
         const stockData = [];
+        const editPortfolioDetailsModal = [];
+        let counter = 0;
         Object.keys(assetAllocationFromServer).forEach((element) => {
+          // data formatting for doughnut chart
           assetAllocationFromServer[element].stocks.forEach((stock) => {
             stockLabel.push(stock.symbol);
             stockData.push(stock.allocation);
           });
+          // data formatting for edit portfolio modal
+          assetAllocationFromServer[element].stocks.forEach((stock) => {
+            editPortfolioDetailsModal.push({
+              Symbol: stock.symbol,
+              Allocation: stock.allocation,
+              id: counter,
+            });
+            counter++;
+          });
         });
+        setAssetListForEditPortfolio(editPortfolioDetailsModal);
 
         // Number of data points
         const numberOfDataPoints = stockLabel.length;
@@ -122,11 +144,41 @@ export default function Portfolios() {
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-2">
+        {errorMessage && (
+          <div className="position-static alert alert-danger" role="alert">
+            {errorMessage}
+          </div>
+        )}
         <div className="d-flex justify-content-end">
-          <EditPortfolioButton />
-          <EditPortfolioModal />
+          <CreateOrEditPortfolioButton
+            target="#portfolioIndexPageModal"
+            mode="Edit"
+            setModeOfModal={(val) => {
+              setModeOfModal(val);
+            }}
+          />
+          <CreateOrEditPortfolioModal
+            id="portfolioIndexPageModal"
+            mode={modeOfModal}
+            originalPortfolioDetails={chosenPortfolio}
+            assetList={assetListForEditPortfolio}
+          />
           <div style={{ marginLeft: "10px" }}></div>
-          <CreatePortfolioButton />
+          <CreateOrEditPortfolioButton
+            mode="Create"
+            target="#portfolioIndexPageModal"
+            setModeOfModal={(val) => {
+              setModeOfModal(val);
+            }}
+          />
+          <CreateOrEditPortfolioModal
+            id="portfolioIndexPageModal"
+            mode={modeOfModal}
+            originalPortfolioDetails={chosenPortfolio}
+            assetList={assetListForEditPortfolio}
+          />
+          <div style={{ marginLeft: "10px" }}></div>
+          <DeletePortfolioButton />
         </div>
         <div className="row mb-3 mt-3">
           <div className="col">
@@ -141,7 +193,7 @@ export default function Portfolios() {
         <div className="position-static mb-5 bg-body rounded pb-3">
           <PortfolioNavBar name={chosenPortfolio.portfolio_name} />
           {/* Dashboard Cards */}
-          <div className="row py-2 px-4">
+          <div className="row py-2 px-4 mt-2">
             <PortfolioPerformanceSummary
               portfolioId={portfolioId}
               setCurrentBalanceParent={handleGetCurrentBalance}
@@ -165,12 +217,8 @@ export default function Portfolios() {
               />
             </div>
           </div>
-          {/* Trades table */}
-          <StockPerformanceTable />
-          {/* Performance Summary */}
-          {/* <PerformanceSummaryTable /> */}
           {/* Portfolio Growth Line Graph */}
-          <div className="row mt-5 px-5">
+          <div className="row mt-3 px-5">
             <div className="col">
               <PortfolioGrowthLineGraph
                 portfolioId={portfolioId}

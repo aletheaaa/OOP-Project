@@ -21,7 +21,6 @@ export default function PortfolioReturnsBarChart({
         console.log("error getting portfolio returns");
         return;
       }
-      console.log("portfolio returns", portfolioReturns);
       let options = {
         responsive: true,
         plugins: {

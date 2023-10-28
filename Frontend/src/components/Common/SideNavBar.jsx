@@ -21,12 +21,15 @@ function SideNavBar() {
       const email = profile.email;
       const userName = email ? email.slice(0, email.indexOf("@")) : "";
       const portfolios = await getPortfolios();
+      if (portfolios.status != 200) {
+        console.log("error getting portfolios: ", portfolios.data);
+        return;
+      }
       setUserName(userName);
       if (portfolios === null) {
         return;
       }
-      console.log("portfolios", portfolios.userPortfolios);
-      setPortfolios(portfolios.userPortfolios);
+      setPortfolios(portfolios.data.userPortfolios);
     };
     getUserInfo();
   }, []);
@@ -63,7 +66,7 @@ function SideNavBar() {
               />
             );
           })}
-        {portfolios == null && <div>no portfolios</div>}
+        {portfolios == null && <div>No portfolios</div>}
       </nav>
       <hr />
       <User userName={userName} />

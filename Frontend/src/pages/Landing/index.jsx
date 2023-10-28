@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPortfolios } from "../../api/user";
-import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
+import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEditPortfolioButton";
 import ChangePasswordModal from "../../components/User/ChangePasswordModal";
 
 export default function Dashboard() {
@@ -26,7 +26,7 @@ export default function Dashboard() {
   ) : (
     <div className="">
       No portfolios found. Create a portfolio to get started.{" "}
-      <CreatePortfolioButton />
+      <CreateOrEditPortfolioButton mode="Create" />
     </div>
   );
 }

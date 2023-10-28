@@ -31,7 +31,7 @@ function Authenticate(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let authentication = await authenticate(registering, email, password);
-    console.log(authentication);
+    console.log("thisis authentication return", authentication);
     if (authentication.status <= "400") {
       props.setToken(authentication.data.token);
       props.setId(authentication.data.id);

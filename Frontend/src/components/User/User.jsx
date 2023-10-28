@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../api/authenticate";
 import ChangePasswordButton from "./ChangePasswordButton";
-import CreatePortfolioButton from "../Portfolios/CreatePortfolioButton";
+import CreateOrEditPortfolioButton from "../Portfolios/CreateOrEditPortfolioButton";
 
 function User(props) {
   const navigate = useNavigate();
@@ -37,7 +37,10 @@ function User(props) {
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
-          <CreatePortfolioButton className={"dropdown-item"} />
+          <CreateOrEditPortfolioButton
+            className={"dropdown-item"}
+            mode="Create"
+          />
         </li>
         <li>
           <ChangePasswordButton className={"dropdown-item"} />

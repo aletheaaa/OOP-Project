@@ -4,7 +4,12 @@ import {
   getValidStockSymbolsAPI,
 } from "../../api/portfolio";
 
-export default function CreatePortfolioModal() {
+export default function CreateOrEditPortfolioModal({
+  id,
+  mode,
+  originalPortfolioDetails,
+  assetList,
+}) {
   const [validStocks, setValidStocks] = useState([]);
   const [portfolioDetails, setPortfolioDetails] = useState({
     Capital: 0,
@@ -22,30 +27,44 @@ export default function CreatePortfolioModal() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [modeOfModal, setModeOfModal] = useState("Create");
 
   useEffect(() => {
-    // load user id and set it to portfolioDetails
+    // load user id from session storage
     const userId = sessionStorage.getItem("id");
+    // loading portfolio details if any if mode is edit
+    if (mode) {
+      setModeOfModal(mode);
+      // setModeOfModal("Edit");
+      const formattedPortfolioDetails = {
+        UserId: Number(userId),
+        PortfolioName: originalPortfolioDetails.portfolio_name,
+        Capital: originalPortfolioDetails.capital,
+        Description: originalPortfolioDetails.description,
+        StartDate: originalPortfolioDetails.start_date,
+        AssetList: assetList,
+      };
+      setPortfolioDetails(formattedPortfolioDetails);
+    }
     setPortfolioDetails({ ...portfolioDetails, UserId: Number(userId) });
 
     // get all valid stock symbols
     const getValidStocks = async () => {
       const response = await getValidStockSymbolsAPI();
+      // checking if axios got error
+      if ("response" in Object.keys(response)) {
+        console.log(
+          "error getting portfolio details: ",
+          response.response.data
+        );
+        return;
+      }
       if (response.status === 200) {
         setValidStocks(response.data);
       }
     };
     getValidStocks();
-  }, []);
-
-  const handleStockChange = (event, index) => {
-    const updatedStockAllocation = [...chosenStockAllocation];
-    updatedStockAllocation[index] = {
-      ...updatedStockAllocation[index],
-      Symbol: event.target.value,
-    };
-    setChosenStockAllocation(updatedStockAllocation);
-  };
+  }, [mode, originalPortfolioDetails, assetList]);
 
   const handleAllocationChange = (event, index) => {
     const updatedStockAllocation = [...chosenStockAllocation];
@@ -178,7 +197,7 @@ export default function CreatePortfolioModal() {
   return (
     <div
       className="modal fade"
-      id="createPortfolio"
+      id={id ? id : "createPortfolio"}
       tabIndex="-1"
       aria-labelledby="createPortfolio"
       aria-hidden="true"
@@ -189,9 +208,15 @@ export default function CreatePortfolioModal() {
       >
         <div className="modal-content" style={{ width: "1200px" }}>
           <div className="modal-header">
-            <h1 className="modal-title fs-5" id="createPortfolioLabel">
-              Create Portfolio
-            </h1>
+            {modeOfModal == "Create" ? (
+              <h1 className="modal-title fs-5" id="createPortfolioLabel">
+                Create Portfolio
+              </h1>
+            ) : (
+              <h1 className="modal-title fs-5" id="createPortfolioLabel">
+                Edit Portfolio
+              </h1>
+            )}
             <button
               type="button"
               className="btn-close"
@@ -356,8 +381,10 @@ export default function CreatePortfolioModal() {
                             className={`form-control`}
                             placeholder={ele.Symbol.toUpperCase()}
                             onBlur={(event) => {
-                              console.log("e");
-                              console.log(chosenStockAllocation);
+                              console.log(
+                                "currstocks list",
+                                chosenStockAllocation
+                              );
                               const isValid = validateField(
                                 event,
                                 validStocks.includes(

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import SideNavBar from "../components/Common/SideNavBar";
-import CreatePortfolioModal from "../components/Portfolios/CreatePortfolioModal";
+import CreateOrEditPortfolioModal from "../components/Portfolios/CreateOrEditPortfolioModal";
 import ChangePasswordModal from "../components/User/ChangePasswordModal";
 
 function Root() {
@@ -34,7 +34,7 @@ function Root() {
             className="App-body px-auto"
             style={{ marginLeft: width + "px", width: viewportWidth - width }}
           >
-            <CreatePortfolioModal />
+            <CreateOrEditPortfolioModal />
             <ChangePasswordModal />
             <Outlet />
           </div>
