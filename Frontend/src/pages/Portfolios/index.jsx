@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
-import BarChart from "../../components/Common/BarChart";
 import { generateDoughnutColors } from "../../utils/chartUtils";
 import {
   getAssetAllocationAPI,
@@ -13,6 +12,8 @@ import PortfolioPerformanceSummary from "../../components/Portfolios/PortfolioPe
 import CreatePortfolioButton from "../../components/Portfolios/CreatePortfolioButton";
 import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowthLineGraph";
 import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
+import EditPortfolioButton from "../../components/Portfolios/EditPortfolioButton";
+import EditPortfolioModal from "../../components/Portfolios/EditPortfolioModal";
 
 export default function Portfolios() {
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -27,11 +28,19 @@ export default function Portfolios() {
 
   useEffect(() => {
     if (!portfolioId) return;
-    // TODO: get the user's portfolio from backend
     // getting the user's portfolio
     const getPortfolioDetails = async () => {
-      const portfolioDetails = await getPortfolioDetailsAPI(portfolioId);
-      setChosenPortfolio(portfolioDetails);
+      const response = await getPortfolioDetailsAPI(portfolioId);
+      console.log("this si repsonse", response);
+      // checking if axios got error
+      if ("response" in Object.keys(response)) {
+        console.log(
+          "error getting portfolio details: ",
+          response.response.data
+        );
+        return;
+      }
+      setChosenPortfolio(response.data);
     };
     getPortfolioDetails();
 
@@ -114,11 +123,14 @@ export default function Portfolios() {
     <>
       <div className="container-fluid my-2 px-4 pt-2">
         <div className="d-flex justify-content-end">
+          <EditPortfolioButton />
+          <EditPortfolioModal />
+          <div style={{ marginLeft: "10px" }}></div>
           <CreatePortfolioButton />
         </div>
         <div className="row mb-3 mt-3">
           <div className="col">
-            <h3>{chosenPortfolio.name}</h3>
+            <h3>{chosenPortfolio.portfolio_name}</h3>
             <div>{chosenPortfolio.description}</div>
           </div>
           <div className="col text-end fw-bold">
@@ -127,7 +139,7 @@ export default function Portfolios() {
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">
-          <PortfolioNavBar name={chosenPortfolio.name} />
+          <PortfolioNavBar name={chosenPortfolio.portfolio_name} />
           {/* Dashboard Cards */}
           <div className="row py-2 px-4">
             <PortfolioPerformanceSummary
@@ -162,7 +174,7 @@ export default function Portfolios() {
             <div className="col">
               <PortfolioGrowthLineGraph
                 portfolioId={portfolioId}
-                portfolioName={chosenPortfolio.name}
+                portfolioName={chosenPortfolio.portfolio_name}
               />
             </div>
           </div>
@@ -171,7 +183,7 @@ export default function Portfolios() {
             <div className="col">
               <PortfolioReturnsBarChart
                 portfolioId={portfolioId}
-                portfolioName={chosenPortfolio.name}
+                portfolioName={chosenPortfolio.portfolio_name}
               />
             </div>
           </div>
