@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   createPortfolioAPI,
-  getStockSectorAPI,
   getValidStockSymbolsAPI,
 } from "../../api/portfolio";
 
@@ -9,7 +8,6 @@ export default function CreatePortfolioModal() {
   const [validStocks, setValidStocks] = useState([]);
   const [portfolioDetails, setPortfolioDetails] = useState({
     Capital: 0,
-    TimePeriod: "Monthly",
     StartDate: "",
     PortfolioName: "",
     Description: "",
@@ -18,7 +16,7 @@ export default function CreatePortfolioModal() {
   });
   const [numStockFields, setNumStockFields] = useState(1);
   const [chosenStockAllocation, setChosenStockAllocation] = useState([
-    { Symbol: "", Allocation: 0, id: 0, Sector: "" },
+    { Symbol: "", Allocation: 0, id: 0 },
   ]);
   const [totalStockAlloc, setTotalStockAlloc] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
@@ -60,8 +58,6 @@ export default function CreatePortfolioModal() {
 
   const handleSubmit = async () => {
     console.log("hre");
-    // console.log(portfolioDetails);
-    // console.log(chosenStockAllocation);
 
     // validation
     let isValid = true;
@@ -118,7 +114,6 @@ export default function CreatePortfolioModal() {
       return {
         Symbol: ele.Symbol,
         Allocation: Number(ele.Allocation),
-        Sector: ele.Sector,
       };
     });
     // adding allocation of cash if the total allocation is less than 100
@@ -126,14 +121,13 @@ export default function CreatePortfolioModal() {
       chosenStockAllocationFiltered.push({
         Symbol: "CASHALLOCATION",
         Allocation: 100 - totalStockAlloc,
-        Sector: "CASH",
       });
     }
     const requestBody = {
       ...portfolioDetails,
       AssetList: chosenStockAllocationFiltered,
     };
-    console.log(requestBody);
+    console.log("reqbody", requestBody);
     // send to backend
     setIsLoading(true);
     const response = await createPortfolioAPI(requestBody);
@@ -142,7 +136,9 @@ export default function CreatePortfolioModal() {
       setErrorMessage("");
       setSuccessMessage("Portfolio created successfully.");
     } else {
-      setErrorMessage("Error creating portfolio: " + response.response.data.message);
+      setErrorMessage(
+        "Error creating portfolio: " + response.response.data.message
+      );
       setIsLoading(false);
       return;
     }
@@ -156,6 +152,7 @@ export default function CreatePortfolioModal() {
 
   // function to validate the input fields of the form
   const validateField = (e, condition, elementId) => {
+    console.log("condition", condition);
     if (condition) {
       let node = document.getElementById(elementId);
       node.classList.remove("is-invalid");
@@ -169,13 +166,10 @@ export default function CreatePortfolioModal() {
 
   // function to add stock allocation to portfolioDetails
   const addStockAllocToPortfolio = async (stockSymbol, index) => {
-    // setting sector to portfolioDetails to relevant stock
-    const sector = await getStockSectorAPI(stockSymbol);
     const updatedStockAllocation = [...chosenStockAllocation];
     updatedStockAllocation.forEach((ele) => {
       if (ele.id === index) {
         ele.Symbol = stockSymbol.toUpperCase();
-        ele.Sector = sector;
       }
     });
     setChosenStockAllocation(updatedStockAllocation);
@@ -301,32 +295,8 @@ export default function CreatePortfolioModal() {
                     id="validationServerCapitalFeedback"
                     className="invalid-feedback"
                   >
-                    Please enter a capital.
+                    Please enter a valid positive capital.
                   </div>
-                </div>
-              </div>
-              {/* timePeriod */}
-              <div className="row p-1">
-                <div className="col-3">
-                  <label htmlFor="timePeriod" className="col-form-label">
-                    Time Period
-                  </label>
-                </div>
-                <div className="col-9">
-                  <select
-                    id="timePeriod"
-                    className="form-select"
-                    onSelect={(event) => {
-                      setPortfolioDetails({
-                        ...portfolioDetails,
-                        TimePeriod: event.target.value,
-                      });
-                    }}
-                  >
-                    <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
-                    <option value="Yearly">Yearly</option>
-                  </select>
                 </div>
               </div>
               {/* Start Date */}
@@ -384,16 +354,20 @@ export default function CreatePortfolioModal() {
                             type="text"
                             id={`stock-${index}`}
                             className={`form-control`}
-                            onChange={(event) =>
-                              handleStockChange(event, index)
-                            }
                             placeholder={ele.Symbol.toUpperCase()}
                             onBlur={(event) => {
+                              console.log("e");
+                              console.log(chosenStockAllocation);
                               const isValid = validateField(
                                 event,
                                 validStocks.includes(
                                   event.target.value.toUpperCase()
-                                ),
+                                ) &&
+                                  !chosenStockAllocation.some(
+                                    (obj) =>
+                                      obj.Symbol ==
+                                      event.target.value.toUpperCase()
+                                  ),
                                 `stock-${index}`
                               );
                               if (isValid) {
@@ -408,7 +382,7 @@ export default function CreatePortfolioModal() {
                             id="validationServerStockFeedback"
                             className="invalid-feedback"
                           >
-                            Please enter a valid stock symbol.
+                            Please enter a valid, non-duplicate stock symbol.
                           </div>
                         </div>
                         <div className="col">

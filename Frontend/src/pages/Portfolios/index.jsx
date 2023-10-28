@@ -56,7 +56,7 @@ export default function Portfolios() {
           labels: Object.keys(assetAllocationFromServer),
           datasets: [
             {
-              label: "% of Capital Allocated to Different Sector",
+              label: "% of Capital Allocated",
               data: Object.keys(assetAllocationFromServer).map(
                 (element) => assetAllocationFromServer[element].value
               ),
@@ -91,7 +91,7 @@ export default function Portfolios() {
           labels: stockLabel,
           datasets: [
             {
-              label: "% of Capital Allocated to Different Stocks",
+              label: "% of Capital Allocated",
               data: stockData,
               backgroundColor: doughnutBackgroundColors,
               borderColor: doughnutBorderColors,

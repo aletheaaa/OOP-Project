@@ -75,7 +75,7 @@ export default function PortfolioGrowthLineGraph({
         let datasets = [];
         for (let year of Object.keys(response.data)) {
           for (let month of Object.keys(response.data[year])) {
-            labels.push(year + "-" + month);
+            labels.push(month + ", " + year);
             datasets.push(response.data[year][month]);
           }
         }
