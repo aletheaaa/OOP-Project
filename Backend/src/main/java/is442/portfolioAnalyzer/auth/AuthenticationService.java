@@ -108,7 +108,7 @@ public class AuthenticationService {
     // USER TOKENS FUNCTIONALITY
     // ----------------------------------------------------------------------------------------
     private void revokeAllUserTokens(User user) {
-        var validUserToken = tokenDao.findALlValidTokensByUserId(user.getId());
+        var validUserToken = tokenDao.findAllValidTokensByUserId(user.getId());
         if (validUserToken.isEmpty()) {
             return;
         }
@@ -162,7 +162,7 @@ public class AuthenticationService {
         var user = repository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
 
-        List<Token> tokens = tokenDao.findALlValidTokensByUserId(user.getId());
+        List<Token> tokens = tokenDao.findAllValidTokensByUserId(user.getId());
 
         for (Token existingToken : tokens) {
             if (existingToken.getToken().equals(token) && !existingToken.isExpired() && !existingToken.isRevoked()
