@@ -46,12 +46,9 @@ public class AuthenticationService {
 
         // Check if user already exists
         if (existingUser.isPresent()) {
+
             User user = userserviceimpl.getUserByEmail(request.getEmail());
             var jwtToken = jwtService.generateToken(user);
-<<<<<<< HEAD
-
-=======
->>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
             throw new UserAlreadyExistsException("User already exists");
         }
 
@@ -84,7 +81,6 @@ public class AuthenticationService {
 
     }
 
-
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // Authenticate the user, else will throw exception
         authenticationManager.authenticate(
@@ -94,13 +90,10 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found for email: " + request.getEmail()));
 
-<<<<<<< HEAD
         String jwtToken = jwtService.generateToken(user);
-=======
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
->>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .id(user.getId())
@@ -108,23 +101,6 @@ public class AuthenticationService {
                 .build();
     }
 
-<<<<<<< HEAD
-    // INCOMPLETE
-    public String getTokenByEmail(String email) {
-        var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
-
-        String jwtToken = jwtService.generateToken(user);
-
-        return jwtToken;
-    }
-
-    public boolean validateEmailWithToken(String email, String token) {
-        var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
-
-        return false;
-=======
     private void revokeAllUserTokens(User user) {
         var validUserToken = tokenDao.findALlValidTokensByUserId(user.getId());
         if (validUserToken.isEmpty()) {
@@ -147,6 +123,22 @@ public class AuthenticationService {
                 .expired(false)
                 .build();
         tokenDao.save(token);
->>>>>>> 42ef9c92de537d20a3529cf56cfccc3655ce8d37
+    }
+
+    // INCOMPLETE
+    public String getTokenByEmail(String email) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+
+        String jwtToken = jwtService.generateToken(user);
+
+        return jwtToken;
+    }
+
+    public boolean validateEmailWithToken(String email, String token) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+
+        return false;
     }
 }
