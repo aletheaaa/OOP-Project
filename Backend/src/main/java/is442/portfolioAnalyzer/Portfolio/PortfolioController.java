@@ -195,7 +195,17 @@ public class PortfolioController {
         }
     }
     
-    
+    @GetMapping("getIndustries/{portfolioId}")
+    public Map<String,Double> getIndustryAllocation(@PathVariable Integer portfolioId) {
+        Map<String,Double> getIndustryAllocation = portfolioService.getIndustryAllocation(portfolioId);
+        return getIndustryAllocation;
+    }
+
+    @GetMapping("getCountries/{portfolioId}")
+    public Map<String,Double> getCountryAllocation(@PathVariable Integer portfolioId) {
+        Map<String,Double> getCountryAllocation = portfolioService.getCountryAllocation(portfolioId);
+        return getCountryAllocation;
+    }
 
     //Get Countries and Allocations by portfolioID
     // @GetMapping("getCountries/{portfolioId}")
