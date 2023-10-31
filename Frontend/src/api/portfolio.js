@@ -92,6 +92,29 @@ export async function getAssetAllocationAPI(portfolioId) {
   }
 }
 
+// asset allocation by industry
+export async function getAssetAllocationByIndustryAPI(portfolioId) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL + "/portfolio/getIndustries/" + userId + "/" + portfolioId,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getAssetAllocationByIndustry API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
+
 // this performance summary is used in the cards in the portfolio page
 export async function getPortfolioPerformanceSummaryAPI(portfolioId) {
   try {

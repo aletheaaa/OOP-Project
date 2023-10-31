@@ -11,7 +11,7 @@ const iconList = [
   "bi-graph-down-arrow",
 ];
 
-function SideNavBar() {
+function SideNavBar({ setPortfoliosFromParent }) {
   const [portfolios, setPortfolios] = useState([]);
   const [userName, setUserName] = useState("");
   useEffect(() => {
@@ -30,6 +30,7 @@ function SideNavBar() {
         return;
       }
       setPortfolios(portfolios.data.userPortfolios);
+      setPortfoliosFromParent(portfolios.data.userPortfolios);
     };
     getUserInfo();
   }, []);
@@ -39,17 +40,6 @@ function SideNavBar() {
       id="sidebar"
       className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold"
     >
-      <a
-        href="/"
-        className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-      >
-        <span
-          className="fs-5 d-none d-sm-inline"
-          style={{ letterSpacing: ".2rem" }}
-        >
-          Goldman Sachs
-        </span>
-      </a>
       <nav
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
         id="menu"

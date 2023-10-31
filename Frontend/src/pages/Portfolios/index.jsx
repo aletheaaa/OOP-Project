@@ -3,6 +3,7 @@ import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import { generateDoughnutColors } from "../../utils/chartUtils";
 import {
   getAssetAllocationAPI,
+  getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
@@ -134,6 +135,46 @@ export default function Portfolios() {
         setAssetAllocationByIndividualStock(individualStockDoughnutData);
       };
       assetAllocationByIndividualStock();
+
+      // getting asset allocation by industry
+      const assetAllocationByIndustry = async () => {
+        const response = await getAssetAllocationByIndustryAPI(portfolioId);
+        if (response.status != 200) {
+          console.log(
+            "error getting asset allocation by industry: ",
+            response.data
+          );
+          setErrorMessage(response.data);
+          return;
+        }
+        const industryLabel = [];
+        const industryData = [];
+        Object.keys(assetAllocationFromServer).forEach((key) => {
+          // data formatting for doughnut chart
+          industryLabel.push(key);
+          industryData.push(assetAllocationFromServer[key]);
+        });
+        // Number of data points
+        const numberOfDataPoints = industryLabel.length;
+        // Generate dynamic colors
+        const [doughnutBackgroundColors, doughnutBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+
+        const industryDoughnutData = {
+          labels: industryLabel,
+          datasets: [
+            {
+              label: "% of Capital Allocated",
+              data: industryData,
+              backgroundColor: doughnutBackgroundColors,
+              borderColor: doughnutBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationByIndividualStock(industryDoughnutData);
+      };
+      // assetAllocationByIndustry();
     };
     getAssetAllocation();
   }, [portfolioId]);

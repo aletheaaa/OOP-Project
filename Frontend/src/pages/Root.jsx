@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 import SideNavBar from "../components/Common/SideNavBar";
 import CreateOrEditPortfolioModal from "../components/Portfolios/CreateOrEditPortfolioModal";
 import ChangePasswordModal from "../components/User/ChangePasswordModal";
+import goldmanlogo from "../assets/goldmanlogo.png";
 
 function Root() {
   const [width, setWidth] = React.useState(0);
+  const [portfolios, setPortfolios] = React.useState([]);
   const [viewportWidth, setViewportWidth] = React.useState(0);
   useEffect(() => {
     const sidebarElement = document.getElementById("sidebar");
@@ -20,15 +22,31 @@ function Root() {
       window.innerWidth || 0
     );
     setViewportWidth(width);
-  }, []);
+  }, [portfolios]);
 
   return (
     <div className="App">
-      <div className="App-header">Portfolio Management</div>
+      <div className="App-header py-3" id="topNavBar">
+        <div style={{ width: "500px" }}>
+          <img
+            src={goldmanlogo}
+            style={{ height: "40px", width: "70px", display: "inline" }}
+            className="img-fluid mx-3"
+          />{" "}
+          <a
+            href="/"
+            className="border-white border-start py-3 px-3"
+            style={{ letterSpacing: ".2rem" }}
+          >
+            Portfolio Management
+          </a>
+        </div>
+      </div>
+
       <div className="container-fluid">
         <div className="row">
           <div className="px-0">
-            <SideNavBar />
+            <SideNavBar setPortfoliosFromParent={(val) => setPortfolios(val)} />
           </div>
           <div
             className="App-body px-auto"

@@ -5,16 +5,15 @@
 }
 .App-header {
   position: fixed;
-  height: 5vh;
+  /* height: 10vh; */
   width: 100%;
   background-color: #282c34;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  /* font-size: calc(10px + 2vmin); */
   color: white;
-  /* z-index: 1000; */
+  padding-left: 15px;
+  z-index: 1000;
 }
 .App-body {
   margin: 5vh;
@@ -22,8 +21,8 @@
 
 .sidebar {
   position: fixed;
-  top: 5vh;
-  min-height: 95vh;
+  top: 10vh;
+  min-height: 90vh;
 }
 
 /* .App-logo {
@@ -41,3 +40,8 @@
 .App-link {
   color: #61dafb;
 } */
+
+a {
+  color: white;
+  text-decoration: none;
+}
