@@ -158,21 +158,21 @@ public class PortfolioService {
 
 
             // Set the allocation of the asset
-            asset.setAllocation(assetCreation.getAllocation());
+            // asset.setAllocation(assetCreation.getAllocation());
 
             // Set Monthly Prices of asset from API
             // assetService.updateMonthlyPrices(asset, symbol);
 
             if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                 // Call External API to get the latest price
-                asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
+                // asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                 // Add the quantity purchased based on the portfolio capital and asset
                 // allocation
                 asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation()
                         / assetService.getAssetLatestPrice(symbol));
 
                 // Calculate the total value of the asset
-                asset.setTotalValue(asset.getUnitPrice() * asset.getQuantityPurchased());
+                // asset.setTotalValue(assetService.getLatestPrice(symbol) * asset.getQuantityPurchased());
             }
 
             // System.out.println(asset);
@@ -214,29 +214,33 @@ public class PortfolioService {
                 // Check if the asset is in the portfolio
                 if (existedAssets.contains(symbol)) {
                     if (asset.getAssetId().getStockSymbol().equals(symbol)) {
-                        double oldTotalValue = asset.getTotalValue();
+                        // double oldTotalValue = asset.getTotalValue();
                         // Update the asset
-                        asset.setAllocation(assetCreation.getAllocation());
-                        asset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
+                        // asset.setAllocation(assetCreation.getAllocation());
+                        // asset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
 
                         if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                             // Update the quantity purchased based on the portfolio capital and asset
                             // allocation
-                            double oldQuantityPurchased = asset.getQuantityPurchased();
-                            double stockTotalValueDifference = asset.getTotalValue() - oldTotalValue;
+                            // double oldQuantityPurchased = asset.getQuantityPurchased();
+                            // double stockTotalValueDifference = asset.getTotalValue() - oldTotalValue;
+
                             // Get the additional stock quantity purchased or sold
-                            double stockPurchasedOrSold = stockTotalValueDifference
-                                    / assetService.getAssetLatestPrice(symbol);
-                            asset.setQuantityPurchased(oldQuantityPurchased + stockPurchasedOrSold);
-                            asset.setUnitPrice(asset.getTotalValue() / asset.getQuantityPurchased());
+                            // double stockPurchasedOrSold = stockTotalValueDifference
+                            //         / assetService.getAssetLatestPrice(symbol);
+
+                            asset.setQuantityPurchased(assetCreation.getAllocation() * portfolioUpdate.getCapital()
+                                    / assetService.getAssetLatestPrice(symbol));
+
+                            // asset.setUnitPrice(asset.getTotalValue() / asset.getQuantityPurchased());
                         }
 
                         System.out.println(symbol);
                         System.out.println(assetCreation.getAllocation() + " updated");
                         System.out.println(assetCreation.getAllocation() * portfolioUpdate.getCapital() + " updated");
                         System.out.println(asset.getQuantityPurchased() + " updated");
-                        System.out.println(asset.getUnitPrice() + " updated");
-                        System.out.println(asset.getTotalValue() + " updated");
+                        System.out.println(assetService.getLatestPrice(symbol) + " updated");
+                        // System.out.println(asset.getTotalValue() + " updated");
 
                         System.out.println("--------------------------------------");
 
@@ -277,17 +281,17 @@ public class PortfolioService {
 
 
                 
-                    newAsset.setAllocation(assetCreation.getAllocation());
-                    newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
-                    newAsset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
-                    newAsset.setQuantityPurchased(newAsset.getTotalValue() / newAsset.getUnitPrice());
+                    // newAsset.setAllocation(assetCreation.getAllocation());
+                    // newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
+                    // newAsset.setUnitPrice(assetService.getLatestPrice(symbol));
+                    newAsset.setQuantityPurchased(assetCreation.getAllocation() * portfolioUpdate.getCapital() / assetService.getLatestPrice(symbol));
 
                     System.out.println(symbol + " added");
-                    System.out.println(newAsset.getAllocation() + " added");
-                    System.out.println(newAsset.getTotalValue() + " added");
+                    // System.out.println(newAsset.getAllocation() + " added");
+                    // System.out.println(newAsset.getTotalValue() + " added");
                     System.out.println(newAsset.getQuantityPurchased() + " added");
-                    System.out.println(newAsset.getUnitPrice() + " added");
-                    System.out.println(newAsset.getTotalValue() + " added");
+                    System.out.println(assetService.getLatestPrice(symbol) + " added");
+                    // System.out.println(newAsset.getTotalValue() + " added");
 
                     // Save the new asset into the DB
                     assetDAO.save(newAsset);
@@ -511,7 +515,7 @@ public class PortfolioService {
         double totalAssetsValue = 0;
         for (int i = 0; i < assets.size(); i++) {
             Asset asset = assets.get(i);
-            totalAssetsValue += asset.getTotalValue();
+            totalAssetsValue += assetService.getAssetTotalValue(asset);
         }
         double netProfit = totalAssetsValue - portfolio.getCapital();
         return netProfit;
@@ -519,15 +523,15 @@ public class PortfolioService {
     }
 
 
-    //
-    // // Get portfolio final balance
+    
+    // // Get portfolio final balance at this current point of time
     public double getPortfolioFinalBalance(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         List<Asset> assets = portfolio.getAssets();
         double totalValue = 0;
         for (int i = 0; i < assets.size(); i++) {
             Asset asset = assets.get(i);
-            totalValue += asset.getTotalValue();
+            totalValue += assetService.getAssetTotalValue(asset);
         }
         return totalValue;
     }
@@ -615,6 +619,10 @@ public class PortfolioService {
         }
         System.out.println(sectors);
 
+        //Final Balance of the portfolio
+        double finalBalance = getPortfolioFinalBalance(portfolioId);
+
+
         for (String sector : sectors) {
             double totalAllocation = 0;
             List<StockModel> stocks = new ArrayList<>();
@@ -623,7 +631,7 @@ public class PortfolioService {
             for (Asset asset : portfolio.getAssets()) {
                 if (asset.getSector().equals(sector)) {
                     // Get the value of the asset here
-                    Double allocation = asset.getAllocation();
+                    Double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
 
                     // Create a list of stocks
@@ -696,12 +704,15 @@ public class PortfolioService {
                 industries.add(asset.getIndustry());
             }
         }
+        //Final Balance of the portfolio
+        double finalBalance = getPortfolioFinalBalance(portfolioId);
+
          Map<String, Double> industryDetails = new HashMap<>();
          for (String industry : industries) {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
                 if(asset.getIndustry().equals(industry)){
-                    Double allocation = asset.getAllocation();
+                    Double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     industryDetails.put(industry,totalAllocation);
                 }
@@ -722,12 +733,16 @@ public class PortfolioService {
                 countries.add(asset.getCountry());
             }
         }
+
+        //Final Balance of the portfolio
+        double finalBalance = getPortfolioFinalBalance(portfolioId);
+
          Map<String, Double> countryDetails = new HashMap<>();
          for (String country : countries) {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
                 if(asset.getCountry().equals(country)){
-                    Double allocation = asset.getAllocation();
+                    double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     countryDetails.put(country,totalAllocation);
                 }

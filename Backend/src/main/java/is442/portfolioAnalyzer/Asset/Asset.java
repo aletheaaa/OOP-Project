@@ -27,10 +27,7 @@ public class Asset {
     @EmbeddedId
     private AssetId assetId; //symbol and portfolio id
     private String sector;
-    private double allocation;
-    private double unitPrice; // The average price of each unit which will keep changing with time
     private double quantityPurchased;
-    private double totalValue; //The total value of the asset at current time, this is purely for calculation of net profit for portfolio
     private String industry; 
     private String country;
 
