@@ -17,8 +17,6 @@ public class PerformanceSummary {
     private double CAGR;
     @JsonProperty("SharpeRatio")
     private double SharpeRatio;
-    @JsonProperty("SortinoRatio")
-    private double SortinoRatio;
     
     // Getters and setters
 }

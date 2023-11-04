@@ -11,6 +11,7 @@ import is442.portfolioAnalyzer.Stock.*;
 
 import is442.portfolioAnalyzer.Asset.*;
 
+import java.awt.desktop.SystemSleepEvent;
 import java.time.Year;
 import java.util.*;
 import java.math.BigDecimal;
@@ -349,6 +350,7 @@ public class PortfolioService {
 
         if (portfolio == null) {
             // Handle the case where the portfolio with the given ID is not found.
+            // TODO - remove this
             return null;
         }
 
@@ -357,6 +359,7 @@ public class PortfolioService {
 
         if (startYearInt > currentYear) {
             // Handle the case where the start year is in the future.
+            // TODO - Throw an exception instead of returning null.
             return null;
         }
 
@@ -551,10 +554,13 @@ public class PortfolioService {
 
 
     // Get the portfolio's SharpeRatio ----------------------------------------------------------------------------------------
-    public double getSharpeRatio(int portfolioId, double expectedReturn, double riskFreeRate, double standardDeviation) {
+    public double getSharpeRatio(int portfolioId) {
         // Example: 10% expected return
         // Example: 3% risk-free rate
         // Example: 15% standard deviation
+        double riskFreeRate = 4.57;
+        double expectedReturn = getPortfolioExpectedReturns(portfolioId);
+        double standardDeviation = getPortfolioStandardDeviation(portfolioId);
         return (expectedReturn - riskFreeRate) / standardDeviation;
     }
 
@@ -566,10 +572,13 @@ public class PortfolioService {
 
         // Calculate the time period from current
         int currentYearValue = Year.now().getValue();
+        String startYearValue = portfolio.getStartDate().substring(0, 4); // get the year e.g. 2005
 
         // Calculate the average returns of the portfolio
-        Map<String,Double> annualReturns = getPortfolioAnnualReturns(portfolioId, String.valueOf(currentYearValue));
+        Map<String,Double> annualReturns = getPortfolioAnnualReturns(portfolioId, startYearValue);
         int numYear = annualReturns.size();
+
+        // Get the Mean returns
         double totalAnnualReturns = 0;
         for (Map.Entry<String, Double> entry : annualReturns.entrySet()) {
             totalAnnualReturns += entry.getValue();
@@ -583,6 +592,14 @@ public class PortfolioService {
         }
         double variance = marginOfError / numYear;
 
+        System.out.println("This is for Standard Deviation------------------");
+        System.out.println("The number of years is " + numYear);
+        System.out.println("The total annual returns is " + totalAnnualReturns);
+        System.out.println("The average annual returns is " + averageAnnualReturns);
+        System.out.println("The margin of error is " + marginOfError);
+        System.out.println("The variance is " + Math.sqrt(variance));
+
+
         return Math.sqrt(variance) * 100;
     }
 
@@ -590,13 +607,17 @@ public class PortfolioService {
     // Formula: Total annual returns / number of years
     public double getPortfolioExpectedReturns(int portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
-        Map <String,Double> annualReturns = getPortfolioAnnualGrowth(portfolioId, portfolio.getStartDate().substring(0, 4));
+        Map <String,Double> annualReturns = getPortfolioAnnualReturns(portfolioId, portfolio.getStartDate().substring(0, 4));
         int numYear = annualReturns.size();
         double totalAnnualReturns = 0;
         for (Map.Entry<String, Double> entry : annualReturns.entrySet()) {
             totalAnnualReturns += entry.getValue();
         }
-        return totalAnnualReturns / numYear;
+        System.out.println("This is for Expected Returns------------------");
+        System.out.println("The number of years is " + numYear);
+        System.out.println("The total annual returns is " + totalAnnualReturns);
+        System.out.println("The average annual returns is " + totalAnnualReturns / numYear);
+        return (totalAnnualReturns / numYear) * 100;
     }
 
 
@@ -653,7 +674,7 @@ public class PortfolioService {
     }
 
     public PerformanceSummary getPerformanceSummary(Integer portfolioId) {
-        PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0, 0);
+        PerformanceSummary performanceSummary = new PerformanceSummary(0, 0, 0, 0, 0);
 
         double netProfit = this.getNetProfit(portfolioId);
         performanceSummary.setNetProfit(netProfit);
@@ -668,7 +689,8 @@ public class PortfolioService {
         double cagr = this.getCAGR(portfolioId);
         performanceSummary.setCAGR(cagr);
 
-        // double stdDev = this.calcStandardDeviation()
+        double sharpeRatio = this.getSharpeRatio(portfolioId);
+        performanceSummary.setSharpeRatio(sharpeRatio);
 
         return performanceSummary;
     }
