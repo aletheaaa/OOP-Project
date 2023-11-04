@@ -148,9 +148,7 @@ export default function CreateOrEditPortfolioModal({
       setErrorMessage("");
       setSuccessMessage("Portfolio created successfully.");
     } else {
-      setErrorMessage(
-        "Error creating portfolio: " + response.response.data.message
-      );
+      setErrorMessage("Error creating portfolio: " + response.data);
       setIsLoading(false);
       return;
     }

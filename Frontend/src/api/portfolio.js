@@ -19,9 +19,11 @@ export async function createPortfolioAPI(requestBody) {
     );
     return response;
   } catch (error) {
-    console.log("Error in createPortfolio API: ");
-    console.log(error);
-    return error;
+    console.log("Error in createPortfolio API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
   }
 }
 
@@ -108,6 +110,30 @@ export async function getAssetAllocationByIndustryAPI(portfolioId) {
     return response;
   } catch (error) {
     console.log("Error in getAssetAllocationByIndustry API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
+
+// get asset allocation by country
+export async function getAssetAllocationByCountryAPI(portfolioId) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios.get(
+      BASE_URL + "/portfolio/getCountries/" + userId + "/" + portfolioId,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in getAssetAllocationByCountry API: ", error);
     return {
       status: error.response.status,
       data: error.response.data.message,
