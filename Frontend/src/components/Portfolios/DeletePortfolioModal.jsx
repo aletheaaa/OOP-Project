@@ -9,17 +9,18 @@ export default function DeletePortfolioModal({ portfolioId }) {
   const handleDeletePortfolio = async () => {
     setIsLoading(true);
     console.log("deleting portfolio");
-    // let response = await deletePortfolioAPI(portfolioId);
-    // if (response.status != 200) {
-    //   console.log("error deleting portfolio: ", response.data);
-    //   setErrorMessage(response.data);
-    //   setIsLoading(false);
-    //   return;
-    // }
+    let response = await deletePortfolioAPI(portfolioId);
+    if (response.status != 200) {
+      console.log("error deleting portfolio: ", response.data);
+      setErrorMessage(response.data);
+      setIsLoading(false);
+      return;
+    }
+    setErrorMessage("");
     setSuccessMessage("Portfolio deleted successfully!");
     setIsLoading(false);
     setTimeout(() => {
-      window.location.reload();
+      window.location.href = "/";
     }, 1000);
   };
 

@@ -5,6 +5,7 @@ import {
   getAssetAllocationAPI,
   getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
+  getAssetAllocationByCountryAPI,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
@@ -29,6 +30,10 @@ export default function Portfolios() {
     asssetAllocationByIndividualStock,
     setAssetAllocationByIndividualStock,
   ] = useState({});
+  const [assetAllocationByIndustry, setAssetAllocationByIndustry] = useState(
+    {}
+  );
+  const [assetAllocationByCountry, setAssetAllocationByCountry] = useState({});
   const [assetListForEditPortfolio, setAssetListForEditPortfolio] = useState([
     { Symbol: "", Allocation: 0, id: 0 },
   ]);
@@ -47,7 +52,8 @@ export default function Portfolios() {
         setErrorMessage(response.data);
         return;
       }
-      setChosenPortfolio(response.data);
+      let portfolioDetails = { ...response.data, portfolioId: portfolioId };
+      setChosenPortfolio(portfolioDetails);
     };
     getPortfolioDetails();
 
@@ -104,12 +110,14 @@ export default function Portfolios() {
           });
           // data formatting for edit portfolio modal
           assetAllocationFromServer[element].stocks.forEach((stock) => {
-            editPortfolioDetailsModal.push({
-              Symbol: stock.symbol,
-              Allocation: stock.allocation,
-              id: counter,
-            });
-            counter++;
+            if (stock.symbol != "CASHALLOCATION") {
+              editPortfolioDetailsModal.push({
+                Symbol: stock.symbol,
+                Allocation: stock.allocation,
+                id: counter,
+              });
+              counter++;
+            }
           });
         });
         setAssetListForEditPortfolio(editPortfolioDetailsModal);
@@ -149,10 +157,10 @@ export default function Portfolios() {
         }
         const industryLabel = [];
         const industryData = [];
-        Object.keys(assetAllocationFromServer).forEach((key) => {
+        Object.keys(response.data).forEach((key) => {
           // data formatting for doughnut chart
           industryLabel.push(key);
-          industryData.push(assetAllocationFromServer[key]);
+          industryData.push(response.data[key]);
         });
         // Number of data points
         const numberOfDataPoints = industryLabel.length;
@@ -172,9 +180,49 @@ export default function Portfolios() {
             },
           ],
         };
-        setAssetAllocationByIndividualStock(industryDoughnutData);
+        setAssetAllocationByIndustry(industryDoughnutData);
       };
-      // assetAllocationByIndustry();
+      assetAllocationByIndustry();
+
+      // getting asset allocation by country
+      const assetAllocationByCountry = async () => {
+        const response = await getAssetAllocationByCountryAPI(portfolioId);
+        if (response.status != 200) {
+          console.log(
+            "error getting asset allocation by industry: ",
+            response.data
+          );
+          setErrorMessage(response.data);
+          return;
+        }
+        const countryLabel = [];
+        const countryData = [];
+        Object.keys(response.data).forEach((element) => {
+          // data formatting for doughnut chart
+          countryLabel.push(element);
+          countryData.push(response.data[element]);
+        });
+        // Number of data points
+        const numberOfDataPoints = countryLabel.length;
+        // Generate dynamic colors
+        const [doughnutBackgroundColors, doughnutBorderColors] =
+          generateDoughnutColors(numberOfDataPoints);
+
+        const countryDoughnutData = {
+          labels: countryLabel,
+          datasets: [
+            {
+              label: "% of Capital Allocated",
+              data: countryData,
+              backgroundColor: doughnutBackgroundColors,
+              borderColor: doughnutBorderColors,
+              borderWidth: 1,
+            },
+          ],
+        };
+        setAssetAllocationByCountry(countryDoughnutData);
+      };
+      assetAllocationByCountry();
     };
     getAssetAllocation();
   }, [portfolioId]);
@@ -185,7 +233,7 @@ export default function Portfolios() {
 
   return (
     <>
-      <div className="container-fluid my-2 px-4 pt-2">
+      <div className="container-fluid my-2 px-4 pt-5">
         {errorMessage && (
           <div className="position-static alert alert-danger" role="alert">
             {errorMessage}
@@ -234,7 +282,7 @@ export default function Portfolios() {
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">
-          <PortfolioNavBar name={chosenPortfolio.portfolio_name} />
+          {/* <PortfolioNavBar name={chosenPortfolio.portfolio_name} /> */}
           {/* Dashboard Cards */}
           <div className="row py-2 px-4 mt-2">
             <PortfolioPerformanceSummary
@@ -257,6 +305,22 @@ export default function Portfolios() {
                 asssetAllocation={asssetAllocationByIndividualStock}
                 title="% Allocation by Individual Stocks"
                 tableHeaders={["Stock", "% Allocation"]}
+              />
+            </div>
+          </div>
+          <div className="row px-5">
+            <div className="col-6">
+              <PortfolioDoughnutChart
+                asssetAllocation={assetAllocationByIndustry}
+                title="% Allocation by Industry"
+                tableHeaders={["Industry", "% Allocation"]}
+              />
+            </div>
+            <div className="col-6">
+              <PortfolioDoughnutChart
+                asssetAllocation={assetAllocationByCountry}
+                title="% Allocation by Country"
+                tableHeaders={["Country", "% Allocation"]}
               />
             </div>
           </div>

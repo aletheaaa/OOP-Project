@@ -38,7 +38,8 @@ function SideNavBar({ setPortfoliosFromParent }) {
   return (
     <div
       id="sidebar"
-      className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 bg-dark text-white fw-bold"
+      className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 bg-dark text-white fw-bold"
+      style={{ paddingTop: "100px" }}
     >
       <nav
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"

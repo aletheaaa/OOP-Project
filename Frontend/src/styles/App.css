@@ -21,8 +21,9 @@
 
 .sidebar {
   position: fixed;
-  top: 10vh;
-  min-height: 90vh;
+  /* top: 10vh; */
+  padding-top: 200px;
+  min-height: 100vh;
 }
 
 /* .App-logo {

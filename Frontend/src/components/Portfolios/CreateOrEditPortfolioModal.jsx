@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   createPortfolioAPI,
   getValidStockSymbolsAPI,
+  updatePortfolioAPI,
 } from "../../api/portfolio";
 
 export default function CreateOrEditPortfolioModal({
@@ -28,24 +29,60 @@ export default function CreateOrEditPortfolioModal({
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [modeOfModal, setModeOfModal] = useState("Create");
+  const [portfolioId, setPortfolioId] = useState(0);
 
   useEffect(() => {
     // load user id from session storage
     const userId = sessionStorage.getItem("id");
+    setPortfolioDetails({
+      Capital: 0,
+      StartDate: "",
+      PortfolioName: "",
+      Description: "",
+      UserId: 1,
+      AssetList: [],
+    });
     // loading portfolio details if any if mode is edit
+    console.log("portfolio", mode);
     if (mode) {
       setModeOfModal(mode);
-      const formattedPortfolioDetails = {
-        UserId: Number(userId),
-        PortfolioName: originalPortfolioDetails.portfolio_name,
-        Capital: originalPortfolioDetails.capital,
-        Description: originalPortfolioDetails.description,
-        StartDate: originalPortfolioDetails.start_date,
-        AssetList: assetList,
-      };
-      setPortfolioDetails(formattedPortfolioDetails);
+      if (mode == "Edit") {
+        const formattedPortfolioDetails = {
+          UserId: Number(userId),
+          PortfolioName: originalPortfolioDetails.portfolio_name,
+          Capital: originalPortfolioDetails.capital,
+          Description: originalPortfolioDetails.description,
+          StartDate: originalPortfolioDetails.start_date,
+          AssetList: assetList,
+        };
+        console.log(
+          "this is formtted portfolio detailssss",
+          formattedPortfolioDetails
+        );
+        setPortfolioDetails(formattedPortfolioDetails);
+        setChosenStockAllocation(assetList);
+        setTotalStockAlloc(
+          assetList.reduce((acc, curr) => {
+            return acc + Number(curr.Allocation);
+          }, 0)
+        );
+        setPortfolioId(originalPortfolioDetails.portfolioId);
+      } else {
+        setPortfolioDetails({
+          Capital: 0,
+          StartDate: "",
+          PortfolioName: "",
+          Description: "",
+          UserId: 1,
+          AssetList: [],
+          UserId: Number(userId),
+        });
+        setChosenStockAllocation([{ Symbol: "", Allocation: 0, id: 0 }]);
+        setTotalStockAlloc(0);
+      }
+    } else {
+      setModeOfModal("Create");
     }
-    setPortfolioDetails({ ...portfolioDetails, UserId: Number(userId) });
 
     // get all valid stock symbols
     const getValidStocks = async () => {
@@ -70,7 +107,6 @@ export default function CreateOrEditPortfolioModal({
 
   const handleSubmit = async () => {
     console.log("hre");
-
     // validation
     let isValid = true;
     if (portfolioDetails.PortfolioName.length === 0) {
@@ -142,20 +178,33 @@ export default function CreateOrEditPortfolioModal({
     console.log("reqbody", requestBody);
     // send to backend
     setIsLoading(true);
-    const response = await createPortfolioAPI(requestBody);
-    console.log("response", response);
-    if (response.status === 200) {
-      setErrorMessage("");
-      setSuccessMessage("Portfolio created successfully.");
-    } else {
-      setErrorMessage(
-        "Error creating portfolio: " + response.response.data.message
+    if (modeOfModal == "Edit") {
+      const response = await updatePortfolioAPI(
+        originalPortfolioDetails.portfolioId,
+        requestBody
       );
-      setIsLoading(false);
-      return;
+      console.log("response", response);
+      if (response.status === 200) {
+        setErrorMessage("");
+        setSuccessMessage("Portfolio updated successfully.");
+      } else {
+        setErrorMessage("Error updating portfolio: " + response.data);
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      const response = await createPortfolioAPI(requestBody);
+      console.log("response", response);
+      if (response.status === 200) {
+        setErrorMessage("");
+        setSuccessMessage("Portfolio created successfully.");
+      } else {
+        setErrorMessage("Error creating portfolio: " + response.data);
+        setIsLoading(false);
+        return;
+      }
     }
     setIsLoading(false);
-
     setTimeout(() => {
       window.location.reload();
     }, 1000);
@@ -201,13 +250,13 @@ export default function CreateOrEditPortfolioModal({
       >
         <div className="modal-content" style={{ width: "1200px" }}>
           <div className="modal-header">
-            {modeOfModal == "Create" ? (
+            {modeOfModal == "Edit" ? (
               <h1 className="modal-title fs-5" id="createPortfolioLabel">
-                Create Portfolio
+                Edit Portfolio
               </h1>
             ) : (
               <h1 className="modal-title fs-5" id="createPortfolioLabel">
-                Edit Portfolio
+                Create Portfolio
               </h1>
             )}
             <button
@@ -227,24 +276,28 @@ export default function CreateOrEditPortfolioModal({
                   </label>
                 </div>
                 <div className="col-9">
-                  <input
-                    type="text"
-                    id="name"
-                    className="form-control"
-                    onChange={(event) => {
-                      setPortfolioDetails({
-                        ...portfolioDetails,
-                        PortfolioName: event.target.value,
-                      });
-                    }}
-                    onBlur={(event) => {
-                      validateField(
-                        event,
-                        event.target.value.length > 0,
-                        `name`
-                      );
-                    }}
-                  />
+                  {portfolioDetails && (
+                    <input
+                      disabled={modeOfModal == "Edit"}
+                      type="text"
+                      id="name"
+                      value={portfolioDetails.PortfolioName}
+                      className="form-control"
+                      onChange={(event) => {
+                        setPortfolioDetails({
+                          ...portfolioDetails,
+                          PortfolioName: event.target.value,
+                        });
+                      }}
+                      onBlur={(event) => {
+                        validateField(
+                          event,
+                          event.target.value.length > 0,
+                          `name`
+                        );
+                      }}
+                    />
+                  )}
                   <div
                     id="validationServerPortfolioNameFeedback"
                     className="invalid-feedback"
@@ -262,6 +315,7 @@ export default function CreateOrEditPortfolioModal({
                 </div>
                 <div className="col-9">
                   <textarea
+                    value={portfolioDetails.Description}
                     type="text"
                     id="description"
                     className="form-control"
@@ -296,6 +350,7 @@ export default function CreateOrEditPortfolioModal({
                 </div>
                 <div className="col-9">
                   <input
+                    value={portfolioDetails.Capital}
                     type="number"
                     id="capital"
                     className="form-control"
@@ -326,6 +381,7 @@ export default function CreateOrEditPortfolioModal({
                 </div>
                 <div className="col-9">
                   <input
+                    value={portfolioDetails.StartDate}
                     type="text"
                     id="startDate"
                     placeholder="YYYY-MM"
@@ -445,7 +501,7 @@ export default function CreateOrEditPortfolioModal({
                         {index !== 0 ? (
                           <div className="col-1 d-flex justify-content-center">
                             <button
-                              className="btn btn-secondary h-75"
+                              className="btn btn-secondary"
                               onClick={() => {
                                 setChosenStockAllocation(
                                   chosenStockAllocation.filter(
@@ -526,7 +582,7 @@ export default function CreateOrEditPortfolioModal({
                   handleSubmit();
                 }}
               >
-                Create
+                {modeOfModal == "Edit" ? "Update" : "Create"}
               </button>
             )}
           </div>
