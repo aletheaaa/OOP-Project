@@ -46,8 +46,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 @AutoConfigureMockMvc
 @TestMethodOrder(OrderAnnotation.class)
 public class AuthenticationControllerTest {
-    private String token;
-    private int id;
+    private static String token;
+    private static int id;
     @Autowired
     private MockMvc mockMvc;
 
@@ -68,9 +68,9 @@ public class AuthenticationControllerTest {
         // Create a RegisterRequest object (customize with registration data)
         RegisterRequest registerRequest = new RegisterRequest();
         // registerRequest.setUsername("testuser");
-        registerRequest.setEmail("testuser10@email.com");
+        registerRequest.setEmail("testuser1@email.com");
         registerRequest.setFirstname("test");
-        registerRequest.setLastname("user10");
+        registerRequest.setLastname("user1");
         registerRequest.setPassword("P@$$w0rd");
         // Serialize the object to JSON
         String registerRequestJson = new ObjectMapper().writeValueAsString(registerRequest);
@@ -90,10 +90,10 @@ public class AuthenticationControllerTest {
         AuthenticationResponse response = objectMapper.readValue(responseContent, AuthenticationResponse.class);
 
         // Get the "token" from the parsed object
-        this.token = response.getToken();
+        token = response.getToken();
         // token = token.substring(7);
         // token = "-------"+ token;
-        this.id = response.getId();
+        id = response.getId();
         System.out.println("This is the user's id in register "+ id);
         System.out.println("This is the user's token in register"+ token);
         
@@ -102,8 +102,8 @@ public class AuthenticationControllerTest {
     // public void testAuthenticate() throws Exception {
     //     // Create an AuthenticationRequest object (customize with login data)
     //     AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-    //     authenticationRequest.setEmail("testuser2@email.com");
-    //     authenticationRequest.setPassword("P@$$w0rd");
+    //     authenticationRequest.setEmail("");
+    //     authenticationRequest.setPassword("");
     //     // Serialize the object to JSON
     //     String authenticationRequestJson = new ObjectMapper().writeValueAsString(authenticationRequest);
     //     System.out.println(authenticationRequestJson);
@@ -124,8 +124,8 @@ public class AuthenticationControllerTest {
     @Order(2)
     public void testCreatePortfolio() throws Exception {
         // Assign the values of the global variables to the local variables
-        int id2 = this.id;
-        String token2 = this.token;
+        int id2 = id;
+        String token2 = token;
         // ...
         System.out.println("this is userid in create "+id2);
         System.out.println("this is user token in create "+token2);
@@ -141,7 +141,7 @@ public class AuthenticationControllerTest {
         List<AssetCreation> assetList = new ArrayList<>();
         assetList.add(new AssetCreation("AAPL", 0.5));
         assetList.add(new AssetCreation("PFE", 0.3));
-        assetList.add(new AssetCreation("CASHALLOCATION", 0.2));
+        assetList.add(new AssetCreation("AAIC", 0.2));
         portfolioCreation.setAssetList(assetList);
 
         // Serialize the object to JSON
@@ -153,10 +153,10 @@ public class AuthenticationControllerTest {
          // Pause for 10 seconds
         Thread.sleep(10000);
         // Perform a POST request to the createPortfolio endpoint
-        mockMvc.perform(post("/portfolio/createPortfolio/{userId}", 352) // Replace 1 with the actual user ID
+        mockMvc.perform(post("/portfolio/createPortfolio/{userId}", id2) // Replace 1 with the actual user ID
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(portfolioCreationJson)
-                .header("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjEwQGVtYWlsLmNvbSIsImlhdCI6MTY5OTExMzU1MiwiZXhwIjoxNjk5MTk5OTUyfQ.uUHdtJTJgJcJaPUCZZwSOOW8aHR5QZwxscEPyA8tXCM")) // Replace with a valid auth token
+                .header("Authorization", "Bearer " + token2)) // Replace with a valid auth token
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
