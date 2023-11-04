@@ -191,7 +191,7 @@ public class PortfolioService {
     // UPDATE PORTFOLIO
     // ---------------------------------------------------------------------------------------------------
     public void updatePortfolio(PortfolioUpdate portfolioUpdate, Integer portfolioId) {
-        Portfolio portfolio = findByPortfolioId(portfolioUpdate.getPortfolioId());
+        Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
         // Set the portfolio capital, description, startDate, timePeriod
         portfolio.setPortfolioName(portfolioUpdate.getPortfolioName());

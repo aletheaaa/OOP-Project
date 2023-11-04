@@ -12,11 +12,12 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class PortfolioUpdate {
-    @Id
+
     private Integer PortfolioId;
     private double Capital;
     private String TimePeriod;
     private String StartDate;
+    @Id
     private String PortfolioName;
     private String Description;
     private Integer UserId;
