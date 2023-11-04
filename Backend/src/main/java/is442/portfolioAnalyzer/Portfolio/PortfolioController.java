@@ -38,9 +38,10 @@ public class PortfolioController {
 
 
 
-    @GetMapping("hello")
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hello, Just testing123!");
+    @GetMapping("test")
+    public double test() {
+        
+        return assetService.getLatestPrice("IBM");
     }
 
 

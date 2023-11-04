@@ -34,6 +34,7 @@ public class AssetService {
     ExternalApiService externalApiService;
 
 
+
     @PostConstruct
     public void updateClosingPricesOnStartup() {
 
@@ -52,7 +53,7 @@ public class AssetService {
         List<String> symbols = getUniqueSymbols(); // Implement this method to get unique symbols
 
         for (String symbol : symbols) {
-            double latestClosingPrice = getAssetLatestPrice(symbol);
+            double[] priceAndDivident = getAssetLatestPriceAndDivident(symbol);
 
             AssetMonthlyPriceId id = new AssetMonthlyPriceId();
             id.setYear(String.valueOf(currentYear));
@@ -63,8 +64,8 @@ public class AssetService {
             // System.out.println("TRIGGERED");
             if (assetMonthlyPriceOptional.isPresent()) {
                 AssetMonthlyPrice assetMonthlyPrice = assetMonthlyPriceOptional.get();
-                assetMonthlyPrice.setClosingPrice(latestClosingPrice);
-                System.out.println("THIS IS THE CLOSING PRICE: " + latestClosingPrice);
+                assetMonthlyPrice.setClosingPrice(priceAndDivident[0]);
+                assetMonthlyPrice.setDividendAmount(priceAndDivident[1]);
                 assetMonthlyPriceDAO.save(assetMonthlyPrice);
             }
         }
@@ -82,6 +83,52 @@ public class AssetService {
         return assetDAO.findByAssetIdPortfolioId(portfolioId);
     }
 
+    //Get Asset's Total Value by symbol
+    public double getAssetTotalValue(Asset asset){
+        // Get the latest price of the asset
+        double latestPrice = getLatestPrice(asset.getAssetId().getStockSymbol());
+
+        //Get Quantity purchased of the asset
+        double quantityPurchased = asset.getQuantityPurchased();
+
+        double totalValue = latestPrice * quantityPurchased;
+
+        return totalValue;
+    }
+
+    //Get Asset's Current Allocation (Percentage) e.g. 0.5 
+    public double getAssetAllocation(Asset asset, double portfolioFinalBalance) {
+
+
+        // Get the total value of the asset
+        double assetValue = getAssetTotalValue(asset);
+
+        // Calculate the allocation
+        double allocation = assetValue / portfolioFinalBalance;
+
+        return allocation;
+    }
+
+    //Get Asset Latest Price by symbol from Database
+     public double getLatestPrice(String symbol) {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1; // Adjust for 0-based index
+        String currentMonthName = getMonthName(currentMonth - 1); // Adjust for 0-based index
+
+        // Use the AssetMonthlyPriceDAO to fetch the latest price by symbol, year, and month
+        Optional<Double> latestPriceOptional = assetMonthlyPriceDAO.findLatestPriceBySymbolAndYearAndMonth(
+            symbol,
+            Integer.toString(currentYear),
+            currentMonthName
+        );
+
+        // If a price is found, return it; otherwise, return 0.0
+        return latestPriceOptional.orElse(0.0);
+    }
+
+
+
+    //Get Asset Price by symbol from API
     public double getAssetLatestPrice(String symbol) {
         try {
             TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getDailyStockPrice(symbol).getBody();
@@ -94,6 +141,26 @@ public class AssetService {
             return 0;
         }
     }
+
+    //Get Asset Latest Price and Divident Amount by symbol from API
+    public double[] getAssetLatestPriceAndDivident(String symbol) {
+        try {
+            TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getDailyStockPrice(symbol).getBody();
+
+            
+            double[] priceAndDivident = new double[2];
+            priceAndDivident[0] = response.getStockUnits().get(0).getClose();
+            priceAndDivident[1] = response.getStockUnits().get(0).getDividendAmount();
+
+            return priceAndDivident;
+        } catch (Exception e) {
+            // TODO
+            // throw exception if symbol not found
+
+            return null;
+        }
+    }
+
 
 
     // Get value of asset at the end of the specified year
@@ -205,9 +272,9 @@ public class AssetService {
     }
 
     // Get the Total price of the asset by symbol and date
-     public Double getTotalValue(Asset asset){
-        return asset.getQuantityPurchased() * asset.getUnitPrice();
-    }
+    //  public Double getTotalValue(Asset asset){
+    //     return asset.getQuantityPurchased() * asset.getUnitPrice();
+    // }
 
     // HELPER METHODS------------------------------------------------------------------------------------------------
     // Helper method to get month name based on its number (0-based index).
@@ -249,23 +316,5 @@ public class AssetService {
         long recordCount = assetMonthlyPriceDAO.count();
         return recordCount == 0;
     }
-
-    //    //Get Annual Growth of an Asset by symbol
-    //    public double getAnnualGrowth(String symbol) {
-    //        // Get the latest price of the asset
-    //        double latestPrice = getAssetLatestPrice(symbol);
-    //
-    //        // Get the price of the asset 1 year ago
-    //        String date = "2020-01";
-    //        double priceOneYearAgo = getAssetPriceBySymbolAndDate(symbol, date);
-    //
-    //        // Calculate the annual growth
-    //        double annualGrowth = (latestPrice - priceOneYearAgo) / priceOneYearAgo * 100;
-    //
-    //        return annualGrowth;
-    //    }
-
-
-   
 
 }
