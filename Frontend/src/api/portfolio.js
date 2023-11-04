@@ -278,3 +278,28 @@ export async function deletePortfolioAPI(portfolioId) {
     };
   }
 }
+
+// update portfolio
+export async function updatePortfolioAPI(portfolioId, requestBody) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await axios.put(
+      BASE_URL + "/portfolio/updatePortfolio/" + userId + "/" + portfolioId,
+      requestBody,
+      config
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in updatePortfolioAPI API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
