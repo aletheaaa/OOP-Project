@@ -8,6 +8,7 @@ function Authenticate(props) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [resetEmail, setResetEmail] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState([]); // For RED Errors
   const [notifications, setNotifications] = useState([]); // For other messages e.g. Registration successful
 
@@ -51,7 +52,9 @@ function Authenticate(props) {
 
   const handleForgotPassword = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     let forgotPassword = await resetPassword(resetEmail);
+    setIsLoading(false);
     console.log(forgotPassword);
   };
 
@@ -165,7 +168,7 @@ function Authenticate(props) {
                   onChange={handleResetEmailChange}
                 />
                 <p className="form-text">
-                  We will send you a password reset link via email.
+                  We will reset your password and send it to you via email.
                 </p>
               </div>
             </div>
@@ -177,13 +180,25 @@ function Authenticate(props) {
               >
                 Close
               </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleForgotPassword}
-              >
-                Reset Password
-              </button>
+                {isLoading ? (
+                  <button className="btn btn-primary" type="button" disabled>
+                    <span
+                      className="spinner-border spinner-border-sm mr-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>{" "}
+                    Loading...
+                  </button>
+                ) : (<button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleForgotPassword}
+                >
+                  Reset Password
+                </button>
+                )
+              }
+              
             </div>
           </div>
         </div>

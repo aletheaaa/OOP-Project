@@ -10,6 +10,7 @@ import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
 import is442.portfolioAnalyzer.ExceptionHandler.*;
+import is442.portfolioAnalyzer.Tools.RandomStringGenerator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -137,40 +138,49 @@ public class AuthenticationService {
 
     }
 
-    public boolean sendPasswordResetLink(String email) {
-        String token = getTokenForEmail(email);
+    public boolean resetPassword(String email) {
+        // String token = getTokenForEmail(email);
         Optional<User> existingUser = repository.findByEmail(email);
         // Check if user already exists
         if (existingUser.isPresent()) {
-            String url = "http://localhost:3000/resetPassword?token=" + token;
-            ForgotPasswordEmail.forgotPassword(email, url);
+            String newPassword = "New Password: "
+                    + RandomStringGenerator.generateRandomString(RandomStringGenerator.getRandomNumber(10, 20));
+            ForgotPasswordEmail.forgotPassword(email, newPassword);
+            User user = existingUser.get();
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            repository.save(user);
+
             return true;
         }
         return false;
     }
 
-    public String getTokenForEmail(String email) {
-        var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+    // public String getTokenForEmail(String email) {
+    // var user = repository.findByEmail(email)
+    // .orElseThrow(() -> new UserNotFoundException("User not found for email: " +
+    // email));
 
-        String jwtToken = jwtService.generateToken(user);
+    // String jwtToken = jwtService.generateToken(user);
 
-        return jwtToken;
-    }
+    // return jwtToken;
+    // }
 
-    public boolean validateEmailWithToken(String email, String token) {
-        var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
+    // public boolean validateEmailWithToken(String email, String token) {
+    // var user = repository.findByEmail(email)
+    // .orElseThrow(() -> new UserNotFoundException("User not found for email: " +
+    // email));
 
-        List<Token> tokens = tokenDao.findAllValidTokensByUserId(user.getId());
+    // List<Token> tokens = tokenDao.findAllValidTokensByUserId(user.getId());
 
-        for (Token existingToken : tokens) {
-            if (existingToken.getToken().equals(token) && !existingToken.isExpired() && !existingToken.isRevoked()
-                    && existingToken.getUser().equals(user)) {
-                return true;
-            }
-        }
+    // for (Token existingToken : tokens) {
+    // if (existingToken.getToken().equals(token) && !existingToken.isExpired() &&
+    // !existingToken.isRevoked()
+    // && existingToken.getUser().equals(user)) {
+    // return true;
+    // }
+    // }
 
-        return false;
-    }
+    // return false;
+    // }
 }

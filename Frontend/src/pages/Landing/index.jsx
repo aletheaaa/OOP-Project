@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getPortfolios } from "../../api/user";
 import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEditPortfolioButton";
 import ChangePasswordModal from "../../components/User/ChangePasswordModal";
+import ComparePortfolios from "../../components/Portfolios/ComparePortfolios";
 
 export default function Dashboard() {
   const [portfolios, setPortfolios] = useState([]);
@@ -41,6 +42,7 @@ export default function Dashboard() {
   return portfolios && portfolios.length != 0 ? (
     <div className="p-5">
       Please select portfolio to view from side menu <ChangePasswordModal />
+      <ComparePortfolios portfolios={portfolios} />
     </div>
   ) : (
     <div

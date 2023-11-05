@@ -32,12 +32,12 @@ public class AuthenticationController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping("/sendPasswordResetLink")
-    public ResponseEntity<?> sendPasswordResetLink(
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(
             @RequestBody String email) {
         email = email.replace("%40", "@");
         email = email.replace("=", "");
-        boolean response = service.sendPasswordResetLink(email);
+        boolean response = service.resetPassword(email);
         if (!response) {
             return ResponseEntity.badRequest().body("User not found!");
         }
@@ -45,16 +45,19 @@ public class AuthenticationController {
 
     }
 
-    // Does not work yet
-    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
-    @PostMapping("/resetPassword")
-    public ResponseEntity<?> resetPassword(@RequestBody String email, @RequestBody String token) {
-        System.out.println(email);
-        System.out.println(token);
-        if (!service.validateEmailWithToken(email, token)) {
-            return ResponseEntity.badRequest().body("Invalid token!");
-        }
-        return ResponseEntity.ok("AuthToken Validated");
+    // // Does not work yet
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
+    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
+    // "true")
+    // @PostMapping("/resetPassword")
+    // public ResponseEntity<?> resetPassword(@RequestBody String email,
+    // @RequestBody String token) {
+    // System.out.println("email=" + email);
+    // System.out.println(token);
+    // if (!service.validateEmailWithToken(email, token)) {
+    // return ResponseEntity.badRequest().body("Invalid token!");
+    // }
+    // return ResponseEntity.ok("AuthToken Validated");
 
-    }
+    // }
 }

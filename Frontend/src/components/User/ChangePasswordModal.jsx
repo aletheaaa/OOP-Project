@@ -5,6 +5,7 @@ export default function ChangePasswordModal() {
   const [oldPassword, setOldPassword] = useState();
   const [newPassword, setNewPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState(""); // For RED Errors
   const [notifications, setNotifications] = useState(""); // For other messages e.g. Registration successful
@@ -23,11 +24,13 @@ export default function ChangePasswordModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     let changePasswordStatus = await changePassword(
       oldPassword,
       newPassword,
       confirmPassword
     );
+    setIsLoading(false);
     console.log(changePasswordStatus);
     if (changePasswordStatus.status == "200") {
       setErrors("");
@@ -99,13 +102,24 @@ export default function ChangePasswordModal() {
                   />
                 </div>
                 <div className="mb-3">
-                  <button
-                    type="submit"
-                    className="btn btn-block btn-primary"
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </button>
+                  {isLoading ? (
+                      <button className="btn btn-primary" type="button" disabled>
+                        <span
+                          className="spinner-border spinner-border-sm mr-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>{" "}
+                        Loading...
+                      </button>
+                    ) : (
+                    <button
+                      type="submit"
+                      className="btn btn-block btn-primary"
+                      onClick={handleSubmit}
+                    >
+                      Submit
+                    </button>
+                  )}
                 </div>
               </form>
             </div>

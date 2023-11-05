@@ -58,11 +58,11 @@ export async function authenticate(registering, email, password) {
 export async function resetPassword(email) {
   console.log("[Forgot Password] " + email);
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/sendPasswordResetLink", email);
+    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", email);
 
     if (response.status == "200") {
       console.log(response);
-      alert("Password reset link sent to " + email);
+      alert("Resetted password sent to " + email);
       return response;
     }
     return { code: code, message: message }
@@ -74,12 +74,9 @@ export async function resetPassword(email) {
 
 export async function confirmResetPassword(email, token) {
   console.log("[Confirm Reset Password] " + email + " " + token);
-  let requestBody = {
-    email: email,
-    token: token,
-  }
+
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", requestBody);
+    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", {email: email, token: token});
 
     if (response.status == "200") {
       console.log(response);

@@ -278,3 +278,21 @@ export async function deletePortfolioAPI(portfolioId) {
     };
   }
 }
+
+// compare portfolio
+export async function comparePortfolio(portfolio1Id, portfolio2Id) {
+  try {
+    let portfolio1Info = getPortfolioPerformanceSummaryAPI(portfolio1Id);
+    let portfolio2Info = getPortfolioPerformanceSummaryAPI(portfolio2Id);
+    let response = portfolio1Info.data;
+    console.log(response);
+    return response;
+  }
+  catch (error) {
+    console.log("Error in comparePortfolio API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
