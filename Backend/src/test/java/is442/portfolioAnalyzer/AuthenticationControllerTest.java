@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import is442.portfolioAnalyzer.Asset.Asset;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
+import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.auth.AuthenticationController;
@@ -11,6 +12,8 @@ import is442.portfolioAnalyzer.auth.AuthenticationRequest;
 import is442.portfolioAnalyzer.auth.AuthenticationService;
 import is442.portfolioAnalyzer.auth.AuthenticationResponse;
 import is442.portfolioAnalyzer.auth.RegisterRequest;
+
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -31,12 +34,18 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.Portfolio.PortfolioController;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -68,9 +77,9 @@ public class AuthenticationControllerTest {
         // Create a RegisterRequest object (customize with registration data)
         RegisterRequest registerRequest = new RegisterRequest();
         // registerRequest.setUsername("testuser");
-        registerRequest.setEmail("testuser1@email.com");
+        registerRequest.setEmail("testuser5@email.com");
         registerRequest.setFirstname("test");
-        registerRequest.setLastname("user1");
+        registerRequest.setLastname("user5");
         registerRequest.setPassword("P@$$w0rd");
         // Serialize the object to JSON
         String registerRequestJson = new ObjectMapper().writeValueAsString(registerRequest);
@@ -98,28 +107,7 @@ public class AuthenticationControllerTest {
         System.out.println("This is the user's token in register"+ token);
         
     }
-    //  @Test
-    // public void testAuthenticate() throws Exception {
-    //     // Create an AuthenticationRequest object (customize with login data)
-    //     AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-    //     authenticationRequest.setEmail("");
-    //     authenticationRequest.setPassword("");
-    //     // Serialize the object to JSON
-    //     String authenticationRequestJson = new ObjectMapper().writeValueAsString(authenticationRequest);
-    //     System.out.println(authenticationRequestJson);
-    //     // Perform a POST request to the authenticate endpoint
-    //     ResultActions result = mockMvc.perform(post("/api/v1/auth/authenticate")
-    //             .contentType(MediaType.APPLICATION_JSON)
-    //             .content(authenticationRequestJson))
-    //             .andExpect(status().isOk())
-    //             .andDo(MockMvcResultHandlers.print());
-        
-    // }
-//     @Test
-// public void testNextTestCase() throws Exception {
-//     Thread.sleep(30000); // pause for 30 seconds
-//     // ...
-// }
+
     @Test
     @Order(2)
     public void testCreatePortfolio() throws Exception {
@@ -160,5 +148,86 @@ public class AuthenticationControllerTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
+// @Ignore
+// @Test
+// public void testGetPortfolioDetails() throws Exception {
+//     // input your test data here
+//     int id2 = 152 ;
+//     String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjVAZW1haWwuY29tIiwiaWF0IjoxNjk5MTc1MzczLCJleHAiOjE2OTkyNjE3NzN9.nrHJcncatbHdvAwxPcCeZVDfF4y341f1fipd-pdrMv0";
+//     int portfolioid = 6; //manual
+
+//    // Perform a GET request to the getPortfolioDetails endpoint
+// mockMvc.perform(get("/portfolio/getPortfolioDetails/{userId}/{portfolioId}", id2, portfolioid)
+//     .header("Authorization", "Bearer " + token2))
+//     .andExpect(status().isOk())
+//     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//     .andExpect(jsonPath("$.portfolioName").value("testing portfolio"))
+//     .andExpect(jsonPath("$.description").value("A test portfolio"))
+//     .andExpect(jsonPath("$.capital").value(10000))
+//     .andExpect(jsonPath("$.timePeriod").value("Monthly"))
+//     .andExpect(jsonPath("$.startDate").value("2010-01"))
+//     .andExpect(jsonPath("$.assetList[0].symbol").value("AAPL"))
+//     .andExpect(jsonPath("$.assetList[0].weight").value(0.5))
+//     .andExpect(jsonPath("$.assetList[1].symbol").value("PFE"))
+//     .andExpect(jsonPath("$.assetList[1].weight").value(0.3))
+//     .andExpect(jsonPath("$.assetList[2].symbol").value("AAIC"))
+//     .andExpect(jsonPath("$.assetList[2].weight").value(0.2))
+//     .andDo(MockMvcResultHandlers.print());
+// }
+    
+
+@Ignore
+@Test
+public void testUpdatePortfolio() throws Exception {
+    // input your test data here
+    int id2 = 1;
+    String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjFAZW1haWwuY29tIiwiaWF0IjoxNjk5MTczNzAzLCJleHAiOjE2OTkyNjAxMDN9.6_8NHFXzBYKDw9XUi1SmT7j4IuQpaD1TaFAdo5J8_00";
+    int portfolioid = 1;
+   
+    PortfolioUpdate portfolioUpdate = new PortfolioUpdate(0,0,null,null,null,null,0,null);
+    portfolioUpdate.setPortfolioName("updated portfolio");
+    portfolioUpdate.setDescription("An updated test portfolio");
+    portfolioUpdate.setCapital(20000);
+    portfolioUpdate.setTimePeriod("Yearly");
+    portfolioUpdate.setStartDate("2010-01");
+    List<AssetCreation> assetList = new ArrayList<>();
+    assetList.add(new AssetCreation("AAMC", 0.5));
+    assetList.add(new AssetCreation("YPF", 0.3));
+    assetList.add(new AssetCreation("AAIC", 0.2));
+    portfolioUpdate.setAssetList(assetList);
+
+    // Serialize the object to JSON
+    String portfolioUpdateJson = new ObjectMapper().writeValueAsString(portfolioUpdate);
+    System.out.println(portfolioUpdateJson);
+
+    
+    // Perform a PUT request to the updatePortfolio endpoint
+    mockMvc.perform(put("/portfolio/updatePortfolio/{userId}/{portfolioId}", id2, portfolioid)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(portfolioUpdateJson)
+        .header("Authorization", "Bearer " + token2))
+        .andExpect(status().isOk())
+        .andDo(MockMvcResultHandlers.print());
+
+}
+@Ignore
+@Test
+public void testDeletePortfolio() throws Exception {
+    // input your test data here
+    int id = 1;
+    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjFAZW1haWwuY29tIiwiaWF0IjoxNjk5MTczNzAzLCJleHAiOjE2OTkyNjAxMDN9.6_8NHFXzBYKDw9XUi1SmT7j4IuQpaD1TaFAdo5J8_00";
+    int portfolioid = 1;
+
+
+// Perform a DELETE request to the deletePortfolio endpoint
+    mockMvc.perform(delete("/portfolio/deletePortfolio/{userId}/{portfolioId}", id, portfolioid)
+    .header("Authorization", "Bearer " + token))
+    .andExpect(status().isOk())
+    .andExpect(content().string("Portfolio Deleted!"))
+    .andDo(MockMvcResultHandlers.print());
+}
+
+
+
 
 }
