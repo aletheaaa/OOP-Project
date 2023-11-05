@@ -52,7 +52,8 @@ export default function Portfolios() {
         setErrorMessage(response.data);
         return;
       }
-      setChosenPortfolio(response.data);
+      let portfolioDetails = { ...response.data, portfolioId: portfolioId };
+      setChosenPortfolio(portfolioDetails);
     };
     getPortfolioDetails();
 
@@ -109,12 +110,14 @@ export default function Portfolios() {
           });
           // data formatting for edit portfolio modal
           assetAllocationFromServer[element].stocks.forEach((stock) => {
-            editPortfolioDetailsModal.push({
-              Symbol: stock.symbol,
-              Allocation: stock.allocation,
-              id: counter,
-            });
-            counter++;
+            if (stock.symbol != "CASHALLOCATION") {
+              editPortfolioDetailsModal.push({
+                Symbol: stock.symbol,
+                Allocation: stock.allocation,
+                id: counter,
+              });
+              counter++;
+            }
           });
         });
         setAssetListForEditPortfolio(editPortfolioDetailsModal);
@@ -177,7 +180,6 @@ export default function Portfolios() {
             },
           ],
         };
-        console.log("this is industryDoughnutData", industryDoughnutData);
         setAssetAllocationByIndustry(industryDoughnutData);
       };
       assetAllocationByIndustry();
@@ -185,7 +187,6 @@ export default function Portfolios() {
       // getting asset allocation by country
       const assetAllocationByCountry = async () => {
         const response = await getAssetAllocationByCountryAPI(portfolioId);
-        console.log("this is repsonseSSsssS", response);
         if (response.status != 200) {
           console.log(
             "error getting asset allocation by industry: ",
@@ -281,7 +282,7 @@ export default function Portfolios() {
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">
-          <PortfolioNavBar name={chosenPortfolio.portfolio_name} />
+          {/* <PortfolioNavBar name={chosenPortfolio.portfolio_name} /> */}
           {/* Dashboard Cards */}
           <div className="row py-2 px-4 mt-2">
             <PortfolioPerformanceSummary

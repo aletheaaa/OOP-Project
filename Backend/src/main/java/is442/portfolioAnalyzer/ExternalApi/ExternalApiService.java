@@ -23,6 +23,7 @@ public class ExternalApiService {
                 .daily()
                 .dataType(DataType.JSON)
                 .forSymbol(symbol)
+                .adjusted()
                 .fetchSync();
 
 //        if (response.getStockUnits().isEmpty()) {

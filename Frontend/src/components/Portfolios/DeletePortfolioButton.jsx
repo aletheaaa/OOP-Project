@@ -7,6 +7,7 @@ export default function DeletePortfolioButton({ className }) {
       className={className != null ? className : "btn btn-danger"}
       data-bs-toggle="modal"
       data-bs-target="#deletePortfolio"
+      style={{ borderRadius: "20px" }}
     >
       Delete Portfolio
     </button>
