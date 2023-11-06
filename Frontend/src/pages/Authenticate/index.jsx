@@ -40,13 +40,23 @@ function Authenticate(props) {
       setNotifications([]);
       window.location.reload(); // reload page after logging in to exit login page
     } else {
-      setErrors([
-        ...errors,
-        {
-          code: "Error " + authentication.response.status,
-          message: authentication.response.data,
-        },
-      ]);
+      if (Object.keys(authentication.response.data).includes("message")) {
+        setErrors([
+          ...errors,
+          {
+            code: "Error " + authentication.response.status,
+            message: authentication.response.data.message,
+          },
+        ]);
+      } else {
+        setErrors([
+          ...errors,
+          {
+            code: "Error " + authentication.response.status,
+            message: authentication.message,
+          },
+        ]);
+      }
     }
   };
 
@@ -180,25 +190,24 @@ function Authenticate(props) {
               >
                 Close
               </button>
-                {isLoading ? (
-                  <button className="btn btn-primary" type="button" disabled>
-                    <span
-                      className="spinner-border spinner-border-sm mr-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>{" "}
-                    Loading...
-                  </button>
-                ) : (<button
+              {isLoading ? (
+                <button className="btn btn-primary" type="button" disabled>
+                  <span
+                    className="spinner-border spinner-border-sm mr-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>{" "}
+                  Loading...
+                </button>
+              ) : (
+                <button
                   type="button"
                   className="btn btn-primary"
                   onClick={handleForgotPassword}
                 >
                   Reset Password
                 </button>
-                )
-              }
-              
+              )}
             </div>
           </div>
         </div>

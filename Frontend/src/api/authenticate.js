@@ -34,8 +34,8 @@ export function setEmail(userEmail) {
 }
 
 export function logout() {
-    sessionStorage.clear();
-    window.location.href = "/";
+  sessionStorage.clear();
+  window.location.href = "/";
 }
 
 export async function authenticate(registering, email, password) {
@@ -49,7 +49,7 @@ export async function authenticate(registering, email, password) {
     if (response.status == "200") {
       return response;
     }
-    return { code: code, message: message }
+    return { code: code, message: message };
   } catch (error) {
     return error;
   }
@@ -58,14 +58,17 @@ export async function authenticate(registering, email, password) {
 export async function resetPassword(email) {
   console.log("[Forgot Password] " + email);
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", email);
+    const response = await axios.post(
+      "http://localhost:8080/api/v1/auth/resetPassword",
+      email
+    );
 
     if (response.status == "200") {
       console.log(response);
       alert("Resetted password sent to " + email);
       return response;
     }
-    return { code: code, message: message }
+    return { code: code, message: message };
   } catch (error) {
     console.log(error);
     return error;
@@ -76,13 +79,16 @@ export async function confirmResetPassword(email, token) {
   console.log("[Confirm Reset Password] " + email + " " + token);
 
   try {
-    const response = await axios.post("http://localhost:8080/api/v1/auth/resetPassword", {email: email, token: token});
+    const response = await axios.post(
+      "http://localhost:8080/api/v1/auth/resetPassword",
+      { email: email, token: token }
+    );
 
     if (response.status == "200") {
       console.log(response);
       return response;
     }
-    return { code: code, message: message }
+    return { code: code, message: message };
   } catch (error) {
     console.log(error);
     return error;
