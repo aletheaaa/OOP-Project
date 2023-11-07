@@ -733,11 +733,16 @@ public class PortfolioService {
          for (String industry : industries) {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
-                if(asset.getIndustry().equals(industry)){
-                    Double allocation = assetService.getAssetAllocation(asset, finalBalance);
+                if(asset.getIndustry().equals(industry) && !asset.getIndustry().equals("CASHALLOCATION")){
+                    double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     industryDetails.put(industry,totalAllocation);
                 }
+            }
+
+            if(portfolio.getAssets().contains("CASHALLOCATION")){
+                double allocation = 1 - totalAllocation;
+                industryDetails.put("CASHALLOCATION",allocation);
             }
          }
        
@@ -763,11 +768,16 @@ public class PortfolioService {
          for (String country : countries) {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
-                if(asset.getCountry().equals(country)){
+                if(asset.getCountry().equals(country) && !asset.getCountry().equals("CASHALLOCATION")){
                     double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     countryDetails.put(country,totalAllocation);
                 }
+            }
+
+            if(portfolio.getAssets().contains("CASHALLOCATION")){
+                double allocation = 1 - totalAllocation;
+                countryDetails.put("CASHALLOCATION",allocation);
             }
          }
        
