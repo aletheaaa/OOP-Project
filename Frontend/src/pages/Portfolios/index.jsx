@@ -239,7 +239,7 @@ export default function Portfolios() {
             {errorMessage}
           </div>
         )}
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end px-4">
           <CreateOrEditPortfolioButton
             target="#portfolioIndexPageModal"
             mode="Edit"
@@ -271,10 +271,17 @@ export default function Portfolios() {
           <DeletePortfolioButton />
           <DeletePortfolioModal portfolioId={portfolioId} />
         </div>
-        <div className="row mb-3 mt-3">
+        <div className="row mb-3 mt-3 px-4 ">
           <div className="col">
             <h3>{chosenPortfolio.portfolio_name}</h3>
-            <div>{chosenPortfolio.description}</div>
+            <div>
+              <span className="fw-bold">Description:</span>{" "}
+              {chosenPortfolio.description}
+            </div>
+            <div>
+              <span className="fw-bold">Start Date:</span>{" "}
+              {chosenPortfolio.start_date}
+            </div>
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
