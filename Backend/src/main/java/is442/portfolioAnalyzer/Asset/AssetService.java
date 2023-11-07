@@ -2,6 +2,7 @@
 
  import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.time.MonthDay;
@@ -166,6 +167,26 @@ public class AssetService {
     }
 
 
+    //Get Asset Earliest Price by symbol from API
+    public double getEarliestClosingPriceFromApi(String symbol) {
+        try {
+            TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
+    
+            if (response != null && !response.getStockUnits().isEmpty()) {
+                // Sort the stock units by date in ascending order
+                response.getStockUnits().sort(Comparator.comparing(StockUnit::getDate));
+    
+                // Get the earliest closing price
+                StockUnit earliestStockUnit = response.getStockUnits().get(0);
+                return earliestStockUnit.getClose();
+            }
+        } catch (Exception e) {
+            // Handle exceptions appropriately.
+        }
+    
+        // Return null or handle it as needed if data is not found or an error occurs.
+        return 0.0;
+    }
 
     // Get value of asset at the end of the specified year
     public double getAssetValueByYear(String symbol, String year, Asset asset) {

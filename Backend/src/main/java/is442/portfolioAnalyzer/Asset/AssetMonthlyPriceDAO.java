@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
  @Repository
@@ -21,13 +22,17 @@ import org.springframework.stereotype.Repository;
             "AND a.id.year = :year " +
             "AND a.id.month = :month")
     Optional<Double> findLatestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
+
+
+//     @Query("SELECT MIN(a.id.year) FROM AssetMonthlyPrice a WHERE a.id.stockSymbol = :symbol")
+//     Optional<String> findMinYearBySymbol(@Param("symbol") String symbol);
+
+//     @Query("SELECT MIN(a.id.month) FROM AssetMonthlyPrice a WHERE a.id.stockSymbol = :symbol AND a.id.year = :year")
+//     Optional<String> findMinMonthBySymbolAndYear(@Param("symbol") String symbol, @Param("year") String year);
+
+
+
     
-    // Find the earliest price of an asset by symbol, current year, and current month in the table
-    @Query("SELECT a.closingPrice " +
-        "FROM AssetMonthlyPrice a " +
-        "WHERE a.id.stockSymbol = :symbol " +
-        "AND (a.id.year < :year OR (a.id.year = :year AND a.id.month < :month)) " +
-        "ORDER BY a.id.year, a.id.month ASC")
-    Optional<Double> findEarliestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
-    
+
+
  }
