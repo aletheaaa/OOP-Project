@@ -320,17 +320,38 @@ public class PortfolioService {
 
 
                 
-                    // newAsset.setAllocation(assetCreation.getAllocation());
-                    // newAsset.setTotalValue(assetCreation.getAllocation() * portfolioUpdate.getCapital());
-                    // newAsset.setUnitPrice(assetService.getLatestPrice(symbol));
-                    newAsset.setQuantityPurchased(assetCreation.getAllocation() * portfolioUpdate.getCapital() / assetService.getLatestPrice(symbol));
+                    if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
+                            // Call External API to get the latest price
+                            // asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
+                            // Add the quantity purchased based on the portfolio capital and asset
+                            // allocation
+                            String[] dateParts = portfolioUpdate.getStartDate().split("-");
+                            String year = dateParts[0];
+                            int monthInt = Integer.parseInt(dateParts[1]) - 1;
+                            String month = getMonthName(monthInt);
 
-                    System.out.println(symbol + " added");
-                    // System.out.println(newAsset.getAllocation() + " added");
-                    // System.out.println(newAsset.getTotalValue() + " added");
-                    // System.out.println(newAsset.getQuantityPurchased() + " added");
-                    // System.out.println(assetService.getLatestPrice(symbol) + " added");
-                    // System.out.println(newAsset.getTotalValue() + " added");
+                            // Use the AssetMonthlyPriceDAO to find the price for the given symbol, year, and month
+                            Optional<Double> priceOptional = assetMonthlyPriceDAO.findLatestPriceBySymbolAndYearAndMonth(symbol, year, month);
+
+                            if (priceOptional.isPresent()) {
+                                double price = priceOptional.get();
+                                newAsset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation() / price);
+                            } else {
+                                // Handle the case where the price is not found
+                                System.out.println("Price not found for " + symbol + " " + year + " " + month);
+                                double price = assetService.getEarliestClosingPriceFromApi(symbol);
+                                System.out.println("Using earliest price: " + price);
+                                newAsset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation() / price);
+                            }
+            
+
+
+                            // Calculate the total value of the asset
+                            // asset.setTotalValue(assetService.getLatestPrice(symbol) * asset.getQuantityPurchased());
+                        }
+                        else{
+                            newAsset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation());
+                        }
 
                     // Save the new asset into the DB
                     assetDAO.save(newAsset);
