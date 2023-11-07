@@ -591,6 +591,9 @@ public class PortfolioService {
         double riskFreeRate = 4.57;
         double expectedReturn = getPortfolioExpectedReturns(portfolioId);
         double standardDeviation = getPortfolioStandardDeviation(portfolioId);
+        if (standardDeviation == 0) {
+            return 0;
+        }
         return ((expectedReturn - riskFreeRate) / standardDeviation) * 100;
     }
 
