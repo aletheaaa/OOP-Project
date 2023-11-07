@@ -91,6 +91,10 @@ public class AssetService {
         //Get Quantity purchased of the asset
         double quantityPurchased = asset.getQuantityPurchased();
 
+        if(asset.getAssetId().getStockSymbol().equals("CASHALLOCATION")){
+            return quantityPurchased;
+        }
+
         double totalValue = latestPrice * quantityPurchased;
 
         return totalValue;
@@ -264,8 +268,8 @@ public class AssetService {
 
                 monthlyPrices.add(monthlyPrice);
             }
-            System.out.println(response.getStockUnits());
-            System.out.println("IT WORKS TILL HERE");
+            // System.out.println(response.getStockUnits());
+            // System.out.println("IT WORKS TILL HERE");
 
             assetMonthlyPriceDAO.saveAll(monthlyPrices);
         }
