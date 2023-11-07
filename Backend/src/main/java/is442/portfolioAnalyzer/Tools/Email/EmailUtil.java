@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.auth;
+package is442.portfolioAnalyzer.Tools.Email;
 
 import java.util.Date;
 

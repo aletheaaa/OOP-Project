@@ -60,7 +60,9 @@ export async function resetPassword(email) {
   try {
     const response = await axios.post(
       "http://localhost:8080/api/v1/auth/resetPassword",
-      email
+      {
+        email: email,
+      }
     );
 
     if (response.status == "200") {

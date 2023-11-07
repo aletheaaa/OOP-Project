@@ -34,30 +34,10 @@ public class AuthenticationController {
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(
-            @RequestBody String email) {
-        email = email.replace("%40", "@");
-        email = email.replace("=", "");
-        boolean response = service.resetPassword(email);
-        if (!response) {
-            return ResponseEntity.badRequest().body("User not found!");
-        }
-        return ResponseEntity.ok().body("Email sent!");
-
+            @RequestBody AuthenticationRequest request) {
+        System.out.println(request);
+        String email = request.getEmail();
+        String message = service.resetPassword(email);
+        return ResponseEntity.ok(message);
     }
-
-    // // Does not work yet
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
-    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
-    // "true")
-    // @PostMapping("/resetPassword")
-    // public ResponseEntity<?> resetPassword(@RequestBody String email,
-    // @RequestBody String token) {
-    // System.out.println("email=" + email);
-    // System.out.println(token);
-    // if (!service.validateEmailWithToken(email, token)) {
-    // return ResponseEntity.badRequest().body("Invalid token!");
-    // }
-    // return ResponseEntity.ok("AuthToken Validated");
-
-    // }
 }

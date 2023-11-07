@@ -9,11 +9,8 @@ import is442.portfolioAnalyzer.User.Role;
 import is442.portfolioAnalyzer.User.User;
 import is442.portfolioAnalyzer.User.UserDTO;
 import is442.portfolioAnalyzer.Exception.*;
-import is442.portfolioAnalyzer.ExceptionHandler.*;
 import is442.portfolioAnalyzer.Tools.RandomStringGenerator;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import is442.portfolioAnalyzer.Tools.Email.SendEmail;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +21,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +36,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     // REGISTER
-    // ----------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------
     // Create the user, save to the database and return generated token out of it
     public AuthenticationResponse register(RegisterRequest request) {
 
@@ -50,43 +44,42 @@ public class AuthenticationService {
 
         // Check if user already exists
         if (existingUser.isPresent()) {
-
-            User user = userserviceimpl.getUserByEmail(request.getEmail());
-            var jwtToken = jwtService.generateToken(user);
             throw new UserAlreadyExistsException("User already exists");
         }
 
         if (!userserviceimpl.isPasswordValid(request.getPassword())) {
-
-            throw new InvalidPasswordException("Invalid Password");
-        } else {
-
-            // Create the user
-            var user = User.builder()
-                    .firstName(request.getFirstname())
-                    .lastName(request.getLastname())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.USER)
-                    .build();
-
-            var savedUser = repository.save(user);
-            User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
-            var jwtToken = jwtService.generateToken(user);
-
-            saveUserToken(savedUser, jwtToken);
-
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .id(userInfo.getId())
-                    .status("200")
-                    .build();
+            throw new InvalidPasswordException(
+                    "Invalid Password! Password must be between 8 and 25 characters " +
+                            "and contain at least one uppercase letter, one lowercase letter, " +
+                            "one digit and one special character among @, #, $, %, ^, &, +, =, " +
+                            "and !");
         }
+
+        // Create the user
+        var user = User.builder()
+                .firstName(request.getFirstname())
+                .lastName(request.getLastname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
+
+        var savedUser = repository.save(user);
+        User userInfo = userserviceimpl.getUserByEmail(request.getEmail());
+        var jwtToken = jwtService.generateToken(user);
+
+        saveUserToken(savedUser, jwtToken);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .id(userInfo.getId())
+                .status("200")
+                .build();
 
     }
 
     // AUTHENTICATE
-    // ----------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // Authenticate the user, else will throw exception
         authenticationManager.authenticate(
@@ -107,7 +100,7 @@ public class AuthenticationService {
     }
 
     // USER TOKENS FUNCTIONALITY
-    // ----------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------
     private void revokeAllUserTokens(User user) {
         var validUserToken = tokenDao.findAllValidTokensByUserId(user.getId());
         if (validUserToken.isEmpty()) {
@@ -132,55 +125,27 @@ public class AuthenticationService {
         tokenDao.save(token);
     }
 
-    // FORGOT PASSWORD
-    // ---------------------------------------------------------------------------------
-    public void forgotPassword(String email, String newPassword, String confirmPassword) {
+    // RESET PASSWORD
+    // --------------------------------------------------------------------------------
+    public String resetPassword(String email) {
+        Optional<User> userOptional = repository.findByEmail(email);
+        String newPassword = RandomStringGenerator.generateRandomString();
 
-    }
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
 
-    public boolean resetPassword(String email) {
-        // String token = getTokenForEmail(email);
-        Optional<User> existingUser = repository.findByEmail(email);
-        // Check if user already exists
-        if (existingUser.isPresent()) {
-            String newPassword = "New Password: "
-                    + RandomStringGenerator.generateRandomString(RandomStringGenerator.getRandomNumber(10, 20));
-            ForgotPasswordEmail.forgotPassword(email, newPassword);
-            User user = existingUser.get();
-
+            // Update the user's password with the new hashed password
             user.setPassword(passwordEncoder.encode(newPassword));
             repository.save(user);
 
-            return true;
+            // Send reset password to user
+            String emailSubject = "Password Reset Request";
+            String emailBody = "New password: " + newPassword;
+            SendEmail.sendEmail(email, emailSubject, emailBody);
+
+            return "Password reset successfully!";
+        } else {
+            throw new UserNotFoundException("User not found");
         }
-        return false;
     }
-
-    // public String getTokenForEmail(String email) {
-    // var user = repository.findByEmail(email)
-    // .orElseThrow(() -> new UserNotFoundException("User not found for email: " +
-    // email));
-
-    // String jwtToken = jwtService.generateToken(user);
-
-    // return jwtToken;
-    // }
-
-    // public boolean validateEmailWithToken(String email, String token) {
-    // var user = repository.findByEmail(email)
-    // .orElseThrow(() -> new UserNotFoundException("User not found for email: " +
-    // email));
-
-    // List<Token> tokens = tokenDao.findAllValidTokensByUserId(user.getId());
-
-    // for (Token existingToken : tokens) {
-    // if (existingToken.getToken().equals(token) && !existingToken.isExpired() &&
-    // !existingToken.isRevoked()
-    // && existingToken.getUser().equals(user)) {
-    // return true;
-    // }
-    // }
-
-    // return false;
-    // }
 }
