@@ -169,7 +169,11 @@ public class PortfolioService {
                 // asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                 // Add the quantity purchased based on the portfolio capital and asset
                 // allocation
-                double price = null;
+                String[] dateParts = portfolioCreation.getStartDate().split("-");
+                String year = dateParts[0];
+                int monthInt = Integer.parseInt(dateParts[1]) - 1;
+                String month = getMonthName(monthInt);
+            
                 asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation()
                         / assetService.getAssetLatestPrice(symbol));
 
