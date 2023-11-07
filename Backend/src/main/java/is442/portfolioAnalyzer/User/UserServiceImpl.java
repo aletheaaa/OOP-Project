@@ -3,16 +3,14 @@ package is442.portfolioAnalyzer.User;
 import java.util.Optional;
 
 import is442.portfolioAnalyzer.Exception.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import is442.portfolioAnalyzer.User.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserServiceImpl implements UserService {
-
 
     private UserDTO userRepository;
     private UserServiceImpl userService;
@@ -37,7 +35,6 @@ public class UserServiceImpl implements UserService {
     public boolean isPasswordValid(String password) throws InvalidPasswordException {
 
         if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,25}$")) {
-//            throw new InvalidPasswordException("Password must meet the specified criteria.");
             return false;
         }
         return true;
@@ -46,6 +43,7 @@ public class UserServiceImpl implements UserService {
     public boolean isCurrentPasswordValid(String password, String currentPassword) {
         return passwordEncoder.matches(currentPassword, password);
     }
+
     public String changePassword(String email, String currentPassword, String newPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
@@ -66,12 +64,4 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User not found");
         }
     }
-
-
-
 }
-
-
-
-
-
