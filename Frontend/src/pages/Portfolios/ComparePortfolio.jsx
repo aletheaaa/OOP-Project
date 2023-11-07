@@ -148,15 +148,20 @@ export default function Portfolios() {
             </div>
           </div>
           {/* Returns Bar Chart */}
-          {/* <div className="row mt-3 px-5">
+          <div className="row mt-3 px-5">
             <div className="col">
-              <PortfolioReturnsBarChart
-                portfolioId={portfolioId}
-                portfolioName={chosenPortfolio.portfolio_name}
-                startDate={chosenPortfolio.start_date}
-              />
+              {portfolio1Details && portfolio2Details && (
+                <PortfolioReturnsBarChart
+                  portfolioId={portfolio1Id}
+                  portfolioName={portfolio1Details.portfolio_name}
+                  startDate={portfolio1Details.start_date}
+                  portfolio2Id={portfolio2Id}
+                  startDate2={portfolio2Details.start_date}
+                  portfolioName2={portfolio2Details.portfolio_name}
+                />
+              )}
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </>
