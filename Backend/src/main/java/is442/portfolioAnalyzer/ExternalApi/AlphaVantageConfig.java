@@ -13,7 +13,7 @@ public class AlphaVantageConfig {
 
     public AlphaVantageConfig() {
         this.config = Config.builder()
-                .key("ZKMMTO1ATDBLXH2K")
+                .key("HI5ADT0RWWANGUID")
                 .timeOut(10)
                 .build();
         AlphaVantage.api().init(config);

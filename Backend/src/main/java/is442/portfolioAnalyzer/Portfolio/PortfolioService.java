@@ -169,11 +169,15 @@ public class PortfolioService {
                 // asset.setUnitPrice(assetService.getAssetLatestPrice(symbol));
                 // Add the quantity purchased based on the portfolio capital and asset
                 // allocation
+                double price = null;
                 asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation()
                         / assetService.getAssetLatestPrice(symbol));
 
                 // Calculate the total value of the asset
                 // asset.setTotalValue(assetService.getLatestPrice(symbol) * asset.getQuantityPurchased());
+            }
+            else{
+                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation());
             }
 
             // System.out.println(asset);
@@ -234,6 +238,9 @@ public class PortfolioService {
                                     / assetService.getAssetLatestPrice(symbol));
 
                             // asset.setUnitPrice(asset.getTotalValue() / asset.getQuantityPurchased());
+                        }
+                        else{
+                            asset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation());
                         }
 
                         System.out.println(symbol);
@@ -734,11 +741,12 @@ public class PortfolioService {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
                 if(asset.getIndustry().equals(industry)){
-                    Double allocation = assetService.getAssetAllocation(asset, finalBalance);
+                    double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     industryDetails.put(industry,totalAllocation);
                 }
             }
+
          }
        
         return industryDetails;
@@ -763,12 +771,13 @@ public class PortfolioService {
          for (String country : countries) {
             double totalAllocation = 0;
              for (Asset asset : portfolio.getAssets()) {
-                if(asset.getCountry().equals(country)){
+                if(asset.getCountry().equals(country) ){
                     double allocation = assetService.getAssetAllocation(asset, finalBalance);
                     totalAllocation += allocation;
                     countryDetails.put(country,totalAllocation);
                 }
             }
+
          }
        
         return countryDetails;
