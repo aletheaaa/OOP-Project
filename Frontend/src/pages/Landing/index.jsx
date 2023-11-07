@@ -19,7 +19,6 @@ export default function Dashboard() {
       if (portfolios === null) {
         return;
       }
-      console.log("portfolios", portfolios.userPortfolios);
       setPortfolios(portfolios.data.userPortfolios);
     };
     getUserInfo();

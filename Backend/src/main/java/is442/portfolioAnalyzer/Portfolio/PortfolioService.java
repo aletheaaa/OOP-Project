@@ -588,7 +588,10 @@ public class PortfolioService {
         int currentYearValue = Year.now().getValue();
         int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4)); // get the year e.g. 2005
         int timePeriod = currentYearValue - startYearValue;
-        double CAGR = Math.pow(finalBalance / initialBalance, 1.0 / timePeriod) - 1;
+        if (timePeriod == 0) {
+            return 0;
+        }
+        double CAGR = Math.pow(finalBalance / initialBalance, (1.0 / timePeriod)) - 1;
         return CAGR * 100; // Convert to percentage
     }
 
@@ -601,7 +604,10 @@ public class PortfolioService {
         double riskFreeRate = 4.57;
         double expectedReturn = getPortfolioExpectedReturns(portfolioId);
         double standardDeviation = getPortfolioStandardDeviation(portfolioId);
-        return (expectedReturn - riskFreeRate) / standardDeviation;
+        if (standardDeviation == 0) {
+            return 0;
+        }
+        return ((expectedReturn - riskFreeRate) / standardDeviation) * 100;
     }
 
     // Get Portfolio's Standard Deviation ---------------------------------------------------------------------------

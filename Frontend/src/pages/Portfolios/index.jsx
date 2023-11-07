@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import PortfolioNavBar from "../../components/Portfolios/PortfolioNavBar";
 import { generateDoughnutColors } from "../../utils/chartUtils";
 import {
   getAssetAllocationAPI,
   getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
   getAssetAllocationByCountryAPI,
+  getPortfolioPerformanceSummaryAPI
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
@@ -25,6 +25,13 @@ export default function Portfolios() {
     capital: 0,
     start_date: "Loading...",
   });
+  const [portfolioPerformanceSummary, setPortfolioPerformanceSummary] = useState({
+    InitialBalance: 0,
+    CurrentBalance: 0,
+    NetProfit: 0,
+    CAGR: 0.0,
+    SharpeRatio: 0.0,
+  });
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
   const [
     asssetAllocationByIndividualStock,
@@ -43,19 +50,39 @@ export default function Portfolios() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    // console.log("use effect triggered, portfolioId: " + portfolioId)
     if (!portfolioId) return;
     // getting the user's portfolio
     const getPortfolioDetails = async () => {
-      const response = await getPortfolioDetailsAPI(portfolioId);
+      let response = await getPortfolioDetailsAPI(portfolioId);
       if (response.status != 200) {
         console.log("error getting portfolio details");
         setErrorMessage(response.data);
         return;
       }
+      // console.log("portfolio details");
+      // console.log(response.data);
       let portfolioDetails = { ...response.data, portfolioId: portfolioId };
       setChosenPortfolio(portfolioDetails);
     };
     getPortfolioDetails();
+
+    const getPerformanceSummary = async () => {
+      let response = await getPortfolioPerformanceSummaryAPI(portfolioId);
+      if (response.status != 200) {
+        console.log(
+          "error getting portfolio performance summary: ",
+          response.data
+        );
+        setErrorMessage(response.data);
+        return;
+      }
+      // console.log("performance summary");
+      // console.log(response.data);
+      setPortfolioPerformanceSummary(response.data);
+      
+    };
+    getPerformanceSummary();
 
     const getAssetAllocation = async () => {
       let assetAllocationFromServer = await getAssetAllocationAPI(portfolioId);
@@ -84,7 +111,7 @@ export default function Portfolios() {
             {
               label: "% of Capital Allocated",
               data: Object.keys(assetAllocationFromServer).map(
-                (element) => assetAllocationFromServer[element].value
+                (element) => assetAllocationFromServer[element].value * 100
               ),
               backgroundColor: dynamicBackgroundColors,
               borderColor: dynamicBorderColors,
@@ -106,14 +133,14 @@ export default function Portfolios() {
           // data formatting for doughnut chart
           assetAllocationFromServer[element].stocks.forEach((stock) => {
             stockLabel.push(stock.symbol);
-            stockData.push(stock.allocation);
+            stockData.push(stock.allocation * 100);
           });
           // data formatting for edit portfolio modal
           assetAllocationFromServer[element].stocks.forEach((stock) => {
             if (stock.symbol != "CASHALLOCATION") {
               editPortfolioDetailsModal.push({
                 Symbol: stock.symbol,
-                Allocation: stock.allocation,
+                Allocation: stock.allocation * 100,
                 id: counter,
               });
               counter++;
@@ -160,7 +187,7 @@ export default function Portfolios() {
         Object.keys(response.data).forEach((key) => {
           // data formatting for doughnut chart
           industryLabel.push(key);
-          industryData.push(response.data[key]);
+          industryData.push(response.data[key] * 100);
         });
         // Number of data points
         const numberOfDataPoints = industryLabel.length;
@@ -200,7 +227,7 @@ export default function Portfolios() {
         Object.keys(response.data).forEach((element) => {
           // data formatting for doughnut chart
           countryLabel.push(element);
-          countryData.push(response.data[element]);
+          countryData.push(response.data[element] * 100);
         });
         // Number of data points
         const numberOfDataPoints = countryLabel.length;
@@ -227,10 +254,6 @@ export default function Portfolios() {
     getAssetAllocation();
   }, [portfolioId]);
 
-  const handleGetCurrentBalance = (balance) => {
-    setCurrentBalance(balance);
-  };
-
   return (
     <>
       <div className="container-fluid my-2 px-4 pt-5">
@@ -239,7 +262,7 @@ export default function Portfolios() {
             {errorMessage}
           </div>
         )}
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end px-4">
           <CreateOrEditPortfolioButton
             target="#portfolioIndexPageModal"
             mode="Edit"
@@ -271,10 +294,17 @@ export default function Portfolios() {
           <DeletePortfolioButton />
           <DeletePortfolioModal portfolioId={portfolioId} />
         </div>
-        <div className="row mb-3 mt-3">
+        <div className="row mb-3 mt-3 px-4 ">
           <div className="col">
             <h3>{chosenPortfolio.portfolio_name}</h3>
-            <div>{chosenPortfolio.description}</div>
+            <div>
+              <span className="fw-bold">Description:</span>{" "}
+              {chosenPortfolio.description}
+            </div>
+            <div>
+              <span className="fw-bold">Start Date:</span>{" "}
+              {chosenPortfolio.start_date}
+            </div>
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
@@ -286,8 +316,7 @@ export default function Portfolios() {
           {/* Dashboard Cards */}
           <div className="row py-2 px-4 mt-2">
             <PortfolioPerformanceSummary
-              portfolioId={portfolioId}
-              setCurrentBalanceParent={handleGetCurrentBalance}
+              performanceSummary = {portfolioPerformanceSummary}
             />
           </div>
           <div className="row px-5">

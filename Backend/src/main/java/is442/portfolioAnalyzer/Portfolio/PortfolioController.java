@@ -35,15 +35,10 @@ public class PortfolioController {
     @Autowired
     TokenService tokenService;
 
-
-
-
     @GetMapping("test")
     public double test() {
-        
         return assetService.getLatestPrice("IBM");
     }
-
 
     @GetMapping("allPortfolios")
     public ResponseEntity<List<Portfolio>> getAllPortfolios() {
@@ -52,11 +47,11 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolioService.getAllPortfolios());
     }
 
-
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
+    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
+    // "true")
     @GetMapping("user/{userid}")
-    public ResponseEntity<UserPortfolios>
-    getAllPortfoliosByUserId(
+    public ResponseEntity<UserPortfolios> getAllPortfoliosByUserId(
             @PathVariable Integer userid,
             @RequestHeader("Authorization") String authHeader) {
 
@@ -81,7 +76,7 @@ public class PortfolioController {
     public ResponseEntity<Portfolio> getPortfolioByIds(
             @PathVariable Integer portfolioId,
             @PathVariable Integer userId) {
-        Portfolio portfolio = portfolioService.getPortfolioByIds(portfolioId,userId);
+        Portfolio portfolio = portfolioService.getPortfolioByIds(portfolioId, userId);
         if (portfolio == null) {
             System.out.println("Cannot find portfolio");
             return ResponseEntity.notFound().build();
@@ -90,8 +85,8 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolio);
     }
 
-
-    // Create portfolio ---------------------------------------------------------------------------------------------------
+    // Create portfolio
+    // ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PostMapping(value = "createPortfolio/{userId}", consumes = "application/json")
     public ResponseEntity<?> createPortfolio(
@@ -105,13 +100,14 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Created!");
     }
 
-    // Update portfolio ---------------------------------------------------------------------------------------------------
+    // Update portfolio
+    // ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
     @PutMapping(value = "updatePortfolio/{userId}/{portfolioId}", consumes = "application/json")
     public ResponseEntity<?> updatePortfolio(@RequestBody PortfolioUpdate portfolioUpdate,
-                                             @PathVariable Integer userId,
-                                             @PathVariable Integer portfolioId,
-                                             @RequestHeader("Authorization") String authHeader) {
+            @PathVariable Integer userId,
+            @PathVariable Integer portfolioId,
+            @RequestHeader("Authorization") String authHeader) {
 
         String token = authHeader.substring(7);
         tokenService.checkTokenBelongsToUser(userId, token);
@@ -120,12 +116,13 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Updated!");
     }
 
-    // Delete portfolio ---------------------------------------------------------------------------------------------------
+    // Delete portfolio
+    // ---------------------------------------------------------------------------------------------------
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.DELETE, allowCredentials = "true")
     @DeleteMapping(value = "deletePortfolio/{userId}/{portfolioId}", produces = "application/json")
     public ResponseEntity<?> deletePortfolio(@PathVariable Integer portfolioId,
-                                             @PathVariable Integer userId,
-                                             @RequestHeader("Authorization") String authHeader) {
+            @PathVariable Integer userId,
+            @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         tokenService.checkTokenBelongsToUser(userId, token);
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
@@ -133,7 +130,8 @@ public class PortfolioController {
         return ResponseEntity.ok("Portfolio Deleted!");
     }
 
-    // Get portfolio details ----------------------------------------------------------------------------------------------
+    // Get portfolio details
+    // ----------------------------------------------------------------------------------------------
     @GetMapping(value = "/getPortfolioDetails/{userId}/{portfolioId}", produces = "application/json")
     public ResponseEntity<Map<String, Object>> getPortfolioDetails(
             @PathVariable Integer portfolioId,
@@ -154,7 +152,7 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolioDetails);
     }
 
-    //Get Portfolio Annual Growth by portfolioId and startYear
+    // Get Portfolio Annual Growth by portfolioId and startYear
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
     @GetMapping("/getPortfolioAnnualGrowth/{userId}/{portfolioId}/{startYear}")
     public ResponseEntity<Map<String, Double>> getPortfolioAnnualGrowth(
@@ -177,7 +175,7 @@ public class PortfolioController {
         return ResponseEntity.ok(annualGrowth);
     }
 
-    //Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
+    // Get Portfolio Monthly Growth by portfolioId, startYear and startMonth
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
     @GetMapping("/getPortfolioMonthlyGrowth/{userId}/{portfolioId}/{startYear}/{startMonth}")
     public ResponseEntity<Map<String, Map<String, Integer>>> getPortfolioMonthlyGrowth(
@@ -185,12 +183,12 @@ public class PortfolioController {
             @PathVariable String startYear,
             @PathVariable String startMonth,
             @PathVariable Integer userId,
-            @RequestHeader("Authorization") String authHeader
-    ) {
+            @RequestHeader("Authorization") String authHeader) {
         tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
 
-        Map<String, Map<String, Integer>> monthlyGrowth = portfolioService.getPortfolioMonthlyGrowth(portfolioId, startYear, startMonth);
+        Map<String, Map<String, Integer>> monthlyGrowth = portfolioService.getPortfolioMonthlyGrowth(portfolioId,
+                startYear, startMonth);
 
         if (monthlyGrowth == null) {
             // Handle the case where the data is not found or invalid inputs.
@@ -200,15 +198,14 @@ public class PortfolioController {
         return ResponseEntity.ok(monthlyGrowth);
     }
 
-    //Get Portfolio Annual Returns (% returns) by portfolioId and startYear
+    // Get Portfolio Annual Returns (% returns) by portfolioId and startYear
     @GetMapping("/getPortfolioAnnualReturns/{userId}/{portfolioId}/{startYear}")
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
     public ResponseEntity<Map<String, Double>> getPortfolioAnnualReturns(
             @PathVariable Integer portfolioId,
             @PathVariable String startYear,
             @PathVariable Integer userId,
-            @RequestHeader("Authorization") String authHeader
-    ) {
+            @RequestHeader("Authorization") String authHeader) {
 
         tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
@@ -223,10 +220,10 @@ public class PortfolioController {
         return ResponseEntity.ok(annualReturns);
     }
 
-
-
-    //Get Assets Allocation by  portfolio ID
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+    // Get Assets Allocation by portfolio ID
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
+    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
+    // "true")
     @GetMapping("assetsAllocation/{userId}/{portfolioId}")
     public ResponseEntity<AssetsAllocation> getAssetsAllocation(
             @PathVariable Integer portfolioId,
@@ -244,14 +241,16 @@ public class PortfolioController {
             return ResponseEntity.notFound().build();
         }
     }
-    //Get Performance Summary by portfolioID
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials = "true")
+
+    // Get Performance Summary by portfolioID
+    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
+    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
+    // "true")
     @GetMapping("performanceSummary/{userId}/{portfolioId}")
     public ResponseEntity<PerformanceSummary> getPerformanceSummary(
             @PathVariable Integer portfolioId,
             @PathVariable Integer userId,
-            @RequestHeader("Authorization") String authHeader)
-    {
+            @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         tokenService.checkTokenBelongsToUser(userId, token);
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
@@ -266,7 +265,7 @@ public class PortfolioController {
     }
 
     @GetMapping("getIndustries/{userId}/{portfolioId}")
-    public Map<String,Double> getIndustryAllocation(
+    public Map<String, Double> getIndustryAllocation(
             @PathVariable Integer portfolioId,
             @PathVariable Integer userId,
             @RequestHeader("Authorization") String authHeader) {
@@ -274,12 +273,12 @@ public class PortfolioController {
         tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
 
-        Map<String,Double> getIndustryAllocation = portfolioService.getIndustryAllocation(portfolioId);
+        Map<String, Double> getIndustryAllocation = portfolioService.getIndustryAllocation(portfolioId);
         return getIndustryAllocation;
     }
 
     @GetMapping("getCountries/{userId}/{portfolioId}")
-    public Map<String,Double> getCountryAllocation(
+    public Map<String, Double> getCountryAllocation(
             @PathVariable Integer portfolioId,
             @PathVariable Integer userId,
             @RequestHeader("Authorization") String authHeader) {
@@ -287,35 +286,42 @@ public class PortfolioController {
         tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
 
-        Map<String,Double> getCountryAllocation = portfolioService.getCountryAllocation(portfolioId);
+        Map<String, Double> getCountryAllocation = portfolioService.getCountryAllocation(portfolioId);
         return getCountryAllocation;
     }
 
+    @GetMapping("getDifferenceInPortfolioProfit/{userId}/{portfolioId1}/{portfolioId2}")
+    public double getDifferenceInPortfolioProfit(
+            @PathVariable Integer userId,
+            @PathVariable Integer portfolioId1,
+            @PathVariable Integer portfolioId2,
+            @RequestHeader("Authorization") String authHeader) {
 
-    //Get Countries and Allocations by portfolioID
+        tokenService.checkTokenBelongsToUser(userId, authHeader.substring(7));
+        portfolioService.checkPortfolioBelongsToUser(portfolioId1, userId);
+        portfolioService.checkPortfolioBelongsToUser(portfolioId2, userId);
+
+        double portfolio1Profit = portfolioService.getNetProfit(portfolioId1);
+        double portfolio2Profit = portfolioService.getNetProfit(portfolioId2);
+
+        if (portfolio1Profit > portfolio2Profit) {
+            return portfolio1Profit - portfolio2Profit;
+        } else {
+            return portfolio2Profit - portfolio1Profit;
+        }
+    }
+
+    // Get Countries and Allocations by portfolioID
     // @GetMapping("getCountries/{portfolioId}")
-    // public ResponseEntity<Map<String, Double>> getCountries(@PathVariable Integer portfolioId) {
-    //     Map<String, Double> countries = portfolioService.getCountries(portfolioId);
+    // public ResponseEntity<Map<String, Double>> getCountries(@PathVariable Integer
+    // portfolioId) {
+    // Map<String, Double> countries = portfolioService.getCountries(portfolioId);
 
-    //     if (countries != null) {
-    //         return ResponseEntity.ok(countries);
-    //     } else {
-    //         return ResponseEntity.notFound().build();
-    //     }
+    // if (countries != null) {
+    // return ResponseEntity.ok(countries);
+    // } else {
+    // return ResponseEntity.notFound().build();
+    // }
     // }
 
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-

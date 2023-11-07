@@ -45,6 +45,7 @@ function SideNavBar({ setPortfoliosFromParent }) {
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
         id="menu"
       >
+        {portfolios && <span>Portfolios</span>}
         {portfolios &&
           portfolios.length != 0 &&
           portfolios.map((portfolio, index) => {

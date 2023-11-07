@@ -43,7 +43,6 @@ export default function CreateOrEditPortfolioModal({
       AssetList: [],
     });
     // loading portfolio details if any if mode is edit
-    console.log("portfolio", mode);
     if (mode) {
       setModeOfModal(mode);
       if (mode == "Edit") {
@@ -156,19 +155,19 @@ export default function CreateOrEditPortfolioModal({
     if (!isValid) {
       return;
     }
-
+    console.log("hererere");
     // filtering out id field from chosenStockAllocation
     const chosenStockAllocationFiltered = chosenStockAllocation.map((ele) => {
       return {
         Symbol: ele.Symbol,
-        Allocation: Number(ele.Allocation),
+        Allocation: Number(ele.Allocation) / 100,
       };
     });
     // adding allocation of cash if the total allocation is less than 100
     if (totalStockAlloc < 100) {
       chosenStockAllocationFiltered.push({
         Symbol: "CASHALLOCATION",
-        Allocation: 100 - totalStockAlloc,
+        Allocation: (100 - totalStockAlloc) / 100,
       });
     }
     const requestBody = {
@@ -183,7 +182,6 @@ export default function CreateOrEditPortfolioModal({
         originalPortfolioDetails.portfolioId,
         requestBody
       );
-      console.log("response", response);
       if (response.status === 200) {
         setErrorMessage("");
         setSuccessMessage("Portfolio updated successfully.");
@@ -194,7 +192,7 @@ export default function CreateOrEditPortfolioModal({
       }
     } else {
       const response = await createPortfolioAPI(requestBody);
-      console.log("response", response);
+      console.log("response FROM CREATE PORTFOLIO", response);
       if (response.status === 200) {
         setErrorMessage("");
         setSuccessMessage("Portfolio created successfully.");
@@ -204,10 +202,10 @@ export default function CreateOrEditPortfolioModal({
         return;
       }
     }
-    setIsLoading(false);
     setTimeout(() => {
       window.location.reload();
     }, 1000);
+    setIsLoading(false);
     return;
   };
 
@@ -534,7 +532,7 @@ export default function CreateOrEditPortfolioModal({
                     totalStockAlloc > 100 ? "text-danger" : ""
                   }`}
                 >
-                  {totalStockAlloc}
+                  {totalStockAlloc} %
                 </span>
               </div>
               <div className="text-end">
