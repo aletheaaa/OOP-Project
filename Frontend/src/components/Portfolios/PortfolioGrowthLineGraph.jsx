@@ -10,6 +10,9 @@ export default function PortfolioGrowthLineGraph({
   portfolioId,
   portfolioName,
   startDate,
+  portfolio2Id,
+  startDate2,
+  portfolioName2,
 }) {
   const [chartData, setChartData] = useState({});
   const [lineGraphConfig, setLineGraphConfig] = useState("annual");
@@ -17,6 +20,13 @@ export default function PortfolioGrowthLineGraph({
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    console.log(
+      "this is protfolioId",
+      portfolioId,
+      portfolio2Id,
+      startDate,
+      startDate2
+    );
     if (portfolioId == null || portfolioId == null) return;
     const getPortfolioGrowth = async () => {
       setErrorMessage("");
@@ -34,15 +44,67 @@ export default function PortfolioGrowthLineGraph({
           setErrorMessage(response.data);
           return;
         }
-        labels = Object.keys(response.data);
-        datasets = [
-          {
-            label: portfolioName,
-            data: Object.values(response.data),
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },
-        ];
+        let portfolio2response;
+        if (portfolio2Id) {
+          portfolio2response = await getPortfolioGrowthByYearAPI(
+            portfolio2Id,
+            startDate2.split("-")[0]
+          );
+          if (portfolio2response.status != 200) {
+            console.log(
+              "Error in fetching portfolio growth",
+              portfolio2response.data
+            );
+            setErrorMessage(portfolio2response.data);
+            setChartData({});
+            setChartOptions({});
+            return;
+          }
+          //  get a combination of the keys in portoflio2response and response and remove duplicates
+          labels = [
+            ...new Set([
+              ...Object.keys(response.data),
+              ...Object.keys(portfolio2response.data),
+            ]),
+          ];
+          // sorting the labels
+          labels.sort((a, b) => {
+            return parseInt(a) - parseInt(b);
+          });
+          // adding 0 to the data points that are not present in the response
+          for (let i = 0; i < labels.length; i++) {
+            if (!response.data[labels[i]]) {
+              response.data[labels[i]] = 0;
+            }
+            if (!portfolio2response.data[labels[i]]) {
+              portfolio2response.data[labels[i]] = 0;
+            }
+          }
+          datasets = [
+            {
+              label: portfolioName,
+              data: Object.values(response.data),
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+            {
+              label: portfolioName2,
+              data: Object.values(portfolio2response.data),
+              borderColor: "rgb(132, 132, 255)",
+              backgroundColor: "rgba(132, 132, 255, 0.5)",
+            },
+          ];
+        } else {
+          labels = Object.keys(response.data);
+          datasets = [
+            {
+              label: portfolioName,
+              data: Object.values(response.data),
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+          ];
+        }
         const data = {
           labels,
           datasets: datasets,
@@ -85,23 +147,119 @@ export default function PortfolioGrowthLineGraph({
         }
         let labels = [];
         let datasets = [];
-        for (let year of Object.keys(response.data)) {
-          for (let month of Object.keys(response.data[year])) {
-            labels.push(month + ", " + year);
-            datasets.push(response.data[year][month]);
+        let datasets2 = [];
+        let data = {};
+        if (portfolio2Id) {
+          let portfolio2response = await getPortfolioGrowthByMonthAPI(
+            portfolio2Id,
+            startDate2.split("-")[0],
+            startDate2.split("-")[1]
+          );
+          if (portfolio2response.status != 200) {
+            console.log(
+              "Error in fetching portfolio growth",
+              portfolio2response.data
+            );
+            setErrorMessage(portfolio2response.data);
+            setChartData({});
+            setChartOptions({});
+            return;
           }
+          //  get a combination of the keys in portoflio2response and response and remove duplicates
+          for (let year of Object.keys(response.data)) {
+            for (let month of Object.keys(response.data[year])) {
+              labels.push(month + ", " + year);
+              datasets.push(response.data[year][month]);
+            }
+          }
+          // adding response 2 labels if not present in response 1
+          for (let year of Object.keys(portfolio2response.data)) {
+            for (let month of Object.keys(portfolio2response.data[year])) {
+              if (!labels.includes(month + ", " + year)) {
+                labels.push(month + ", " + year);
+              }
+              datasets2.push(portfolio2response.data[year][month]);
+            }
+          }
+          // sorting the labels based on year and month
+          let monthMapping = {
+            January: "1",
+            February: "2",
+            March: "3",
+            April: "4",
+            May: "5",
+            June: "6",
+            July: "7",
+            August: "8",
+            September: "9",
+            October: "10",
+            November: "11",
+            December: "12",
+          };
+          labels.sort((a, b) => {
+            let [month1, year1] = a.split(", ");
+            let [month2, year2] = b.split(", ");
+            if (year1 == year2) {
+              return (
+                parseInt(monthMapping[month1]) - parseInt(monthMapping[month2])
+              );
+            } else {
+              return parseInt(year1) - parseInt(year2);
+            }
+          });
+          console.log(response.data);
+          console.log(portfolio2response.data);
+          console.log(labels);
+          // adding 0 to the data points that are not present in the response into dataset & dataset2
+          for (let i = 0; i < labels.length; i++) {
+            const [month, year] = labels[i].split(", ");
+            if (!response.data[year] || !response.data[year][month]) {
+              datasets.splice(i, 0, 0);
+            }
+            if (
+              !portfolio2response.data[year] ||
+              !portfolio2response.data[year][month]
+            ) {
+              datasets2.splice(i, 0, 0);
+            }
+          }
+
+          data = {
+            labels: labels,
+            datasets: [
+              {
+                label: portfolioName,
+                data: datasets,
+                borderColor: "rgb(255, 99, 132)",
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+              },
+              {
+                label: portfolioName2,
+                data: datasets2,
+                borderColor: "rgb(132, 132, 255)",
+                backgroundColor: "rgba(132, 132, 255, 0.5)",
+              },
+            ],
+          };
+        } else {
+          for (let year of Object.keys(response.data)) {
+            for (let month of Object.keys(response.data[year])) {
+              labels.push(month + ", " + year);
+              datasets.push(response.data[year][month]);
+            }
+          }
+          data = {
+            labels: labels,
+            datasets: [
+              {
+                label: portfolioName,
+                data: datasets,
+                borderColor: "blue",
+                fill: false,
+              },
+            ],
+          };
         }
-        const data = {
-          labels: labels,
-          datasets: [
-            {
-              label: portfolioName,
-              data: datasets,
-              borderColor: "blue",
-              fill: false,
-            },
-          ],
-        };
 
         const options = {
           scales: {

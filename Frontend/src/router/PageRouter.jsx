@@ -7,6 +7,7 @@ import Landing from "../pages/Landing/index";
 import Portfolios from "../pages/Portfolios/index";
 import UserSettings from "../pages/User/UserSettings";
 import AccessLogs from "../pages/AccessLogs";
+import ComparePortfolios from "../pages/Portfolios/ComparePortfolio";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/accessLogs",
         element: <AccessLogs />,
+      },
+      {
+        path: "/comparePortfolios",
+        element: <ComparePortfolios />,
       },
     ],
   },

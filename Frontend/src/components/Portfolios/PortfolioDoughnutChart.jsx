@@ -29,7 +29,9 @@ function PortfolioDoughnutChart({ asssetAllocation, title, tableHeaders }) {
                   return (
                     <tr key={index}>
                       <td>{element}</td>
-                      <td>{asssetAllocation.datasets[0].data[index]}%</td>
+                      <td>
+                        {asssetAllocation.datasets[0].data[index].toFixed(2)}%
+                      </td>
                     </tr>
                   );
                 })}
