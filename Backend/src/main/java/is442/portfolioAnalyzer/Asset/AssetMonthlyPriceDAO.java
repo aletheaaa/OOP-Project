@@ -21,4 +21,13 @@ import org.springframework.stereotype.Repository;
             "AND a.id.year = :year " +
             "AND a.id.month = :month")
     Optional<Double> findLatestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
+    
+    // Find the earliest price of an asset by symbol, current year, and current month in the table
+    @Query("SELECT a.closingPrice " +
+        "FROM AssetMonthlyPrice a " +
+        "WHERE a.id.stockSymbol = :symbol " +
+        "AND (a.id.year < :year OR (a.id.year = :year AND a.id.month < :month)) " +
+        "ORDER BY a.id.year, a.id.month ASC")
+    Optional<Double> findEarliestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
+    
  }
