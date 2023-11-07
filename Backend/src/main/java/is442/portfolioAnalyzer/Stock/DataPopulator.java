@@ -1,4 +1,5 @@
 package is442.portfolioAnalyzer.Stock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
