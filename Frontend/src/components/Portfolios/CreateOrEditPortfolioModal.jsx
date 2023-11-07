@@ -110,7 +110,7 @@ export default function CreateOrEditPortfolioModal({
     let isValid = true;
     if (portfolioDetails.PortfolioName.length === 0) {
       isValid = false;
-      let node = document.getElementById(`name`);
+      let node = document.getElementById(`portfolioNameField`);
       node.classList.add("is-invalid");
     }
     if (portfolioDetails.Description.length === 0) {
@@ -192,7 +192,6 @@ export default function CreateOrEditPortfolioModal({
       }
     } else {
       const response = await createPortfolioAPI(requestBody);
-      console.log("response FROM CREATE PORTFOLIO", response);
       if (response.status === 200) {
         setErrorMessage("");
         setSuccessMessage("Portfolio created successfully.");
@@ -211,14 +210,16 @@ export default function CreateOrEditPortfolioModal({
 
   // function to validate the input fields of the form
   const validateField = (e, condition, elementId) => {
-    console.log("condition", condition);
+    console.log("condition", condition, elementId);
     if (condition) {
+      console.log("hererererererere");
       let node = document.getElementById(elementId);
       node.classList.remove("is-invalid");
       return true;
     } else {
       let node = document.getElementById(elementId);
       node.classList.add("is-invalid");
+      console.log("this is node", node);
       return false;
     }
   };
@@ -278,7 +279,7 @@ export default function CreateOrEditPortfolioModal({
                     <input
                       disabled={modeOfModal == "Edit"}
                       type="text"
-                      id="name"
+                      id="portfolioNameField"
                       value={portfolioDetails.PortfolioName}
                       className="form-control"
                       onChange={(event) => {
@@ -291,7 +292,7 @@ export default function CreateOrEditPortfolioModal({
                         validateField(
                           event,
                           event.target.value.length > 0,
-                          `name`
+                          `portfolioNameField`
                         );
                       }}
                     />
@@ -432,7 +433,7 @@ export default function CreateOrEditPortfolioModal({
                                 "currstocks list",
                                 chosenStockAllocation
                               );
-                              const isValid = validateField(
+                              let isValid = validateField(
                                 event,
                                 validStocks.includes(
                                   event.target.value.toUpperCase()
@@ -444,6 +445,21 @@ export default function CreateOrEditPortfolioModal({
                                   ),
                                 `stock-${index}`
                               );
+                              chosenStockAllocation.forEach((ele) => {
+                                if (ele.id == index) {
+                                  if (ele.Symbol == event.target.value) {
+                                    isValid = true;
+                                    validateField(
+                                      event,
+                                      true,
+                                      `stock-${index}`
+                                    );
+                                  }
+                                }
+                              });
+                              if (event.target.value.length === 0) {
+                                isValid = true;
+                              }
                               if (isValid) {
                                 addStockAllocToPortfolio(
                                   event.target.value.toUpperCase(),

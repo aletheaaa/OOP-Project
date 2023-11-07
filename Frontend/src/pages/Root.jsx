@@ -27,7 +27,7 @@ function Root() {
   return (
     <div className="App">
       <div className="App-header py-3" id="topNavBar">
-        <div style={{ width: "500px" }}>
+        <div style={{ width: "1000px" }}>
           <img
             src={goldmanlogo}
             style={{ height: "40px", width: "70px", display: "inline" }}
@@ -35,10 +35,20 @@ function Root() {
           />{" "}
           <a
             href="/"
-            className="border-white border-start py-3 px-3"
+            className="border-white border-start py-3 px-3 me-5"
             style={{ letterSpacing: ".2rem" }}
           >
             Portfolio Management
+          </a>
+          <a
+            href="/"
+            className="py-3 px-3 me-5"
+            style={{ letterSpacing: ".1rem", width: "25px" }}
+          >
+            Portfolio Comparison
+          </a>
+          <a href="/" className="py-3 px-3 me-5">
+            About Us
           </a>
         </div>
       </div>
@@ -52,7 +62,6 @@ function Root() {
             className="App-body px-auto"
             style={{ marginLeft: width + "px", width: viewportWidth - width }}
           >
-            <CreateOrEditPortfolioModal />
             <ChangePasswordModal />
             <Outlet />
           </div>

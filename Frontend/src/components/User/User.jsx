@@ -37,12 +37,6 @@ function User(props) {
       </a>
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
-          <CreateOrEditPortfolioButton
-            className={"dropdown-item"}
-            mode="Create"
-          />
-        </li>
-        <li>
           <ChangePasswordButton className={"dropdown-item"} />
         </li>
         <li>
