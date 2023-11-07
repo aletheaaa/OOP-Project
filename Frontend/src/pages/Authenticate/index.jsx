@@ -130,6 +130,7 @@ function Authenticate(props) {
               Forgot password? Reset password{" "}
               <a
                 className="link-primary"
+                style={{ cursor: "pointer" }}
                 data-bs-toggle="modal"
                 data-bs-target="#forgotPassword"
               >
@@ -138,7 +139,11 @@ function Authenticate(props) {
             </p>
             <p className="form-text">
               {registering ? registeringMessage : loginMessage}
-              <a className="link-primary" onClick={handleToggleRegistering}>
+              <a
+                className="link-primary"
+                onClick={handleToggleRegistering}
+                style={{ cursor: "pointer" }}
+              >
                 here!
               </a>
             </p>

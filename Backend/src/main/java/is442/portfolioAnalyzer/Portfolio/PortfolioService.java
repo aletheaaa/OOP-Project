@@ -33,6 +33,9 @@ public class PortfolioService {
     @Autowired
     StockDAO stockDAO;
 
+    @Autowired
+    AssetMonthlyPriceDAO assetMonthlyPriceDAO;
+
 
     // RETRIEVING PORTFOLIO DETAILS
     // ---------------------------------------------------------------------------------------------------
@@ -173,9 +176,20 @@ public class PortfolioService {
                 String year = dateParts[0];
                 int monthInt = Integer.parseInt(dateParts[1]) - 1;
                 String month = getMonthName(monthInt);
+
+                // Use the AssetMonthlyPriceDAO to find the price for the given symbol, year, and month
+                Optional<Double> priceOptional = assetMonthlyPriceDAO.findLatestPriceBySymbolAndYearAndMonth(symbol, year, month);
+
+                if (priceOptional.isPresent()) {
+                    double price = priceOptional.get();
+                    asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / price);
+                } else {
+                    // Handle the case where the price is not found
+                    double price = assetMonthlyPriceDAO.findEarliestPriceBySymbolAndYearAndMonth(symbol, year, month).get();
+                    asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation() / price);
+                }
             
-                asset.setQuantityPurchased(portfolioCreation.getCapital() * assetCreation.getAllocation()
-                        / assetService.getAssetLatestPrice(symbol));
+
 
                 // Calculate the total value of the asset
                 // asset.setTotalValue(assetService.getLatestPrice(symbol) * asset.getQuantityPurchased());
@@ -504,7 +518,7 @@ public class PortfolioService {
         for (int year = startYearInt; year <= currentYear; year++) {
             String yearString = String.valueOf(year);
             double portfolioValue = getPortfolioValueByYear(portfolioId, yearString);
-            System.out.println("Portfolio value for " + yearString + ": " + String.valueOf(portfolioValue));
+            // System.out.println("Portfolio value for " + yearString + ": " + String.valueOf(portfolioValue));
 
             // Calculate the annual return as a percentage increase with two decimal places.
             double annualReturn = 0.0;
@@ -537,6 +551,8 @@ public class PortfolioService {
     }
 
 
+
+
     
     // // Get portfolio final balance at this current point of time
     public double getPortfolioFinalBalance(Integer portfolioId) {
@@ -559,7 +575,10 @@ public class PortfolioService {
         int currentYearValue = Year.now().getValue();
         int startYearValue = Integer.parseInt(portfolio.getStartDate().substring(0, 4)); // get the year e.g. 2005
         int timePeriod = currentYearValue - startYearValue;
-        double CAGR = Math.pow(finalBalance / initialBalance, 1.0 / timePeriod) - 1;
+        if (timePeriod == 0) {
+            return 0;
+        }
+        double CAGR = Math.pow(finalBalance / initialBalance, (1.0 / timePeriod)) - 1;
         return CAGR * 100; // Convert to percentage
     }
 
@@ -572,7 +591,10 @@ public class PortfolioService {
         double riskFreeRate = 4.57;
         double expectedReturn = getPortfolioExpectedReturns(portfolioId);
         double standardDeviation = getPortfolioStandardDeviation(portfolioId);
-        return (expectedReturn - riskFreeRate) / standardDeviation;
+        if (standardDeviation == 0) {
+            return 0;
+        }
+        return ((expectedReturn - riskFreeRate) / standardDeviation) * 100;
     }
 
     // Get Portfolio's Standard Deviation ---------------------------------------------------------------------------
@@ -649,7 +671,7 @@ public class PortfolioService {
                 sectors.add(asset.getSector());
             }
         }
-        System.out.println(sectors);
+        // System.out.println(sectors);
 
         //Final Balance of the portfolio
         double finalBalance = getPortfolioFinalBalance(portfolioId);
@@ -680,7 +702,7 @@ public class PortfolioService {
             System.out.println(assetMap);
         }
         assetsAllocation.setAssets(assetMap);
-        System.out.println(assetsAllocation);
+        // System.out.println(assetsAllocation);
         return assetsAllocation;
     }
 

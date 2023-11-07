@@ -24,13 +24,12 @@ function PortfolioPerformanceSummary({ portfolioId, setCurrentBalanceParent }) {
         return;
       }
       portfolioDetails = portfolioDetails.data;
-      setInitialBalance(portfolioDetails.InitialBalance);
-      setFinalBalance(portfolioDetails.FinalBalance);
-      setCurrentBalanceParent(portfolioDetails.FinalBalance);
-      setNetProfit(portfolioDetails.NetProfit);
-      setCAGR(portfolioDetails.CAGR);
-      setSharpeRatio(portfolioDetails.SharpeRatio);
-      setSortinoRatio(portfolioDetails.SortinoRatio);
+      setInitialBalance(Number(portfolioDetails.InitialBalance).toFixed(2));
+      setFinalBalance(Number(portfolioDetails.FinalBalance).toFixed(2));
+      setCurrentBalanceParent(Number(portfolioDetails.FinalBalance).toFixed(2));
+      setNetProfit(Number(portfolioDetails.NetProfit).toFixed(2));
+      setCAGR(Number(portfolioDetails.CAGR).toFixed(2));
+      setSharpeRatio(Number(portfolioDetails.SharpeRatio).toFixed(2));
     };
     getPortfolioDetails();
   }, []);

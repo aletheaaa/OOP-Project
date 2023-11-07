@@ -84,7 +84,7 @@ export default function Portfolios() {
             {
               label: "% of Capital Allocated",
               data: Object.keys(assetAllocationFromServer).map(
-                (element) => assetAllocationFromServer[element].value
+                (element) => assetAllocationFromServer[element].value * 100
               ),
               backgroundColor: dynamicBackgroundColors,
               borderColor: dynamicBorderColors,
@@ -106,14 +106,14 @@ export default function Portfolios() {
           // data formatting for doughnut chart
           assetAllocationFromServer[element].stocks.forEach((stock) => {
             stockLabel.push(stock.symbol);
-            stockData.push(stock.allocation);
+            stockData.push(stock.allocation * 100);
           });
           // data formatting for edit portfolio modal
           assetAllocationFromServer[element].stocks.forEach((stock) => {
             if (stock.symbol != "CASHALLOCATION") {
               editPortfolioDetailsModal.push({
                 Symbol: stock.symbol,
-                Allocation: stock.allocation,
+                Allocation: stock.allocation * 100,
                 id: counter,
               });
               counter++;
@@ -160,7 +160,7 @@ export default function Portfolios() {
         Object.keys(response.data).forEach((key) => {
           // data formatting for doughnut chart
           industryLabel.push(key);
-          industryData.push(response.data[key]);
+          industryData.push(response.data[key] * 100);
         });
         // Number of data points
         const numberOfDataPoints = industryLabel.length;
@@ -200,7 +200,7 @@ export default function Portfolios() {
         Object.keys(response.data).forEach((element) => {
           // data formatting for doughnut chart
           countryLabel.push(element);
-          countryData.push(response.data[element]);
+          countryData.push(response.data[element] * 100);
         });
         // Number of data points
         const numberOfDataPoints = countryLabel.length;
@@ -239,7 +239,7 @@ export default function Portfolios() {
             {errorMessage}
           </div>
         )}
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end px-4">
           <CreateOrEditPortfolioButton
             target="#portfolioIndexPageModal"
             mode="Edit"
@@ -271,10 +271,17 @@ export default function Portfolios() {
           <DeletePortfolioButton />
           <DeletePortfolioModal portfolioId={portfolioId} />
         </div>
-        <div className="row mb-3 mt-3">
+        <div className="row mb-3 mt-3 px-4 ">
           <div className="col">
             <h3>{chosenPortfolio.portfolio_name}</h3>
-            <div>{chosenPortfolio.description}</div>
+            <div>
+              <span className="fw-bold">Description:</span>{" "}
+              {chosenPortfolio.description}
+            </div>
+            <div>
+              <span className="fw-bold">Start Date:</span>{" "}
+              {chosenPortfolio.start_date}
+            </div>
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
