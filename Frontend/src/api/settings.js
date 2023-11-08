@@ -6,6 +6,12 @@ let message = "Unknown Error";
 
 let token = sessionStorage.getItem("token");
 
+export function updateSettings(firstName, lastName) {
+  console.log("[updateSettings]");
+  console.log("First Name: " + firstName);
+  console.log("Last Name: " + lastName);
+}
+
 export async function changePassword(email, oldPassword, newPassword) {
   // console.log("[changePassword]");
   // console.log("Email: " + email);
