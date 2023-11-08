@@ -18,10 +18,11 @@ public class GlobalExceptionHandler {
     }
 
     // @ExceptionHandler(PortfolioNameNotUniqueException.class)
-    // public ResponseEntity<?> handlePortfolioNameNotUniqueException(PortfolioNameNotUniqueException e) {
-    //     return ResponseEntity
-    //             .badRequest()
-    //             .body(e.getMessage());
+    // public ResponseEntity<?>
+    // handlePortfolioNameNotUniqueException(PortfolioNameNotUniqueException e) {
+    // return ResponseEntity
+    // .badRequest()
+    // .body(e.getMessage());
     // }
     @ExceptionHandler(PortfolioNameNotUniqueException.class)
     public ResponseEntity<ErrorResponse> TestError(PortfolioNameNotUniqueException e) {
@@ -65,12 +66,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
-
     @ExceptionHandler(PortfolioNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlePortfolioNotFoundException(PortfolioNotFoundException e) {
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(SymbolNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleSymbolNotFoundException(SymbolNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 
 }
