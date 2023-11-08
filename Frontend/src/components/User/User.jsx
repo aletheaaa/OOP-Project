@@ -6,6 +6,11 @@ import ChangePasswordButton from "./ChangePasswordButton";
 export default function User(props) {
   const navigate = useNavigate();
 
+  const handleViewAccessLogs = (event) => {
+    event.preventDefault();
+    navigate("/accessLogs");
+  }
+
   const handleLogout = (event) => {
     event.preventDefault();
     logout();
@@ -32,6 +37,11 @@ export default function User(props) {
       <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
         <li>
           <ChangePasswordButton className={"dropdown-item"} />
+        </li>
+        <li>
+          <button className="dropdown-item" onClick={handleViewAccessLogs}>
+            View Access Logs
+          </button>
         </li>
         <li>
           <hr className="dropdown-divider" />
