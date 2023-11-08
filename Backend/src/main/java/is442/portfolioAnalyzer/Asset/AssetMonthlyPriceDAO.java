@@ -23,15 +23,4 @@ import org.springframework.stereotype.Repository;
     Optional<Double> findLatestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
 
 
-//     @Query("SELECT MIN(a.id.year) FROM AssetMonthlyPrice a WHERE a.id.stockSymbol = :symbol")
-//     Optional<String> findMinYearBySymbol(@Param("symbol") String symbol);
-
-//     @Query("SELECT MIN(a.id.month) FROM AssetMonthlyPrice a WHERE a.id.stockSymbol = :symbol AND a.id.year = :year")
-//     Optional<String> findMinMonthBySymbolAndYear(@Param("symbol") String symbol, @Param("year") String year);
-
-
-
-    
-
-
  }

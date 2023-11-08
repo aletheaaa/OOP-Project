@@ -10,6 +10,7 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
@@ -71,6 +72,39 @@ public class AssetService {
     }
 
 
+    @Scheduled(cron = "0 0 20 * * ?") // Schedule to run daily at 4:00 AM GMT+8
+    public void updateClosingPricesDaily() {
+        // Get the current year and month
+        int currentYear = Year.now().getValue();
+        int currentMonth = MonthDay.now().getMonthValue();
+        String currentMonthName = getMonthName(currentMonth - 1); // Adjust for 0-based index
+
+        // Loop through your assets or symbols and update closing prices
+        List<String> symbols = getUniqueSymbols();
+
+        for (String symbol : symbols) {
+            double latestPrice = getAssetLatestPrice(symbol);
+
+            // Update the AssetMonthlyPrice entry for the current year and month
+            AssetMonthlyPriceId id = new AssetMonthlyPriceId();
+            id.setYear(String.valueOf(currentYear));
+            id.setMonth(currentMonthName);
+            id.setStockSymbol(symbol);
+
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+
+            if (assetMonthlyPriceOptional.isPresent()) {
+                AssetMonthlyPrice assetMonthlyPrice = assetMonthlyPriceOptional.get();
+                assetMonthlyPrice.setClosingPrice(latestPrice);
+                assetMonthlyPriceDAO.save(assetMonthlyPrice);
+            }
+        }
+    }
+
+    public List<Asset> getAllAssets(){
+        System.out.println("In service");
+        return assetDAO.findAll();
+    }
 
 
 
