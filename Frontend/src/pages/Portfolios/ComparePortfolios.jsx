@@ -129,6 +129,7 @@ export default function ComparePortfolios() {
           </div>
         )}
         <div className="position-static mb-5 bg-body rounded pb-3">
+          <h2 className="px-5 w-100 text-center">Compare Portfolio</h2>
           {/* Dashboard Cards */}
           <div className="row py-2 px-5 mt-2">
             {portfolio1Id && portfolio2Id && (

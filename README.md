@@ -22,7 +22,7 @@ Our Portfolio Analyzer Application is a tool designed to help individuals manage
 - Performance Metrics: Present Value, Net Profit, CAGR & Sharpe Ratio of user portfolios.
 - Portfolio Comparison: Side-by-side comparison of 2 or more portfolios owned by user.
 - Security Features: Secure authentication and password protection and password resetting functionalities.
-- Dynamic Frontend UI: Responsive and intuitive User Interface for ease of use.
+- Dynamic Frontend UI: Responsive and intuitive user interface for ease of use.
 
 ### Full Feature List
 
@@ -57,7 +57,7 @@ npm install
 
 ## Usage
 
-In order to run the application locally, please ensure that the folllowing additional prerequisites are present on your system:
+In order to run the application locally, please ensure that the following additional prerequisites are present on your system:
 
 - Some form of SQL server, we use MySQL
 - Java Runtime Version 8 or above
