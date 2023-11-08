@@ -24,10 +24,6 @@ const router = createBrowserRouter([
         element: <Portfolios />,
       },
       {
-        path: "/settings",
-        element: <UserSettings />,
-      },
-      {
         path: "/accessLogs",
         element: <AccessLogs />,
       },
