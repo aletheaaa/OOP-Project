@@ -32,7 +32,17 @@ public class PortfolioController {
     @Autowired
     TokenService tokenService;
 
+    @GetMapping("user/{userid}")
+    public ResponseEntity<UserPortfolios> getAllPortfoliosByUserId(
+            @PathVariable Integer userid,
+            @RequestHeader("Authorization") String authHeader) {
 
+        tokenService.checkTokenBelongsToUser(userid, authHeader.substring(7));
+
+        UserPortfolios userPortfolios = portfolioService.getAllPortfoliosByUserId(userid);
+        return ResponseEntity.ok(userPortfolios);
+    }
+    
     // Get portfolio by name and userid
     @GetMapping("{portfolioId}/{userId}")
     public ResponseEntity<Portfolio> getPortfolioByIds(
