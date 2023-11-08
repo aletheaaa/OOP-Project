@@ -1,10 +1,8 @@
  package is442.portfolioAnalyzer.Asset;
 
- import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.time.MonthDay;
 import java.time.Year;
 import java.util.List;
