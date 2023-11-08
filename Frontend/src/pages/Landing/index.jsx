@@ -43,6 +43,14 @@ export default function Dashboard() {
     <div className="p-5">
       Please select portfolio to view from side menu <ChangePasswordModal />
       <ComparePortfolios portfolios={portfolios} />
+      <div>
+        Please create a new portfolio here{" "}
+        <CreateOrEditPortfolioButton
+          mode="Create"
+          className="btn btn-secondary mt-3"
+        />
+        <CreateOrEditPortfolioModal />
+      </div>
     </div>
   ) : (
     <div
