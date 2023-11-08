@@ -5,7 +5,7 @@ import CreateOrEditPortfolioModal from "../components/Portfolios/CreateOrEditPor
 import ChangePasswordModal from "../components/User/ChangePasswordModal";
 import goldmanlogo from "../assets/goldmanlogo.png";
 
-function Root() {
+export default function Root() {
   const [width, setWidth] = React.useState(0);
   const [portfolios, setPortfolios] = React.useState([]);
   const [viewportWidth, setViewportWidth] = React.useState(0);
@@ -70,5 +70,3 @@ function Root() {
     </div>
   );
 }
-
-export default Root;

@@ -4,7 +4,6 @@ import { comparePortfolio } from "../../api/portfolio";
 function ComparePortfolios(props) {
   const [portfolio1, setPortfolio1] = useState();
   const [portfolio2, setPortfolio2] = useState();
-  const [isLoading, setIsLoading] = useState(false);
 
   const portfolios = props.portfolios;
 
@@ -29,10 +28,6 @@ function ComparePortfolios(props) {
       return;
     }
     event.preventDefault();
-    // setIsLoading(true);
-    // let compare = await comparePortfolio(portfolio1, portfolio2);
-    // setIsLoading(false);
-    // console.log(compare);
     window.location.href =
       "/comparePortfolios?portfolio1=" +
       portfolio1 +
@@ -122,24 +117,14 @@ function ComparePortfolios(props) {
               >
                 Close
               </button>
-              {isLoading ? (
-                <button className="btn btn-primary" type="button" disabled>
-                  <span
-                    className="spinner-border spinner-border-sm mr-2"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>{" "}
-                  Loading...
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="btn btn-block btn-primary"
-                  onClick={handleCompare}
-                >
-                  Compare
-                </button>
-              )}
+              <button className="btn btn-primary" type="button" disabled>
+                <span
+                  className="spinner-border spinner-border-sm mr-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>{" "}
+                Loading...
+              </button>
             </div>
           </div>
         </div>

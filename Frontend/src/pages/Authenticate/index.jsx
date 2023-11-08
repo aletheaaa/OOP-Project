@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import Alert from "../../components/Common/Alert";
 
-function Authenticate(props) {
+export default function Authenticate(props) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [resetEmail, setResetEmail] = useState();
@@ -32,7 +32,7 @@ function Authenticate(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let authentication = await authenticate(registering, email, password);
-    console.log("thisis authentication return", authentication);
+    // console.log("this is authentication return: ", authentication);
     if (authentication.status <= "400") {
       props.setToken(authentication.data.token);
       props.setId(authentication.data.id);
@@ -41,6 +41,7 @@ function Authenticate(props) {
       setNotifications([]);
       window.location.reload(); // reload page after logging in to exit login page
     } else {
+      // check if error response contains a custom message, and use that instead of the default
       if (Object.keys(authentication.response.data).includes("message")) {
         setErrors([
           ...errors,
@@ -77,43 +78,35 @@ function Authenticate(props) {
 
   return (
     <>
-      {errors &&
-        errors.length > 0 &&
-        errors.map((error) => (
-          <Alert color="danger" code={error.code} message={error.message} />
-        ))}
-      {notifications &&
-        notifications.length > 0 &&
-        notifications.map((notification) => (
-          <Alert
-            color="success"
-            code={notification.code}
-            message={notification.message}
-          />
-        ))}
+      {errors && errors.length > 0 && errors.map((error) => (
+        <Alert color="danger" code={error.code} message={error.message} />
+      ))}
+      {notifications && notifications.length > 0 && notifications.map((notification) => (
+        <Alert color="success" code={notification.code} message={notification.message} />
+      ))}
       <div className="d-flex my-2 mx-5 p-3 align-items-center justify-content-center border">
         <form>
           <h3>{registering ? "Register" : "Login"}</h3>
           <div className="mb-3">
-            <label for="exampleInputEmail1" className="form-label">
+            <label for="userEmail" className="form-label">
               Email address
             </label>
             <input
               type="email"
               className="form-control"
-              id="exampleInputEmail1"
+              id="userEmail"
               aria-describedby="emailHelp"
               onChange={handleEmailChange}
             />
           </div>
           <div className="mb-3">
-            <label for="exampleInputPassword1" className="form-label">
+            <label for="userPassword" className="form-label">
               Password
             </label>
             <input
               type="password"
               className="form-control"
-              id="exampleInputPassword1"
+              id="userPassword"
               onChange={handlePasswordChange}
             />
           </div>
@@ -221,5 +214,3 @@ function Authenticate(props) {
     </>
   );
 }
-
-export default Authenticate;

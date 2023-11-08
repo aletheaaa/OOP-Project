@@ -1,6 +1,6 @@
 import React from "react";
 
-function ErrorPage() {
+export default function ErrorPage() {
   return (
     <>
       <div className="container my-3 d-flex justify-content-center">
@@ -17,5 +17,3 @@ function ErrorPage() {
     </>
   );
 }
-
-export default ErrorPage;
