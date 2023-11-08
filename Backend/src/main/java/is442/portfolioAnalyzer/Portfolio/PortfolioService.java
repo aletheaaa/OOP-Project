@@ -98,7 +98,6 @@ public class PortfolioService {
         }
     }
 
-<<<<<<< HEAD
     // Check if portfolio name is unique
     public void checkPortfolioNameUnique(Integer portfolioId, Integer userId) {
         Portfolio portfolio = findByPortfolioId(portfolioId);
@@ -107,9 +106,6 @@ public class PortfolioService {
         }
     }
 
-
-=======
->>>>>>> 8b12978779a0404e037b1f9c8c99e9a27a77bf41
     // CREATE PORTFOLIO
     // ---------------------------------------------------------------------------------------------------
     public void createPortfolio(PortfolioCreation portfolioCreation, Integer userId)
@@ -787,7 +783,6 @@ public class PortfolioService {
 
         return (totalAnnualReturns / numYear) * 100;
     }
-
 
     // HELPER METHODS
     // ---------------------------------------------------------------------------------------------------
