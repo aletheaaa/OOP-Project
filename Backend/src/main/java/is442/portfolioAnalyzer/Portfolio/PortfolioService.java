@@ -11,6 +11,7 @@ import is442.portfolioAnalyzer.Stock.*;
 import is442.portfolioAnalyzer.Asset.*;
 import is442.portfolioAnalyzer.AssetMonthlyPrice.*;
 
+import javax.sound.sampled.Port;
 import java.time.Year;
 import java.util.*;
 import java.math.BigDecimal;
@@ -95,6 +96,14 @@ public class PortfolioService {
         Portfolio portfolio = findByPortfolioId(portfolioId);
         if (portfolio.getUser().getId() != userId) {
             throw new UserPortfolioNotMatchException("User does not have the portfolio!");
+        }
+    }
+
+    // Check if portfolio name is unique
+    public void checkPortfolioNameUnique(Integer portfolioId, Integer userId) {
+        Portfolio portfolio = findByPortfolioId(portfolioId);
+        if (portfolioDAO.findByPortfolioName(portfolio.getPortfolioName()) != null) {
+            throw new PortfolioNameNotUniqueException("Portfolio name is used before!");
         }
     }
 
@@ -775,6 +784,7 @@ public class PortfolioService {
 
         return (totalAnnualReturns / numYear) * 100;
     }
+
 
     // HELPER METHODS
     // ---------------------------------------------------------------------------------------------------
