@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import is442.portfolioAnalyzer.Stock.*;
-
 import is442.portfolioAnalyzer.Asset.*;
 
-import java.awt.desktop.SystemSleepEvent;
 import java.time.Year;
 import java.util.*;
 import java.math.BigDecimal;
@@ -42,10 +40,6 @@ public class PortfolioService {
     // ---------------------------------------------------------------------------------------------------
 
 
-    public List<Portfolio> getAllPortfolios() {
-        System.out.println("In service");
-        return portfolioDAO.findAll();
-    }
 
     // Get all the portfolios for a user by specifying the userId
     public UserPortfolios getAllPortfoliosByUserId(Integer userId) {
