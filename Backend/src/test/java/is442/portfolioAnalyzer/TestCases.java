@@ -1,15 +1,10 @@
 package is442.portfolioAnalyzer;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 
-import is442.portfolioAnalyzer.Asset.Asset;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
 import is442.portfolioAnalyzer.JsonModels.AssetCreation;
-import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
-import is442.portfolioAnalyzer.auth.AuthenticationController;
-import is442.portfolioAnalyzer.auth.AuthenticationRequest;
 import is442.portfolioAnalyzer.auth.AuthenticationService;
 import is442.portfolioAnalyzer.auth.AuthenticationResponse;
 import is442.portfolioAnalyzer.auth.RegisterRequest;
@@ -26,31 +21,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
-import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
-import is442.portfolioAnalyzer.Portfolio.PortfolioController;
-import org.springframework.security.test.context.support.WithMockUser;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @SpringJUnitConfig
@@ -64,9 +53,6 @@ public class TestCases {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private AuthenticationService service;
 
     @BeforeEach
     public void setup() {
@@ -145,80 +131,6 @@ public class TestCases {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
-// @Ignore
-// @Test
-// public void testGetPortfolioDetails() throws Exception {
-//             int id2 = 52 ;
-//             String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjNAZW1haWwuY29tIiwiaWF0IjoxNjk5NDI3Mjc5LCJleHAiOjE2OTk1MTM2Nzl9.ZCE3_hfDh2ucP9h35IOleuzVpJoQfR9xCk1ZHP62CuQ";
-//             int portfolioid = 2; //manual
-
-//                // Perform a GET request to the getPortfolioDetails endpoint
-//                MvcResult result = mockMvc.perform(get("/portfolio/getPortfolioDetails/{userId}/{portfolioId}", id2, portfolioid)
-//                 .header("Authorization", "Bearer " + token2))
-//                 .andExpect(status().isOk())
-//                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                 .andDo(MockMvcResultHandlers.print())
-//                 .andReturn();
-
-//             String responseContent = result.getResponse().getContentAsString();
-//             System.out.println(responseContent);
-
-//             // Check if the response contains the expected fields
-//             JsonPath jsonPath = JsonPath.compile("$");
-//             Object data = jsonPath.read(responseContent);
-//             assertNotNull(data);
-
-//             jsonPath = JsonPath.compile("$.portfolioName");
-//             String portfolioName = jsonPath.read(responseContent);
-//             assertEquals("testing portfolio", portfolioName);
-
-//             jsonPath = JsonPath.compile("$.description");
-//             String description = jsonPath.read(responseContent);
-//             assertEquals("A test portfolio", description);
-
-//             jsonPath = JsonPath.compile("$.capital");
-//             int capital = jsonPath.read(responseContent);
-//             assertEquals(10000, capital);
-
-//             jsonPath = JsonPath.compile("$.timePeriod");
-//             String timePeriod = jsonPath.read(responseContent);
-//             assertEquals("Monthly", timePeriod);
-
-//             jsonPath = JsonPath.compile("$.startDate");
-//             String startDate = jsonPath.read(responseContent);
-//             assertEquals("2000-01", startDate);
-
-//             jsonPath = JsonPath.compile("$.assetList[0].symbol");
-//             String symbol1 = jsonPath.read(responseContent);
-//             assertEquals("AAPL", symbol1);
-
-//             jsonPath = JsonPath.compile("$.assetList[0].weight");
-//             double weight1 = jsonPath.read(responseContent);
-//             assertEquals(0.5, weight1, 0.001);
-
-//             jsonPath = JsonPath.compile("$.assetList[1].symbol");
-//             String symbol2 = jsonPath.read(responseContent);
-//             assertEquals("PFE", symbol2);
-
-//             jsonPath = JsonPath.compile("$.assetList[1].weight");
-//             double weight2 = jsonPath.read(responseContent);
-//             assertEquals(0.3, weight2, 0.001);
-
-//             jsonPath = JsonPath.compile("$.assetList[2].symbol");
-//             String symbol3 = jsonPath.read(responseContent);
-//             assertEquals("AAIC", symbol3);
-
-//             jsonPath = JsonPath.compile("$.assetList[2].weight");
-//             double weight3 = jsonPath.read(responseContent);
-//             assertEquals(0.2, weight3, 0.001);
-//             assertEquals(0.3, weight2, 0.001);
-
-            
-//         }
-       
-
-    
-
     
 
 @Ignore
