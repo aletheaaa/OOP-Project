@@ -43,9 +43,10 @@ function ComparePortfolios(props) {
     <>
       <button
         type="button"
-        className="btn btn-primary"
+        className={props.className ? props.className : "btn btn-primary"}
         data-bs-toggle="modal"
         data-bs-target="#comparePortfolio"
+        style={props.style ? props.style : { borderRadius: "20px" }}
       >
         Compare Portfolios
       </button>
@@ -118,11 +119,11 @@ function ComparePortfolios(props) {
                 Close
               </button>
               <button
-                  type="submit"
-                  className="btn btn-block btn-primary"
-                  onClick={handleCompare}
-                >
-                  Compare
+                type="submit"
+                className="btn btn-block btn-primary"
+                onClick={handleCompare}
+              >
+                Compare
               </button>
             </div>
           </div>

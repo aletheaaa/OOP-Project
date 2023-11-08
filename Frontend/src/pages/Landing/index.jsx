@@ -6,6 +6,7 @@ import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEdi
 import ChangePasswordModal from "../../components/User/ChangePasswordModal";
 import ComparePortfolios from "../../components/Portfolios/ComparePortfolios";
 import CreateOrEditPortfolioModal from "../../components/Portfolios/CreateOrEditPortfolioModal";
+import portfolioImg from "../../assets/portfolio.jpg";
 
 export default function Dashboard() {
   const [portfolios, setPortfolios] = useState([]);
@@ -46,42 +47,56 @@ export default function Dashboard() {
   return portfolios && portfolios.length != 0 ? (
     <div
       className="container"
-      style={{ height: bodyHeight }}
+      style={{ height: bodyHeight, marginBottom: "200px" }}
     >
-      <div className="row row-cols-2">
+      <div className="row row-cols-2 mt-5">
         <div className="col">
           <h2 className="mt-5 lh-base">
-            Select portfolio
-            or create one
+            Select portfolio or Create One {">"}
             <ChangePasswordModal />
           </h2>
-          <div className="border-bottom border-dark border-3 w-75 mb-2"></div>
+          <div className="border-bottom border-dark border-3 mb-2 mt-4"></div>
         </div>
         <div className="col"></div>
-        
-          {portfolios &&
+
+        {portfolios &&
           portfolios.length &&
           portfolios.map((portfolio) => (
-            <div className="col mb-3">
-            <Link to={`/portfolios/${portfolio.portfolioId}`}>
-            <DashboardCard
-              title={portfolio.portfolioId}
-              value={portfolio.portfolioName}
-              iconClassName="bi-cash-coin"
-              colorClassName="info"
-            />
-            </Link>
+            <div className="col-3 mb-3 mt-5">
+              <Link to={`/portfolios/${portfolio.portfolioId}`}>
+                <div
+                  className="border border-dark px-3 py-5"
+                  style={{ color: "black" }}
+                >
+                  <img src={portfolioImg} alt="portfolio" />
+                  <h3 className="pt-2">{portfolio.portfolioName}</h3>
+                  <div className="border border-top w-75"></div>
+                </div>
+                {/* <DashboardCard
+                  title={portfolio.portfolioId}
+                  value={portfolio.portfolioName}
+                  iconClassName="bi-cash-coin"
+                  colorClassName="info"
+                /> */}
+              </Link>
             </div>
           ))}
       </div>
-      <div className="text-center">
-          <ComparePortfolios portfolios={portfolios} />
-          <CreateOrEditPortfolioButton
-            mode="Create"
-            className="btn btn-secondary ms-3"
-          />
-          <CreateOrEditPortfolioModal />
-        </div>
+      <div className="text-center" style={{ marginTop: "100px" }}>
+        <CreateOrEditPortfolioButton
+          mode="Create"
+          className="btn bg-transparent border border-dark px-3"
+          style={{ width: "300px", borderRadius: "20px" }}
+        />
+      </div>
+      <div className="d-flex justify-content-center mt-3">
+        <ComparePortfolios
+          className="btn btn-dark"
+          portfolios={portfolios}
+          style={{ borderRadius: "20px", width: "300px" }}
+        />
+      </div>
+      <CreateOrEditPortfolioModal />
     </div>
   ) : (
     <div

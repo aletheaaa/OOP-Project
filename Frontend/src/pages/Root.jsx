@@ -44,7 +44,10 @@ export default function Root() {
           >
             Portfolio Management
           </a>
-          <a href="/" className="py-2 px-3 me-5 position-absolute end-0">
+          <a
+            href="https://www.goldmansachs.com"
+            className="py-2 px-3 me-5 position-absolute end-0"
+          >
             About Us
           </a>
         </div>

@@ -5,6 +5,7 @@ export default function CreateOrEditPortfolioButton({
   className,
   mode,
   setModeOfModal,
+  style,
 }) {
   return (
     <button
@@ -12,7 +13,7 @@ export default function CreateOrEditPortfolioButton({
       className={className != null ? className : "btn btn-success"}
       data-bs-toggle="modal"
       data-bs-target={target ? target : "#createPortfolio"}
-      style={{ borderRadius: "20px" }}
+      style={style ? style : { borderRadius: "20px" }}
       onClick={() => {
         if (setModeOfModal) {
           setModeOfModal(mode);
