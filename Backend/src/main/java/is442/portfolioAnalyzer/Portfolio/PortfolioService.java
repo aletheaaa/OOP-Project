@@ -454,6 +454,7 @@ public class PortfolioService {
         // Convert the portfolio value to an integer.
         int portfolioValueInt = portfolioValue.intValue();
 
+
         return portfolioValueInt;
     }
 

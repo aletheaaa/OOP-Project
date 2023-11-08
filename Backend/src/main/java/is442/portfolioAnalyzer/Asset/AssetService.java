@@ -219,6 +219,11 @@ public class AssetService {
 
     // Get value of asset at the end of the specified year
     public double getAssetValueByYear(String symbol, String year, Asset asset) {
+
+        if(asset.getAssetId().getStockSymbol().equals("CASHALLOCATION")){
+            return asset.getQuantityPurchased();
+        }
+
         try {
             // Use your AssetMonthlyPriceDAO to retrieve the asset price for the specified year.
             AssetMonthlyPriceId id = new AssetMonthlyPriceId();
@@ -259,6 +264,11 @@ public class AssetService {
 
     // Get value of asset at the end of the specified year and month
     public double getAssetValueByYearAndMonth(String symbol, String year, String month, Asset asset) {
+
+        if(asset.getAssetId().getStockSymbol().equals("CASHALLOCATION")){
+            return asset.getQuantityPurchased();
+        }
+        
         try {
             AssetMonthlyPriceId id = new AssetMonthlyPriceId();
             id.setYear(year);
