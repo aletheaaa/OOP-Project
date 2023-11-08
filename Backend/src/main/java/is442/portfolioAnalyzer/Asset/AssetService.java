@@ -77,11 +77,7 @@ public class AssetService {
      * the assets in the AssetMonthlyPrice table
      * The scheduler is configured to run at 4am GMT+8 every day
      */
-<<<<<<< Updated upstream
-    @Scheduled(cron = "0 0 13 * * ?")
-=======
     @Scheduled(cron = "0 0 20 * * ?") 
->>>>>>> Stashed changes
     public void updateClosingPricesDaily() {
         System.out.println("Updating closing prices daily...");
         // Get the current year and month
