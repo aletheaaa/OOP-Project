@@ -4,13 +4,12 @@
 
 - [Introduction](#introduction)
 - [Features](#features)
+  - [Full Feature List](#full-feature-list)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License](#license)
+- [Credits](#credits)
 
 ## Introduction
 
@@ -47,12 +46,6 @@ Follow these steps to get the Portfolio Analyzer Application up and running on y
 - [npm](https://www.npmjs.com/)
 - API key for AlphaVantage
 
-### Deployed Application
-
-In order to access our application, please access it via the below link given.
-
-- [Project Link](https://u-chef2.vercel.app/)
-
 ### Installaton
 
 Run the below command in your terminal upon loading up our application.
@@ -62,15 +55,13 @@ cd Frontend
 npm install
 ```
 
-#### Local Usage
+## Usage
 
 In order to run the application locally, please ensure that the folllowing additional prerequisites are present on your system:
 
 - Some form of SQL server, we use MySQL
 - Java Runtime Version 8 or above
 - Open JDK Version 17 or above
-
-##### Additional Setup
 
 1. Run the setup.sql file located in the "Database" folder
 2. Open a terminal and navigate to the backend folder and run the mvnw file with the following commands to deploy the backend database:

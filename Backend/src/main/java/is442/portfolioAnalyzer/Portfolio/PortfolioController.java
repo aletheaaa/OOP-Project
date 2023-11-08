@@ -90,6 +90,7 @@ public class PortfolioController {
         String token = authHeader.substring(7);
         tokenService.checkTokenBelongsToUser(userId, token);
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
+        portfolioService.checkPortfolioNameUnique(portfolioId,userId);
         portfolioService.updatePortfolio(portfolioUpdate, portfolioId);
         return ResponseEntity.ok("Portfolio Updated!");
     }
