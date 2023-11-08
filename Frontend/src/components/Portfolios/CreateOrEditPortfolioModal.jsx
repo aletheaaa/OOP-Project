@@ -4,6 +4,7 @@ import {
   getValidStockSymbolsAPI,
   updatePortfolioAPI,
 } from "../../api/portfolio";
+import { getPortfolios } from "../../api/user";
 
 export default function CreateOrEditPortfolioModal({
   id,
@@ -105,7 +106,7 @@ export default function CreateOrEditPortfolioModal({
   };
 
   const handleSubmit = async () => {
-    console.log("hre");
+    setErrorMessage("");
     // validation
     let isValid = true;
     if (portfolioDetails.PortfolioName.length === 0) {
@@ -123,10 +124,36 @@ export default function CreateOrEditPortfolioModal({
       let node = document.getElementById(`capital`);
       node.classList.add("is-invalid");
     }
-    if (portfolioDetails.StartDate.length === 0) {
+    if (
+      // format of startdate
+      portfolioDetails.StartDate.length === 0 ||
+      portfolioDetails.StartDate.split("-").length !== 2 ||
+      portfolioDetails.StartDate.split("-")[0].length !== 4 ||
+      portfolioDetails.StartDate.split("-")[1].length !== 2
+    ) {
       isValid = false;
       let node = document.getElementById(`startDate`);
       node.classList.add("is-invalid");
+    }
+    // startDate cannot be in the future
+    if (portfolioDetails.StartDate) {
+      const currDate = new Date();
+      // getting month and year from curr date
+      const currMonth = currDate.getMonth() + 1;
+      const currYear = currDate.getFullYear();
+      if (currYear < Number(portfolioDetails.StartDate.split("-")[0])) {
+        isValid = false;
+        let node = document.getElementById(`startDate`);
+        node.classList.add("is-invalid");
+      }
+      if (
+        currYear === Number(portfolioDetails.StartDate.split("-")[0]) &&
+        currMonth < Number(portfolioDetails.StartDate.split("-")[1])
+      ) {
+        isValid = false;
+        let node = document.getElementById(`startDate`);
+        node.classList.add("is-invalid");
+      }
     }
     if (chosenStockAllocation === 0) {
       isValid = false;
@@ -155,7 +182,6 @@ export default function CreateOrEditPortfolioModal({
     if (!isValid) {
       return;
     }
-    console.log("hererere");
     // filtering out id field from chosenStockAllocation
     const chosenStockAllocationFiltered = chosenStockAllocation.map((ele) => {
       return {
@@ -277,7 +303,6 @@ export default function CreateOrEditPortfolioModal({
                 <div className="col-9">
                   {portfolioDetails && (
                     <input
-                      disabled={modeOfModal == "Edit"}
                       type="text"
                       id="portfolioNameField"
                       value={portfolioDetails.PortfolioName}
