@@ -2,7 +2,7 @@ package is442.portfolioAnalyzer.config;
 
 // This class will handle all the application config such as Bean etc
 
-import is442.portfolioAnalyzer.User.UserDTO;
+import is442.portfolioAnalyzer.User.UserDAO;
 import is442.portfolioAnalyzer.Exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,12 +12,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import java.util.Optional;
-
-
 
 
 @Configuration
@@ -25,7 +21,7 @@ import java.util.Optional;
 
 public class ApplicationConfig {
 
-    private final UserDTO repository;
+    private final UserDAO repository;
 
     @Bean
     public UserDetailsService userDetailsService() {

@@ -3,11 +3,11 @@ package is442.portfolioAnalyzer.auth;
 import is442.portfolioAnalyzer.Token.Token;
 import is442.portfolioAnalyzer.Token.TokenDAO;
 import is442.portfolioAnalyzer.Token.TokenType;
-import is442.portfolioAnalyzer.User.UserServiceImpl;
+import is442.portfolioAnalyzer.User.UserService;
 import is442.portfolioAnalyzer.config.*;
 import is442.portfolioAnalyzer.User.Role;
 import is442.portfolioAnalyzer.User.User;
-import is442.portfolioAnalyzer.User.UserDTO;
+import is442.portfolioAnalyzer.User.UserDAO;
 import is442.portfolioAnalyzer.Exception.*;
 import is442.portfolioAnalyzer.Tools.RandomStringGenerator;
 import is442.portfolioAnalyzer.Tools.Email.SendEmail;
@@ -27,9 +27,9 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     @Autowired
-    UserServiceImpl userserviceimpl;
+    UserService userserviceimpl;
 
-    private final UserDTO repository;
+    private final UserDAO repository;
     private final TokenDAO tokenDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;

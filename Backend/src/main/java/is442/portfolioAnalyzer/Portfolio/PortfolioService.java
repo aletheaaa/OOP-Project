@@ -3,7 +3,7 @@ import is442.portfolioAnalyzer.JsonModels.*;
 import is442.portfolioAnalyzer.Exception.PortfolioNameNotUniqueException;
 import is442.portfolioAnalyzer.Exception.UserPortfolioNotMatchException;
 import is442.portfolioAnalyzer.User.User;
-import is442.portfolioAnalyzer.User.UserServiceImpl;
+import is442.portfolioAnalyzer.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +19,18 @@ public class PortfolioService {
 
     @Autowired
     PortfolioDAO portfolioDAO;
-    @Autowired
-    AssetDAO assetDAO;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService userServiceImpl;
 
     @Autowired
     AssetService assetService;
 
     @Autowired
-    StockDAO stockDAO;
+    AssetMonthlyPriceDAO assetMonthlyPriceDAO;
 
     @Autowired
-    AssetMonthlyPriceDAO assetMonthlyPriceDAO;
+    StockService stockService;
     
 
 
@@ -57,15 +55,13 @@ public class PortfolioService {
         return userPortfolios;
     }
 
-    public Portfolio getPortfolioByName(String portfolioName) {
-        return portfolioDAO.findByPortfolioName(portfolioName);
-    }
 
     public Portfolio getPortfolioByIds(Integer portfolioId, Integer userId) {
         System.out.println("Get portfolio by name and id  - in the service");
         return portfolioDAO.findByPortfolioIds(portfolioId, userId);
     }
 
+    // Get the portfolio by portfolioId
     public Portfolio findByPortfolioId(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         if (portfolio == null) {
@@ -75,7 +71,7 @@ public class PortfolioService {
         }
     }
 
-    // Will throw Exception if Portfolio does not belong to the user
+    // Check if the portfolio belongs to the user
     public void checkPortfolioBelongsToUser(Integer portfolioId, Integer userId) {
         Portfolio portfolio = findByPortfolioId(portfolioId);
         if (portfolio.getUser().getId() != userId) {
@@ -142,7 +138,7 @@ public class PortfolioService {
                 asset.setCountry("CASHALLOCATION");
 
             } else {
-                Stock stock = stockDAO.findBySymbol(symbol);
+                Stock stock = stockService.getStockBySymbol(symbol);
                 String sector = stock.getSector();
                 asset.setSector(sector);
 
@@ -196,7 +192,7 @@ public class PortfolioService {
             }
 
             // System.out.println(asset);
-            assetDAO.save(asset);
+            assetService.saveAsset(asset);
             assets.add(asset);
         }
 
@@ -278,7 +274,8 @@ public class PortfolioService {
                         System.out.println("--------------------------------------");
 
                         // Update the asset in the DB
-                        assetDAO.save(asset);
+
+                        assetService.saveAsset(asset);
                     }
 
                 } else { // If new asset added ...
@@ -298,7 +295,8 @@ public class PortfolioService {
 
 
                     // Get the sector of the asset
-                    Stock stock = stockDAO.findBySymbol(symbol);
+                    Stock stock =stockService.getStockBySymbol(symbol);
+
                     String sector = stock.getSector();
 
                     //Get the industry of the asset
@@ -348,7 +346,7 @@ public class PortfolioService {
                         }
 
                     // Save the new asset into the DB
-                    assetDAO.save(newAsset);
+                    assetService.saveAsset(newAsset);
                 }
             }
         }
@@ -356,7 +354,7 @@ public class PortfolioService {
         List<String> symbolsToUpdate = getAssetSymbolsToUpdate(assetList);
         for (Asset asset : assets) {
             if (!symbolsToUpdate.contains(asset.getAssetId().getStockSymbol())) {
-                assetDAO.delete(asset);
+                assetService.deleteAsset(asset);
             }
         }
 
@@ -369,12 +367,12 @@ public class PortfolioService {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         List<Asset> assets = portfolio.getAssets();
         for (Asset asset : assets) {
-            assetDAO.delete(asset);
+            assetService.deleteAsset(asset);
         }
         portfolioDAO.delete(portfolio);
     }
 
-    // Get a list of asset symbols in the portfolio
+    // Get a list of asset symbols in the portfolio ( This is for update function)
     public List<String> getAssetSymbols(Integer portfolioId) {
         List<Asset> assets = assetService.getAssetsByPortfolioId(portfolioId);
         List<String> symbols = new ArrayList<>();
@@ -384,7 +382,7 @@ public class PortfolioService {
         return symbols;
     }
 
-    // Retrieve the list of asset symbols that is to be updated
+    // Retrieve the list of asset symbols that is to be updated ( MIGHT BE DUPLICATED)
     public List<String> getAssetSymbolsToUpdate(List<AssetCreation> assetList) {
         List<String> symbolsToUpdate = new ArrayList<>();
         for (AssetCreation assetCreation : assetList) {
@@ -494,7 +492,7 @@ public class PortfolioService {
     }
 
 
-    // Get the portfolio value at the end of the specified year and month
+    // Get the portfolio value at the end of the specified year and month ( THIS IS FOR getPortfolioMonthlyGrowth)
     public int getPortfolioValueByYearAndMonth(Integer portfolioId, String year, String month) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
@@ -565,7 +563,7 @@ public class PortfolioService {
         return portfolioValuesByYear;
     }
 
-    // // Get the net profit of the portfolio based on the portfolioName
+    // // Get the net profit of the portfolio based on the portfolioId
     public double getNetProfit(Integer portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
         List<Asset> assets = portfolio.getAssets();
@@ -623,12 +621,14 @@ public class PortfolioService {
         if (standardDeviation == 0) {
             return 0;
         }
-        return ((expectedReturn - riskFreeRate) / standardDeviation) * 100;
+        return ((expectedReturn - riskFreeRate) / standardDeviation);
     }
 
     // Get Portfolio's Standard Deviation ---------------------------------------------------------------------------
-    // Formula: Square root of the variance.
-    // Variance is calculated by sum of (annual returns  - mean returns) ^2
+    /*
+     * Formula: Square root of the variance.
+     * Variance is calculated by sum of (annual returns  - mean returns) ^2
+     */
     public double getPortfolioStandardDeviation(int portfolioId) {
         Portfolio portfolio = portfolioDAO.findByPortfolioId(portfolioId);
 
@@ -700,7 +700,6 @@ public class PortfolioService {
                 sectors.add(asset.getSector());
             }
         }
-        // System.out.println(sectors);
 
         //Final Balance of the portfolio
         double finalBalance = getPortfolioFinalBalance(portfolioId);

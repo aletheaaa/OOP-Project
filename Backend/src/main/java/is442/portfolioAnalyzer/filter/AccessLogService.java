@@ -6,19 +6,18 @@ import is442.portfolioAnalyzer.User.*;
 import is442.portfolioAnalyzer.Exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AccessLogService {
 
-    private final UserDTO userRepository;
+    private final UserDAO userRepository;
 
     private final List<String> accessLogList = new CopyOnWriteArrayList<>();
 
     @Autowired
-    public AccessLogService(UserDTO userRepository){
+    public AccessLogService(UserDAO userRepository){
         this.userRepository = userRepository;
     }
 

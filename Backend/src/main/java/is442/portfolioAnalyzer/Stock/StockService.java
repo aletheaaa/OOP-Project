@@ -42,6 +42,11 @@ public class StockService {
         workbook.close();
         excelFile.close();
     }
+        // Get stock by symbol
+        public Stock getStockBySymbol(String symbol){
+        return stockDAO.findBySymbol(symbol);
+        }
+
 
     public List<String> getAllStockSymbols(){
         return stockDAO.getAllStockSymbols();

@@ -97,12 +97,16 @@ public class AssetService {
         }
     }
 
-    public List<Asset> getAllAssets(){
-        System.out.println("In service");
-        return assetDAO.findAll();
+
+    // Saving the asset into the DAO
+    public void saveAsset(Asset asset){
+        assetDAO.save(asset);
     }
 
-
+    // Delete the asset from the DAO
+    public void deleteAsset(Asset asset){
+        assetDAO.delete(asset);
+    }
 
     public List<Asset> getAssetsByPortfolioId(Integer portfolioId ){
         System.out.println("In controller");
@@ -206,7 +210,7 @@ public class AssetService {
                 return earliestStockUnit.getClose();
             }
         } catch (Exception e) {
-            // Handle exceptions appropriately.
+            // Handle exceptions appropriately. // TODO throw exception if symbol not found
         }
     
         // Return null or handle it as needed if data is not found or an error occurs.

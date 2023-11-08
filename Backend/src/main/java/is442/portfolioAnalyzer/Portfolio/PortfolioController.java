@@ -43,7 +43,7 @@ public class PortfolioController {
         return ResponseEntity.ok(userPortfolios);
     }
     
-    // Get portfolio by name and userid
+    // Get portfolio by PortfolioId and UserId
     @GetMapping("{portfolioId}/{userId}")
     public ResponseEntity<Portfolio> getPortfolioByIds(
             @PathVariable Integer portfolioId,
