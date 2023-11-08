@@ -16,21 +16,4 @@ import org.springframework.web.bind.annotation.*;
  @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
  public class AssetController {
 
-     @Autowired
-     AssetService assetService;
-
-     @GetMapping("allAssets")
-     public List<Asset> getAllAssets(){
-         System.out.println("In controller");
-         return assetService.getAllAssets();
-     }
-
-
-     
-     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", exposedHeaders = "*", methods = RequestMethod.GET, allowCredentials = "true")
-     @GetMapping("getAssetsByPortfolioId/{portfolioId}")
-     public List<Asset> getAssetsByPortfolioId(@PathVariable Integer portfolioId){
-         System.out.println("In controller");
-         return assetService.getAssetsByPortfolioId(portfolioId);
-     }
 }

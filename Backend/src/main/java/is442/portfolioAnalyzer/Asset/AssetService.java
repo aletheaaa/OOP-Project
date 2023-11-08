@@ -70,10 +70,7 @@ public class AssetService {
         }
     }
 
-    public List<Asset> getAllAssets(){
-        System.out.println("In service");
-        return assetDAO.findAll();
-    }
+
 
 
 

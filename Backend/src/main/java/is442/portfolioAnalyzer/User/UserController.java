@@ -3,13 +3,10 @@ package is442.portfolioAnalyzer.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 import is442.portfolioAnalyzer.Exception.*;
-import is442.portfolioAnalyzer.config.*;
 import org.springframework.http.MediaType;
-
-
 import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {

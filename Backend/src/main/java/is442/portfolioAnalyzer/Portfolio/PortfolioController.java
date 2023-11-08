@@ -6,9 +6,6 @@ import is442.portfolioAnalyzer.JsonModels.PerformanceSummary;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.JsonModels.PortfolioUpdate;
 import is442.portfolioAnalyzer.JsonModels.UserPortfolios;
-
-import is442.portfolioAnalyzer.Token.Token;
-import is442.portfolioAnalyzer.Token.TokenDAO;
 import is442.portfolioAnalyzer.Token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,41 +32,6 @@ public class PortfolioController {
     @Autowired
     TokenService tokenService;
 
-    @GetMapping("test")
-    public double test() {
-        return assetService.getLatestPrice("IBM");
-    }
-
-    @GetMapping("allPortfolios")
-    public ResponseEntity<List<Portfolio>> getAllPortfolios() {
-        // return ResponseEntity.ok("Connect to Portfolio Service!");
-        System.out.println("In controller");
-        return ResponseEntity.ok(portfolioService.getAllPortfolios());
-    }
-
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
-    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
-    // "true")
-    @GetMapping("user/{userid}")
-    public ResponseEntity<UserPortfolios> getAllPortfoliosByUserId(
-            @PathVariable Integer userid,
-            @RequestHeader("Authorization") String authHeader) {
-
-        tokenService.checkTokenBelongsToUser(userid, authHeader.substring(7));
-
-        UserPortfolios userPortfolios = portfolioService.getAllPortfoliosByUserId(userid);
-        return ResponseEntity.ok(userPortfolios);
-    }
-
-    @GetMapping("portfolioName/{portfolioName}")
-    public ResponseEntity<Portfolio> getPortfolioByName(@PathVariable String portfolioName) {
-        Portfolio portfolio = portfolioService.getPortfolioByName(portfolioName);
-        if (portfolio == null) {
-            throw new PortfolioNameNotUniqueException("Portfolio name not found");
-        }
-        return ResponseEntity.ok(portfolio);
-
-    }
 
     // Get portfolio by name and userid
     @GetMapping("{portfolioId}/{userId}")
@@ -221,9 +183,6 @@ public class PortfolioController {
     }
 
     // Get Assets Allocation by portfolio ID
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
-    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
-    // "true")
     @GetMapping("assetsAllocation/{userId}/{portfolioId}")
     public ResponseEntity<AssetsAllocation> getAssetsAllocation(
             @PathVariable Integer portfolioId,
@@ -243,9 +202,6 @@ public class PortfolioController {
     }
 
     // Get Performance Summary by portfolioID
-    // @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*",
-    // exposedHeaders = "*", methods = RequestMethod.POST, allowCredentials =
-    // "true")
     @GetMapping("performanceSummary/{userId}/{portfolioId}")
     public ResponseEntity<PerformanceSummary> getPerformanceSummary(
             @PathVariable Integer portfolioId,
@@ -264,6 +220,7 @@ public class PortfolioController {
         }
     }
 
+    // Get Industry Allocation by portfolioID
     @GetMapping("getIndustries/{userId}/{portfolioId}")
     public Map<String, Double> getIndustryAllocation(
             @PathVariable Integer portfolioId,
@@ -277,6 +234,7 @@ public class PortfolioController {
         return getIndustryAllocation;
     }
 
+    // Get Country Allocation by portfolioID
     @GetMapping("getCountries/{userId}/{portfolioId}")
     public Map<String, Double> getCountryAllocation(
             @PathVariable Integer portfolioId,
@@ -290,6 +248,7 @@ public class PortfolioController {
         return getCountryAllocation;
     }
 
+    // Get difference in portfolio profit by portfolioID
     @GetMapping("getDifferenceInPortfolioProfit/{userId}/{portfolioId1}/{portfolioId2}")
     public double getDifferenceInPortfolioProfit(
             @PathVariable Integer userId,
@@ -310,18 +269,5 @@ public class PortfolioController {
             return portfolio2Profit - portfolio1Profit;
         }
     }
-
-    // Get Countries and Allocations by portfolioID
-    // @GetMapping("getCountries/{portfolioId}")
-    // public ResponseEntity<Map<String, Double>> getCountries(@PathVariable Integer
-    // portfolioId) {
-    // Map<String, Double> countries = portfolioService.getCountries(portfolioId);
-
-    // if (countries != null) {
-    // return ResponseEntity.ok(countries);
-    // } else {
-    // return ResponseEntity.notFound().build();
-    // }
-    // }
 
 }
