@@ -5,7 +5,7 @@ import {
   getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
   getAssetAllocationByCountryAPI,
-  getPortfolioPerformanceSummaryAPI
+  getPortfolioPerformanceSummaryAPI,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
 import PortfolioDoughnutChart from "../../components/Portfolios/PortfolioDoughnutChart";
@@ -24,13 +24,15 @@ export default function Portfolios() {
     capital: 0,
     start_date: "Loading...",
   });
-  const [portfolioPerformanceSummary, setPortfolioPerformanceSummary] = useState({
-    InitialBalance: 0,
-    FinalBalance: 0,
-    NetProfit: 0,
-    CAGR: 0.0,
-    SharpeRatio: 0.0,
-  });
+  const [portfolioPerformanceSummary, setPortfolioPerformanceSummary] =
+    useState({
+      InitialBalance: 0,
+      CurrentBalance: 0,
+      NetProfit: 0,
+      CAGR: 0.0,
+      SharpeRatio: 0.0,
+      FinalBalance: 0.0,
+    });
   const [assetAllocationBySector, setAssetAllocationBySector] = useState({});
   const [
     asssetAllocationByIndividualStock,
@@ -59,8 +61,6 @@ export default function Portfolios() {
         setErrorMessage(response.data);
         return;
       }
-      // console.log("portfolio details");
-      // console.log(response.data);
       let portfolioDetails = { ...response.data, portfolioId: portfolioId };
       setChosenPortfolio(portfolioDetails);
     };
@@ -76,10 +76,7 @@ export default function Portfolios() {
         setErrorMessage(response.data);
         return;
       }
-      // console.log("performance summary");
-      // console.log(response.data);
       setPortfolioPerformanceSummary(response.data);
-      
     };
     getPerformanceSummary();
 
@@ -104,8 +101,16 @@ export default function Portfolios() {
         // Generate dynamic colors
         const [dynamicBackgroundColors, dynamicBorderColors] =
           generateDoughnutColors(numberOfDataPoints);
+        let labels = [];
+        for (let ele of Object.keys(assetAllocationFromServer)) {
+          if (ele == "CASHALLOCATION") {
+            labels.push("Excess Cash");
+          } else {
+            labels.push(ele);
+          }
+        }
         const sectorDoughnutData = {
-          labels: Object.keys(assetAllocationFromServer),
+          labels: labels,
           datasets: [
             {
               label: "% of Capital Allocated",
@@ -131,7 +136,11 @@ export default function Portfolios() {
         Object.keys(assetAllocationFromServer).forEach((element) => {
           // data formatting for doughnut chart
           assetAllocationFromServer[element].stocks.forEach((stock) => {
-            stockLabel.push(stock.symbol);
+            if (stock.symbol == "CASHALLOCATION") {
+              stockLabel.push("Excess cash");
+            } else {
+              stockLabel.push(stock.symbol);
+            }
             stockData.push(stock.allocation * 100);
           });
           // data formatting for edit portfolio modal
@@ -185,7 +194,11 @@ export default function Portfolios() {
         const industryData = [];
         Object.keys(response.data).forEach((key) => {
           // data formatting for doughnut chart
-          industryLabel.push(key);
+          if (key == "CASHALLOCATION") {
+            industryLabel.push("Excess Cash");
+          } else {
+            industryLabel.push(key);
+          }
           industryData.push(response.data[key] * 100);
         });
         // Number of data points
@@ -225,7 +238,11 @@ export default function Portfolios() {
         const countryData = [];
         Object.keys(response.data).forEach((element) => {
           // data formatting for doughnut chart
-          countryLabel.push(element);
+          if (element == "CASHALLOCATION") {
+            countryLabel.push("Excess Cash");
+          } else {
+            countryLabel.push(element);
+          }
           countryData.push(response.data[element] * 100);
         });
         // Number of data points
@@ -293,7 +310,7 @@ export default function Portfolios() {
           <DeletePortfolioButton />
           <DeletePortfolioModal portfolioId={portfolioId} />
         </div>
-        <div className="row mb-3 mt-3 px-4 ">
+        <div className="row mb-3 mt-3 px-4">
           <div className="col">
             <h3>{chosenPortfolio.portfolio_name}</h3>
             <div>
@@ -305,9 +322,11 @@ export default function Portfolios() {
               {chosenPortfolio.start_date}
             </div>
           </div>
-          <div className="col text-end fw-bold">
-            Current Portfolio Value:
-            <h4>${Number(portfolioPerformanceSummary.FinalBalance).toFixed(2)}</h4>
+          <div className="col text-end fw-bold pt-4">
+            <h5>Current Portfolio Value:</h5>
+            <h4>
+              ${Number(portfolioPerformanceSummary.FinalBalance).toFixed(2)}
+            </h4>
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">
@@ -315,10 +334,10 @@ export default function Portfolios() {
           {/* Dashboard Cards */}
           <div className="row py-2 px-4 mt-2">
             <PortfolioPerformanceSummary
-              performanceSummary = {portfolioPerformanceSummary}
+              performanceSummary={portfolioPerformanceSummary}
             />
           </div>
-          <div className="row px-5">
+          <div className="row px-4">
             {/* Allocation by Sector */}
             <div className="col-6">
               <PortfolioDoughnutChart
@@ -336,7 +355,7 @@ export default function Portfolios() {
               />
             </div>
           </div>
-          <div className="row px-5">
+          <div className="row px-4">
             <div className="col-6">
               <PortfolioDoughnutChart
                 asssetAllocation={assetAllocationByIndustry}
@@ -353,7 +372,7 @@ export default function Portfolios() {
             </div>
           </div>
           {/* Portfolio Growth Line Graph */}
-          <div className="row mt-3 px-5">
+          <div className="row mt-3 px-4">
             <div className="col">
               <PortfolioGrowthLineGraph
                 portfolioId={portfolioId}
@@ -363,7 +382,7 @@ export default function Portfolios() {
             </div>
           </div>
           {/* Returns Bar Chart */}
-          <div className="row mt-3 px-5">
+          <div className="row mt-3 px-4">
             <div className="col">
               <PortfolioReturnsBarChart
                 portfolioId={portfolioId}

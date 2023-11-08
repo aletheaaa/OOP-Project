@@ -287,8 +287,7 @@ export async function comparePortfolio(portfolio1Id, portfolio2Id) {
     let response = portfolio1Info.data;
     console.log(response);
     return response;
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Error in comparePortfolio API: ", error);
   }
 }
@@ -311,6 +310,35 @@ export async function updatePortfolioAPI(portfolioId, requestBody) {
     return response;
   } catch (error) {
     console.log("Error in updatePortfolioAPI API: ", error);
+    return {
+      status: error.response.status,
+      data: error.response.data.message,
+    };
+  }
+}
+
+// get the difference in portfolio values between portfolios
+export async function getPortfolioDifference(portfolio1Id, portfolio2Id) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(
+      BASE_URL +
+        "/portfolio/getDifferenceInPortfolioProfi/" +
+        userId +
+        "/" +
+        portfolio1Id +
+        "/" +
+        portfolio2Id,
+      config
+    );
+    console.log("this is reponse", response);
+  } catch (error) {
+    console.log("Error in getPortfolioDifference API: ", error);
     return {
       status: error.response.status,
       data: error.response.data.message,
