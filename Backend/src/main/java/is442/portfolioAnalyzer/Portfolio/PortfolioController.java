@@ -87,10 +87,12 @@ public class PortfolioController {
             @PathVariable Integer portfolioId,
             @RequestHeader("Authorization") String authHeader) {
 
+        String newPortfolioName = portfolioUpdate.getPortfolioName();
+
         String token = authHeader.substring(7);
         tokenService.checkTokenBelongsToUser(userId, token);
         portfolioService.checkPortfolioBelongsToUser(portfolioId, userId);
-        portfolioService.checkPortfolioNameUnique(portfolioId,userId);
+        portfolioService.checkPortfolioNameUnique(portfolioId,userId, newPortfolioName);
         portfolioService.updatePortfolio(portfolioUpdate, portfolioId);
         return ResponseEntity.ok("Portfolio Updated!");
     }

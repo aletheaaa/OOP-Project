@@ -99,11 +99,31 @@ public class PortfolioService {
     }
 
     // Check if portfolio name is unique
-    public void checkPortfolioNameUnique(Integer portfolioId, Integer userId) {
+    public void checkPortfolioNameUnique(Integer portfolioId, Integer userId, String newPortfolioName) {
         Portfolio portfolio = findByPortfolioId(portfolioId);
-        if (portfolioDAO.findByPortfolioName(portfolio.getPortfolioName()) != null) {
-            throw new PortfolioNameNotUniqueException("Portfolio name is used before!");
+
+        // If user did not change the portfolio name, return
+        if (newPortfolioName.equals(portfolio.getPortfolioName())) {
+            return;
+        } else {
+            List<String> userPortfolioName = getAllPortfolioNamesByUserId(userId);
+            for (String pName : userPortfolioName) {
+                if (pName.equals(newPortfolioName)) {
+                    throw new PortfolioNameNotUniqueException("Portfolio name is used before!");
+                }
+            }
+
         }
+    }
+
+    // Get all portfolio names by userId
+    public List<String> getAllPortfolioNamesByUserId(Integer userId) {
+        List<Portfolio> portfolios = portfolioDAO.findByUserId(userId);
+        List<String> portfolioNames = new ArrayList<>();
+        for (Portfolio portfolio : portfolios) {
+            portfolioNames.add(portfolio.getPortfolioName());
+        }
+        return portfolioNames;
     }
 
     // CREATE PORTFOLIO
