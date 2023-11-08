@@ -75,7 +75,7 @@ public class AssetService {
      * This method is called by the scheduler to update the closing prices of all the assets in the AssetMonthlyPrice table
      * The scheduler is configured to run at 4am GMT+8 every day
      */
-    @Scheduled(cron = "0 0 20 * * ?") 
+    @Scheduled(cron = "0 0 13 * * ?") 
     public void updateClosingPricesDaily() {
         // Get the current year and month
         int currentYear = Year.now().getValue();

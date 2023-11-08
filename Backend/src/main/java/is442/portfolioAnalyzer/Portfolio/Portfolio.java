@@ -33,5 +33,7 @@ public class Portfolio {
     @JoinColumn(name = "portfolio_id", referencedColumnName = "portfolio_id")
     private List<Asset> assets;
 
+    
+
 }
 

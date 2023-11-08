@@ -156,7 +156,8 @@ public class PortfolioService {
                 asset.setIndustry("CASHALLOCATION");
                 asset.setCountry("CASHALLOCATION");
 
-            } else {
+            } 
+            else {
                 Stock stock = stockService.getStockBySymbol(symbol);
                 String sector = stock.getSector();
                 asset.setSector(sector);
@@ -279,21 +280,27 @@ public class PortfolioService {
                     assetId.setStockSymbol(symbol);
                     newAsset.setAssetId(assetId);
 
-                    // Get the sector of the asset
-                    Stock stock =stockService.getStockBySymbol(symbol);
-                    String sector = stock.getSector();
+                    // Get the industry,sector and country of the asset
+                    if (symbol.equals("CASHALLOCATION")) {
+                        newAsset.setSector("CASHALLOCATION");
+                        newAsset.setIndustry("CASHALLOCATION");
+                        newAsset.setCountry("CASHALLOCATION");
 
-                    //Get the industry of the asset
-                    String industry = stock.getIndustry();
+                    } 
+                    else {
+                        Stock stock = stockService.getStockBySymbol(symbol);
+                        String sector = stock.getSector();
+                        newAsset.setSector(sector);
 
-                    //Get the country of the asset
-                    String country = stock.getCountry();
+                        // Get the industry of the asset
+                        String industry = stock.getIndustry();
+                        newAsset.setIndustry(industry);
 
-                    // Set the sector, industry, country of the asset
-                    newAsset.setSector(sector);
-                    newAsset.setIndustry(industry);
-                    newAsset.setCountry(country);
-
+                        // Get the country of the asset
+                        String country = stock.getCountry();
+                        newAsset.setCountry(country);
+                    }
+                    
                     if (!assetCreation.getSymbol().equals("CASHALLOCATION")) {
                             
                             String[] dateParts = portfolioUpdate.getStartDate().split("-");
@@ -316,9 +323,9 @@ public class PortfolioService {
                             }
 
                         }
-                        else{
-                            newAsset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation());
-                        }
+                    else{
+                        newAsset.setQuantityPurchased(portfolioUpdate.getCapital() * assetCreation.getAllocation());
+                    }
 
                     // Save the new asset into the DB
                     assetService.saveAsset(newAsset);
