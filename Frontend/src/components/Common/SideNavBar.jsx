@@ -23,7 +23,6 @@ function SideNavBar({ setPortfoliosFromParent }) {
     const getUserInfo = async () => {
       // Get User information from profile
       const email = getEmail();
-      console.log(email);
       let slicedEmail = email ? email.slice(0, email.indexOf("@")) : "";
       const portfolios = await getPortfolios();
       if (portfolios.status != 200) {
@@ -43,14 +42,16 @@ function SideNavBar({ setPortfoliosFromParent }) {
   return (
     <div
       id="sidebar"
-      className="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 bg-dark text-white fw-bold"
+      className="sidebar d-flex flex-column align-items-center align-items-sm-start px-4 bg-dark text-white fw-bold"
       style={{ paddingTop: "100px" }}
     >
       <nav
         className="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
         id="menu"
       >
-        {portfolios && <span>Portfolios</span>}
+        {portfolios && (
+          <span style={{ letterSpacing: ".1rem" }}>Portfolios</span>
+        )}
         {portfolios &&
           portfolios.length != 0 &&
           portfolios.map((portfolio, index) => {
