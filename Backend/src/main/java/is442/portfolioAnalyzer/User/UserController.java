@@ -38,9 +38,8 @@ public class UserController {
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         userServiceImpl.changePassword(request.getEmail(), request.getCurrentPassword(), request.getNewPassword());
 
-        String message = "Password changed successfully";
+        String message = "Password changed successfully!";
         return ResponseEntity.ok(message);
     }
 
 }
-

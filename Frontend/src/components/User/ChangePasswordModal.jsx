@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { changePassword } from "../../api/settings";
+import { getEmail } from "../../api/authenticate";
 
 export default function ChangePasswordModal() {
   const [oldPassword, setOldPassword] = useState();
@@ -24,17 +25,24 @@ export default function ChangePasswordModal() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (newPassword != confirmPassword) {
+      setNotifications("");
+      setErrors("New password and confirm password does not match!");
+      return;
+    }
+
     setIsLoading(true);
     let changePasswordStatus = await changePassword(
+      getEmail(),
       oldPassword,
-      newPassword,
-      confirmPassword
+      newPassword
     );
     setIsLoading(false);
+
     console.log(changePasswordStatus);
     if (changePasswordStatus.status == "200") {
       setErrors("");
-      setNotifications(changePasswordStatus.message);
+      setNotifications(changePasswordStatus.data);
     } else {
       setNotifications("");
       setErrors(changePasswordStatus.message);
@@ -72,7 +80,7 @@ export default function ChangePasswordModal() {
                     Old Password
                   </label>
                   <input
-                    type="email"
+                    type="password"
                     className="form-control"
                     id="oldPassword"
                     aria-describedby="emailHelp"
