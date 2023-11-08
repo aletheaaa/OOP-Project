@@ -118,7 +118,7 @@ export default function CreateOrEditPortfolioModal({
       let node = document.getElementById(`description`);
       node.classList.add("is-invalid");
     }
-    if (portfolioDetails.Capital <= 0) {
+    if (Number(portfolioDetails.Capital) <= 100) {
       isValid = false;
       let node = document.getElementById(`capital`);
       node.classList.add("is-invalid");
@@ -360,14 +360,14 @@ export default function CreateOrEditPortfolioModal({
                       });
                     }}
                     onBlur={(event) => {
-                      validateField(event, event.target.value > 0, `capital`);
+                      validateField(event, event.target.value > 100, `capital`);
                     }}
                   />
                   <div
                     id="validationServerCapitalFeedback"
                     className="invalid-feedback"
                   >
-                    Please enter a valid positive capital.
+                    Please enter a valid positive capital above $100.
                   </div>
                 </div>
               </div>

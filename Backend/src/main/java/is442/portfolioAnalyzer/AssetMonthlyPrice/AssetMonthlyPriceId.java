@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.Asset;
+package is442.portfolioAnalyzer.AssetMonthlyPrice;
 
 import jakarta.persistence.Column;
 import java.io.Serializable;
@@ -6,7 +6,6 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @AllArgsConstructor

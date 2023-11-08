@@ -117,7 +117,7 @@ export default function PortfolioGrowthLineGraph({
             },
             title: {
               display: true,
-              text: "Returns",
+              text: "Portfolio Returns (USD)",
             },
           },
           scales: {
