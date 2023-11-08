@@ -1,4 +1,4 @@
- package is442.portfolioAnalyzer.Asset;
+package is442.portfolioAnalyzer.Asset;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,15 +7,11 @@ import java.time.MonthDay;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
 import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
-
 import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;

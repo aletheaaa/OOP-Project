@@ -1,6 +1,7 @@
 package is442.portfolioAnalyzer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 
 import is442.portfolioAnalyzer.Asset.Asset;
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
@@ -49,12 +50,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import is442.portfolioAnalyzer.JsonModels.PortfolioCreation;
 import is442.portfolioAnalyzer.Portfolio.PortfolioController;
 import org.springframework.security.test.context.support.WithMockUser;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @SpringJUnitConfig
 @AutoConfigureMockMvc
 @TestMethodOrder(OrderAnnotation.class)
-public class AuthenticationControllerTest {
+public class TestCases {
     private static String token;
     private static int id;
     @Autowired
@@ -76,11 +78,11 @@ public class AuthenticationControllerTest {
     public void testRegister() throws Exception {
         // Create a RegisterRequest object (customize with registration data)
         RegisterRequest registerRequest = new RegisterRequest();
-        // registerRequest.setUsername("testuser");
-        registerRequest.setEmail("testuser5@email.com");
+        registerRequest.setEmail("testuser3@email.com");
         registerRequest.setFirstname("test");
-        registerRequest.setLastname("user5");
+        registerRequest.setLastname("user3");
         registerRequest.setPassword("P@$$w0rd");
+
         // Serialize the object to JSON
         String registerRequestJson = new ObjectMapper().writeValueAsString(registerRequest);
 
@@ -100,8 +102,6 @@ public class AuthenticationControllerTest {
 
         // Get the "token" from the parsed object
         token = response.getToken();
-        // token = token.substring(7);
-        // token = "-------"+ token;
         id = response.getId();
         System.out.println("This is the user's id in register "+ id);
         System.out.println("This is the user's token in register"+ token);
@@ -114,9 +114,7 @@ public class AuthenticationControllerTest {
         // Assign the values of the global variables to the local variables
         int id2 = id;
         String token2 = token;
-        // ...
-        System.out.println("this is userid in create "+id2);
-        System.out.println("this is user token in create "+token2);
+
         // Create a PortfolioCreation object (you can customize the data)
         PortfolioCreation portfolioCreation = new PortfolioCreation(0, null, null, null, null, null, null);
         portfolioCreation.setPortfolioName("testing portfolio");
@@ -136,8 +134,7 @@ public class AuthenticationControllerTest {
         String portfolioCreationJson = new ObjectMapper().writeValueAsString(portfolioCreation);
         System.out.println(portfolioCreationJson);
 
-        // System.out.println("this is userid second "+id);
-        // System.out.println("this is user token second "+token);
+
          // Pause for 10 seconds
         Thread.sleep(10000);
         // Perform a POST request to the createPortfolio endpoint
@@ -151,37 +148,85 @@ public class AuthenticationControllerTest {
 // @Ignore
 // @Test
 // public void testGetPortfolioDetails() throws Exception {
-//     // input your test data here
-//     int id2 = 152 ;
-//     String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjVAZW1haWwuY29tIiwiaWF0IjoxNjk5MTc1MzczLCJleHAiOjE2OTkyNjE3NzN9.nrHJcncatbHdvAwxPcCeZVDfF4y341f1fipd-pdrMv0";
-//     int portfolioid = 6; //manual
+//             int id2 = 52 ;
+//             String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjNAZW1haWwuY29tIiwiaWF0IjoxNjk5NDI3Mjc5LCJleHAiOjE2OTk1MTM2Nzl9.ZCE3_hfDh2ucP9h35IOleuzVpJoQfR9xCk1ZHP62CuQ";
+//             int portfolioid = 2; //manual
 
-//    // Perform a GET request to the getPortfolioDetails endpoint
-// mockMvc.perform(get("/portfolio/getPortfolioDetails/{userId}/{portfolioId}", id2, portfolioid)
-//     .header("Authorization", "Bearer " + token2))
-//     .andExpect(status().isOk())
-//     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//     .andExpect(jsonPath("$.portfolioName").value("testing portfolio"))
-//     .andExpect(jsonPath("$.description").value("A test portfolio"))
-//     .andExpect(jsonPath("$.capital").value(10000))
-//     .andExpect(jsonPath("$.timePeriod").value("Monthly"))
-//     .andExpect(jsonPath("$.startDate").value("2010-01"))
-//     .andExpect(jsonPath("$.assetList[0].symbol").value("AAPL"))
-//     .andExpect(jsonPath("$.assetList[0].weight").value(0.5))
-//     .andExpect(jsonPath("$.assetList[1].symbol").value("PFE"))
-//     .andExpect(jsonPath("$.assetList[1].weight").value(0.3))
-//     .andExpect(jsonPath("$.assetList[2].symbol").value("AAIC"))
-//     .andExpect(jsonPath("$.assetList[2].weight").value(0.2))
-//     .andDo(MockMvcResultHandlers.print());
-// }
+//                // Perform a GET request to the getPortfolioDetails endpoint
+//                MvcResult result = mockMvc.perform(get("/portfolio/getPortfolioDetails/{userId}/{portfolioId}", id2, portfolioid)
+//                 .header("Authorization", "Bearer " + token2))
+//                 .andExpect(status().isOk())
+//                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                 .andDo(MockMvcResultHandlers.print())
+//                 .andReturn();
+
+//             String responseContent = result.getResponse().getContentAsString();
+//             System.out.println(responseContent);
+
+//             // Check if the response contains the expected fields
+//             JsonPath jsonPath = JsonPath.compile("$");
+//             Object data = jsonPath.read(responseContent);
+//             assertNotNull(data);
+
+//             jsonPath = JsonPath.compile("$.portfolioName");
+//             String portfolioName = jsonPath.read(responseContent);
+//             assertEquals("testing portfolio", portfolioName);
+
+//             jsonPath = JsonPath.compile("$.description");
+//             String description = jsonPath.read(responseContent);
+//             assertEquals("A test portfolio", description);
+
+//             jsonPath = JsonPath.compile("$.capital");
+//             int capital = jsonPath.read(responseContent);
+//             assertEquals(10000, capital);
+
+//             jsonPath = JsonPath.compile("$.timePeriod");
+//             String timePeriod = jsonPath.read(responseContent);
+//             assertEquals("Monthly", timePeriod);
+
+//             jsonPath = JsonPath.compile("$.startDate");
+//             String startDate = jsonPath.read(responseContent);
+//             assertEquals("2000-01", startDate);
+
+//             jsonPath = JsonPath.compile("$.assetList[0].symbol");
+//             String symbol1 = jsonPath.read(responseContent);
+//             assertEquals("AAPL", symbol1);
+
+//             jsonPath = JsonPath.compile("$.assetList[0].weight");
+//             double weight1 = jsonPath.read(responseContent);
+//             assertEquals(0.5, weight1, 0.001);
+
+//             jsonPath = JsonPath.compile("$.assetList[1].symbol");
+//             String symbol2 = jsonPath.read(responseContent);
+//             assertEquals("PFE", symbol2);
+
+//             jsonPath = JsonPath.compile("$.assetList[1].weight");
+//             double weight2 = jsonPath.read(responseContent);
+//             assertEquals(0.3, weight2, 0.001);
+
+//             jsonPath = JsonPath.compile("$.assetList[2].symbol");
+//             String symbol3 = jsonPath.read(responseContent);
+//             assertEquals("AAIC", symbol3);
+
+//             jsonPath = JsonPath.compile("$.assetList[2].weight");
+//             double weight3 = jsonPath.read(responseContent);
+//             assertEquals(0.2, weight3, 0.001);
+//             assertEquals(0.3, weight2, 0.001);
+
+            
+//         }
+       
+
+    
+
     
 
 @Ignore
 @Test
 public void testUpdatePortfolio() throws Exception {
     // input your test data here
-    int id2 = 1;
-    String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjFAZW1haWwuY29tIiwiaWF0IjoxNjk5MTczNzAzLCJleHAiOjE2OTkyNjAxMDN9.6_8NHFXzBYKDw9XUi1SmT7j4IuQpaD1TaFAdo5J8_00";
+    int id2 = 2;
+    String token2 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjJAZW1haWwuY29tIiwiaWF0IjoxNjk5NDI3MDgzLCJleHAiOjE2OTk1MTM0ODN9.EOrPSOaPCRlJyAistLKjbDSgS7u9g6jQu05NHzsxo9I";
     int portfolioid = 1;
    
     PortfolioUpdate portfolioUpdate = new PortfolioUpdate(0,0,null,null,null,null,0,null);
@@ -214,8 +259,8 @@ public void testUpdatePortfolio() throws Exception {
 @Test
 public void testDeletePortfolio() throws Exception {
     // input your test data here
-    int id = 1;
-    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjFAZW1haWwuY29tIiwiaWF0IjoxNjk5MTczNzAzLCJleHAiOjE2OTkyNjAxMDN9.6_8NHFXzBYKDw9XUi1SmT7j4IuQpaD1TaFAdo5J8_00";
+    int id = 2;
+    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjJAZW1haWwuY29tIiwiaWF0IjoxNjk5NDI3MDgzLCJleHAiOjE2OTk1MTM0ODN9.EOrPSOaPCRlJyAistLKjbDSgS7u9g6jQu05NHzsxo9I";
     int portfolioid = 1;
 
 
