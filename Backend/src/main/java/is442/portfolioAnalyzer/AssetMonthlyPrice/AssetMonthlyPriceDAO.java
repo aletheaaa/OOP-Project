@@ -1,4 +1,4 @@
-package is442.portfolioAnalyzer.Asset;
+package is442.portfolioAnalyzer.AssetMonthlyPrice;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +21,5 @@ import org.springframework.stereotype.Repository;
             "AND a.id.year = :year " +
             "AND a.id.month = :month")
     Optional<Double> findLatestPriceBySymbolAndYearAndMonth(String symbol, String year, String month);
-
 
  }

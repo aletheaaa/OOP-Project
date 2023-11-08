@@ -1,17 +1,19 @@
 package is442.portfolioAnalyzer.Asset;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
 import java.time.MonthDay;
 import java.time.Year;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
 import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
+
+import is442.portfolioAnalyzer.AssetMonthlyPrice.*;
 import is442.portfolioAnalyzer.ExternalApi.ExternalApiService;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -21,7 +23,7 @@ import lombok.Data;
 public class AssetService {
 
     @Autowired
-    AssetMonthlyPriceDAO assetMonthlyPriceDAO;
+    AssetMonthlyPriceService assetMonthlyPriceService;
 
     @Autowired
     AssetDAO assetDAO;
@@ -29,8 +31,10 @@ public class AssetService {
     @Autowired
     ExternalApiService externalApiService;
 
-
-
+    /*
+     * Update the latest prices of all assets in the AssetMonthlyPrice table
+     * This method is called when the application starts up
+     */ 
     @PostConstruct
     public void updateClosingPricesOnStartup() {
 
@@ -56,19 +60,22 @@ public class AssetService {
             id.setMonth(getMonthName(currentMonth-1)); // Adjust for 0-based index
             id.setStockSymbol(symbol);
 
-            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceService.findAssetMonthlyPriceById(id);
             // System.out.println("TRIGGERED");
             if (assetMonthlyPriceOptional.isPresent()) {
                 AssetMonthlyPrice assetMonthlyPrice = assetMonthlyPriceOptional.get();
                 assetMonthlyPrice.setClosingPrice(priceAndDivident[0]);
                 assetMonthlyPrice.setDividendAmount(priceAndDivident[1]);
-                assetMonthlyPriceDAO.save(assetMonthlyPrice);
+                assetMonthlyPriceService.saveAssetMonthlyPrice(assetMonthlyPrice);
             }
         }
     }
 
-
-    @Scheduled(cron = "0 0 20 * * ?") // Schedule to run daily at 4:00 AM GMT+8
+    /*
+     * This method is called by the scheduler to update the closing prices of all the assets in the AssetMonthlyPrice table
+     * The scheduler is configured to run at 4am GMT+8 every day
+     */
+    @Scheduled(cron = "0 0 20 * * ?") 
     public void updateClosingPricesDaily() {
         // Get the current year and month
         int currentYear = Year.now().getValue();
@@ -87,16 +94,15 @@ public class AssetService {
             id.setMonth(currentMonthName);
             id.setStockSymbol(symbol);
 
-            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceService.findAssetMonthlyPriceById(id);
 
             if (assetMonthlyPriceOptional.isPresent()) {
                 AssetMonthlyPrice assetMonthlyPrice = assetMonthlyPriceOptional.get();
                 assetMonthlyPrice.setClosingPrice(latestPrice);
-                assetMonthlyPriceDAO.save(assetMonthlyPrice);
+                assetMonthlyPriceService.saveAssetMonthlyPrice(assetMonthlyPrice);
             }
         }
     }
-
 
     // Saving the asset into the DAO
     public void saveAsset(Asset asset){
@@ -108,6 +114,7 @@ public class AssetService {
         assetDAO.delete(asset);
     }
 
+    //Get list of assets of portfolio by portfolio id
     public List<Asset> getAssetsByPortfolioId(Integer portfolioId ){
         System.out.println("In controller");
         return assetDAO.findByAssetIdPortfolioId(portfolioId);
@@ -133,7 +140,6 @@ public class AssetService {
     //Get Asset's Current Allocation (Percentage) e.g. 0.5 
     public double getAssetAllocation(Asset asset, double portfolioFinalBalance) {
 
-
         // Get the total value of the asset
         double assetValue = getAssetTotalValue(asset);
 
@@ -149,8 +155,8 @@ public class AssetService {
         int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1; // Adjust for 0-based index
         String currentMonthName = getMonthName(currentMonth - 1); // Adjust for 0-based index
 
-        // Use the AssetMonthlyPriceDAO to fetch the latest price by symbol, year, and month
-        Optional<Double> latestPriceOptional = assetMonthlyPriceDAO.findLatestPriceBySymbolAndYearAndMonth(
+        //Fetch the latest price by symbol, year, and month
+        Optional<Double> latestPriceOptional = assetMonthlyPriceService.findLatestPriceBySymbolAndYearAndMonth(
             symbol,
             Integer.toString(currentYear),
             currentMonthName
@@ -160,14 +166,13 @@ public class AssetService {
         return latestPriceOptional.orElse(0.0);
     }
 
-
-
     //Get Asset Price by symbol from API
     public double getAssetLatestPrice(String symbol) {
         try {
             TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getDailyStockPrice(symbol).getBody();
 
             return response.getStockUnits().get(0).getClose();
+
         } catch (Exception e) {
             // TODO
             // throw exception if symbol not found
@@ -181,12 +186,12 @@ public class AssetService {
         try {
             TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getDailyStockPrice(symbol).getBody();
 
-            
             double[] priceAndDivident = new double[2];
             priceAndDivident[0] = response.getStockUnits().get(0).getClose();
             priceAndDivident[1] = response.getStockUnits().get(0).getDividendAmount();
 
             return priceAndDivident;
+
         } catch (Exception e) {
             // TODO
             // throw exception if symbol not found
@@ -194,7 +199,6 @@ public class AssetService {
             return null;
         }
     }
-
 
     //Get Asset Earliest Price by symbol from API
     public double getEarliestClosingPriceFromApi(String symbol) {
@@ -210,7 +214,8 @@ public class AssetService {
                 return earliestStockUnit.getClose();
             }
         } catch (Exception e) {
-            // Handle exceptions appropriately. // TODO throw exception if symbol not found
+            // Handle exceptions appropriately. 
+            // TODO throw exception if symbol not found
         }
     
         // Return null or handle it as needed if data is not found or an error occurs.
@@ -243,7 +248,7 @@ public class AssetService {
                 id.setMonth("December");
             }
 
-            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceService.findAssetMonthlyPriceById(id);
 
             if (assetMonthlyPriceOptional.isPresent()) {
                 // Asset price for the specified year is found in the database.
@@ -260,8 +265,6 @@ public class AssetService {
         }
     }
 
-
-
     // Get value of asset at the end of the specified year and month
     public double getAssetValueByYearAndMonth(String symbol, String year, String month, Asset asset) {
 
@@ -275,7 +278,7 @@ public class AssetService {
             id.setMonth(month);
             id.setStockSymbol(symbol);
 
-            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceDAO.findById(id);
+            Optional<AssetMonthlyPrice> assetMonthlyPriceOptional = assetMonthlyPriceService.findAssetMonthlyPriceById(id);
 
             if (assetMonthlyPriceOptional.isPresent()) {
                 // Asset price for the specified year and month is found in the database.
@@ -293,56 +296,10 @@ public class AssetService {
     }
 
 
-
-    //Populate AssetMonthlyPrice Table of the specified stock with all the monthly prices from the api service
-    public void populateAssetMonthlyPrices(String symbol) {
-
-        // Check if the symbol already exists in the AssetMonthlyPrice table
-        boolean symbolExists = assetMonthlyPriceDAO.existsByIdStockSymbol(symbol);
-        if (symbolExists) {
-            return; // Symbol already exists, no need to update
-        }
-
-        // Call the external API servic e to get monthly stock prices
-        TimeSeriesResponse response = (TimeSeriesResponse) externalApiService.getMonthlyStockPrice(symbol).getBody();
-        
-
-        if (response != null && response.getStockUnits() != null) {
-            List<AssetMonthlyPrice> monthlyPrices = new ArrayList<>();
-            for (StockUnit stockUnit : response.getStockUnits()) {
-                AssetMonthlyPrice monthlyPrice = new AssetMonthlyPrice();
-
-                // Extract year and month from the date
-                String date = stockUnit.getDate();
-                String[] dateParts = date.split("-");
-                if (dateParts.length >= 2) {
-                    String year = dateParts[0];
-                    String monthNumber = dateParts[1];
-                    String monthName = convertMonthNumberToName(monthNumber);
-
-                    monthlyPrice.setId(new AssetMonthlyPriceId(year, monthName, symbol));
-                }
-
-                monthlyPrice.setClosingPrice(stockUnit.getClose());
-                monthlyPrice.setDividendAmount(stockUnit.getDividendAmount());
-
-                monthlyPrices.add(monthlyPrice);
-            }
-            // System.out.println(response.getStockUnits());
-            // System.out.println("IT WORKS TILL HERE");
-
-            assetMonthlyPriceDAO.saveAll(monthlyPrices);
-        }
-    }
-
-    // Get the Total price of the asset by symbol and date
-    //  public Double getTotalValue(Asset asset){
-    //     return asset.getQuantityPurchased() * asset.getUnitPrice();
-    // }
-
     // HELPER METHODS------------------------------------------------------------------------------------------------
+
     // Helper method to get month name based on its number (0-based index).
-    private String getMonthName(int month) {
+    public String getMonthName(int month) {
         String[] monthNames = {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
@@ -350,34 +307,15 @@ public class AssetService {
         return monthNames[month];
     }
 
-
+    // Use JPA to query the database for unique symbols
     public List<String> getUniqueSymbols() {
-        // Use JPA to query the database for unique symbols
-        List<String> uniqueSymbols = assetMonthlyPriceDAO.findDistinctStockSymbols();
+        List<String> uniqueSymbols = assetMonthlyPriceService.findDistinctStockSymbols();
         return uniqueSymbols;
     }
 
-
-
-    public String convertMonthNumberToName(String monthNumber) {
-        // Create an array of month names
-        String[] monthNames = new String[] {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
-
-        // Convert the month number to an integer and use it as an index
-        int index = Integer.parseInt(monthNumber) - 1;
-        if (index >= 0 && index < monthNames.length) {
-            return monthNames[index];
-        }
-
-        return monthNumber; // If the conversion fails, return the original number
-    }
-
-
+    // Check if the AssetMonthlyPrices table is empty or not initialized.
     public boolean isAssetMonthlyPricesTableEmpty() {
-        long recordCount = assetMonthlyPriceDAO.count();
+        long recordCount = assetMonthlyPriceService.getCount();
         return recordCount == 0;
     }
 
