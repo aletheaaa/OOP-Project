@@ -4,6 +4,7 @@ import {
   getAssetAllocationAPI,
   getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
+  getPortfolioPerformanceSummaryAPI,
   getAssetAllocationByCountryAPI,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
@@ -14,9 +15,10 @@ import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowt
 import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
 import { useLocation } from "react-router-dom";
 
-export default function Portfolios() {
+export default function ComparePortfolios() {
   const [portfolio1Id, setPortfolio1Id] = useState();
   const [portfolio2Id, setPortfolio2Id] = useState();
+
   const [portfolio1Details, setPortfolio1Details] = useState({
     portfolio_name: "Loading...",
     description: "Loading...",
@@ -29,9 +31,23 @@ export default function Portfolios() {
     capital: 0,
     start_date: "Loading...",
   });
+
+  const [portfolio1PerformanceSummary, setPortfolio1PerformanceSummary] = useState({
+    InitialBalance: 0,
+    CurrentBalance: 0,
+    NetProfit: 0,
+    CAGR: 0.0,
+    SharpeRatio: 0.0,
+  });
+  const [portfolio2PerformanceSummary, setPortfolio2PerformanceSummary] = useState({
+    InitialBalance: 0,
+    CurrentBalance: 0,
+    NetProfit: 0,
+    CAGR: 0.0,
+    SharpeRatio: 0.0,
+  });
+
   const [errorMessage, setErrorMessage] = useState("");
-  const [portfolio1CurrentBalance, setPortfolio1CurrentBalance] = useState(0);
-  const [portfolio2CurrentBalance, setPortfolio2CurrentBalance] = useState(0);
 
   const location = useLocation();
 
@@ -44,10 +60,12 @@ export default function Portfolios() {
     const portfolio2 = queryParams.get("portfolio2");
 
     if (!portfolio1 || !portfolio2) return;
+
     // getting the user's portfolio
-    console.log("this si portfolio1", portfolio1, portfolio2);
+    console.log("this is portfolio1: ", portfolio1, " and this is portfolio2: ", portfolio2);
     setPortfolio1Id(portfolio1);
     setPortfolio2Id(portfolio2);
+    
     const getPortfolioDetails = async (portfolioId) => {
       const response = await getPortfolioDetailsAPI(portfolioId);
       if (response.status != 200) {
@@ -56,7 +74,7 @@ export default function Portfolios() {
         return;
       }
       let portfolioDetails = { ...response.data, portfolioId: portfolioId };
-      if (portfolioId == portfolio1) {
+      if (portfolioId === portfolio1) {
         setPortfolio1Details(portfolioDetails);
       } else {
         setPortfolio2Details(portfolioDetails);
@@ -64,10 +82,31 @@ export default function Portfolios() {
     };
     getPortfolioDetails(portfolio1);
     getPortfolioDetails(portfolio2);
+
+    const getPerformanceSummary = async (portfolioId) => {
+      let response = await getPortfolioPerformanceSummaryAPI(portfolioId);
+      if (response.status != 200) {
+        console.log(
+          "error getting portfolio performance summary: ",
+          response.data
+        );
+        setErrorMessage(response.data);
+        return;
+      }
+      // console.log("performance summary");
+      // console.log(response.data);
+      if (portfolioId === portfolio1) {
+        setPortfolio1PerformanceSummary(response.data);
+      } else {
+        setPortfolio2PerformanceSummary(response.data);
+      }
+    };
+    getPerformanceSummary(portfolio1);
+    getPerformanceSummary(portfolio2);
   }, [location.search]);
 
   useEffect(() => {
-    console.log("this si protfolios details ", portfolio1Details);
+    console.log("this is portfolios details ", portfolio1Details);
   }, [portfolio1Details]);
 
   return (
@@ -84,16 +123,10 @@ export default function Portfolios() {
             {portfolio1Id && portfolio2Id && (
               <>
                 <PortfolioPerformanceSummary
-                  portfolioId={portfolio1Id}
-                  setCurrentBalanceParent={(val) =>
-                    setPortfolio1CurrentBalance(val)
-                  }
+                  performanceSummary = {portfolio1PerformanceSummary}
                 />
                 <PortfolioPerformanceSummary
-                  portfolioId={portfolio2Id}
-                  setCurrentBalanceParent={(val) =>
-                    setPortfolio2CurrentBalance(val)
-                  }
+                  performanceSummary = {portfolio2PerformanceSummary}
                 />
               </>
             )}

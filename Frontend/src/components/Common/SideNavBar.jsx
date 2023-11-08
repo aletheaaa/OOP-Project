@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getPortfolios, getProfile } from "../../api/user";
+import { getPortfolios } from "../../api/user";
+import { getEmail } from "../../api/authenticate";
 import NavBarItem from "./NavBarItem";
 import User from "../User/User";
 
@@ -8,7 +9,11 @@ const iconList = [
   "bi-speedometer2",
   "bi-person-lines-fill",
   "bi-graph-up-arrow",
-  "bi-graph-down-arrow",
+  "bi-airplane",
+  "bi-briefcase",
+  "bi-award",
+  "bi-backpack",
+  "bi-basket",
 ];
 
 function SideNavBar({ setPortfoliosFromParent }) {
@@ -17,15 +22,15 @@ function SideNavBar({ setPortfoliosFromParent }) {
   useEffect(() => {
     const getUserInfo = async () => {
       // Get User information from profile
-      const profile = await getProfile();
-      const email = profile.email;
-      const userName = email ? email.slice(0, email.indexOf("@")) : "";
+      const email = getEmail();
+      console.log(email);
+      let slicedEmail = email ? email.slice(0, email.indexOf("@")) : "";
       const portfolios = await getPortfolios();
       if (portfolios.status != 200) {
         console.log("error getting portfolios: ", portfolios.data);
         return;
       }
-      setUserName(userName);
+      setUserName(slicedEmail);
       if (portfolios === null) {
         return;
       }

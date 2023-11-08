@@ -18,7 +18,6 @@ import CreateOrEditPortfolioModal from "../../components/Portfolios/CreateOrEdit
 import DeletePortfolioModal from "../../components/Portfolios/DeletePortfolioModal";
 
 export default function Portfolios() {
-  const [currentBalance, setCurrentBalance] = useState(0);
   const [chosenPortfolio, setChosenPortfolio] = useState({
     portfolio_name: "Loading...",
     description: "Loading...",
@@ -27,7 +26,7 @@ export default function Portfolios() {
   });
   const [portfolioPerformanceSummary, setPortfolioPerformanceSummary] = useState({
     InitialBalance: 0,
-    CurrentBalance: 0,
+    FinalBalance: 0,
     NetProfit: 0,
     CAGR: 0.0,
     SharpeRatio: 0.0,
@@ -308,7 +307,7 @@ export default function Portfolios() {
           </div>
           <div className="col text-end fw-bold">
             Current Portfolio Value:
-            <h4>${currentBalance}</h4>
+            <h4>${Number(portfolioPerformanceSummary.FinalBalance).toFixed(2)}</h4>
           </div>
         </div>
         <div className="position-static mb-5 bg-body rounded pb-3">

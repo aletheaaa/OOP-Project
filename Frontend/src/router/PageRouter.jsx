@@ -7,7 +7,7 @@ import Landing from "../pages/Landing/index";
 import Portfolios from "../pages/Portfolios/index";
 import UserSettings from "../pages/User/UserSettings";
 import AccessLogs from "../pages/AccessLogs";
-import ComparePortfolios from "../pages/Portfolios/ComparePortfolio";
+import ComparePortfolios from "../pages/Portfolios/ComparePortfolios";
 
 const router = createBrowserRouter([
   {
