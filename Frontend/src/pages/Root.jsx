@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import SideNavBar from "../components/Common/SideNavBar";
-import CreateOrEditPortfolioModal from "../components/Portfolios/CreateOrEditPortfolioModal";
 import ChangePasswordModal from "../components/User/ChangePasswordModal";
 import goldmanlogo from "../assets/goldmanlogo.png";
 
@@ -25,12 +24,17 @@ export default function Root() {
   }, [portfolios]);
 
   return (
-    <div className="App">
+    <div className="App" style={{ overflowX: "clip" }}>
       <div className="App-header py-3" id="topNavBar">
-        <div style={{ width: "1000px" }}>
+        <div className="position-relative w-100 px-3">
           <img
             src={goldmanlogo}
-            style={{ height: "40px", width: "70px", display: "inline" }}
+            style={{
+              height: "40px",
+              width: "70px",
+              display: "inline",
+              color: "white",
+            }}
             className="img-fluid mx-3"
           />{" "}
           <a
@@ -40,14 +44,7 @@ export default function Root() {
           >
             Portfolio Management
           </a>
-          <a
-            href="/"
-            className="py-3 px-3 me-5"
-            style={{ letterSpacing: ".1rem", width: "25px" }}
-          >
-            Portfolio Comparison
-          </a>
-          <a href="/" className="py-3 px-3 me-5">
+          <a href="/" className="py-2 px-3 me-5 position-absolute end-0">
             About Us
           </a>
         </div>

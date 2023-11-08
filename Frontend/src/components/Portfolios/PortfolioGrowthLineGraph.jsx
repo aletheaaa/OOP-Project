@@ -74,10 +74,10 @@ export default function PortfolioGrowthLineGraph({
           // adding 0 to the data points that are not present in the response
           for (let i = 0; i < labels.length; i++) {
             if (!response.data[labels[i]]) {
-              response.data[labels[i]] = 0;
+              response.data[labels[i]] = null;
             }
             if (!portfolio2response.data[labels[i]]) {
-              portfolio2response.data[labels[i]] = 0;
+              portfolio2response.data[labels[i]] = null;
             }
           }
           datasets = [
@@ -214,13 +214,13 @@ export default function PortfolioGrowthLineGraph({
           for (let i = 0; i < labels.length; i++) {
             const [month, year] = labels[i].split(", ");
             if (!response.data[year] || !response.data[year][month]) {
-              datasets.splice(i, 0, 0);
+              datasets.splice(i, 0, null);
             }
             if (
               !portfolio2response.data[year] ||
               !portfolio2response.data[year][month]
             ) {
-              datasets2.splice(i, 0, 0);
+              datasets2.splice(i, 0, null);
             }
           }
 

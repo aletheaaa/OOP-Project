@@ -3,6 +3,7 @@ import { getPortfolios } from "../../api/user";
 import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEditPortfolioButton";
 import ChangePasswordModal from "../../components/User/ChangePasswordModal";
 import ComparePortfolios from "../../components/Portfolios/ComparePortfolios";
+import CreateOrEditPortfolioModal from "../../components/Portfolios/CreateOrEditPortfolioModal";
 
 export default function Dashboard() {
   const [portfolios, setPortfolios] = useState([]);
@@ -63,6 +64,7 @@ export default function Dashboard() {
           mode="Create"
           className="btn btn-secondary mt-3"
         />
+        <CreateOrEditPortfolioModal />
       </div>
       <div className="col-6 h-50 w-50">
         <div

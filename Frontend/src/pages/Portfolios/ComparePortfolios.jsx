@@ -14,6 +14,7 @@ import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEdi
 import PortfolioGrowthLineGraph from "../../components/Portfolios/PortfolioGrowthLineGraph";
 import PortfolioReturnsBarChart from "../../components/Portfolios/PortfolioReturnsBarChart";
 import { useLocation } from "react-router-dom";
+import DashboardCard from "../../components/Common/DashboardCard";
 
 export default function ComparePortfolios() {
   const [portfolio1Id, setPortfolio1Id] = useState();
@@ -32,20 +33,22 @@ export default function ComparePortfolios() {
     start_date: "Loading...",
   });
 
-  const [portfolio1PerformanceSummary, setPortfolio1PerformanceSummary] = useState({
-    InitialBalance: 0,
-    CurrentBalance: 0,
-    NetProfit: 0,
-    CAGR: 0.0,
-    SharpeRatio: 0.0,
-  });
-  const [portfolio2PerformanceSummary, setPortfolio2PerformanceSummary] = useState({
-    InitialBalance: 0,
-    CurrentBalance: 0,
-    NetProfit: 0,
-    CAGR: 0.0,
-    SharpeRatio: 0.0,
-  });
+  const [portfolio1PerformanceSummary, setPortfolio1PerformanceSummary] =
+    useState({
+      InitialBalance: 0,
+      CurrentBalance: 0,
+      NetProfit: 0,
+      CAGR: 0.0,
+      SharpeRatio: 0.0,
+    });
+  const [portfolio2PerformanceSummary, setPortfolio2PerformanceSummary] =
+    useState({
+      InitialBalance: 0,
+      CurrentBalance: 0,
+      NetProfit: 0,
+      CAGR: 0.0,
+      SharpeRatio: 0.0,
+    });
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -62,10 +65,15 @@ export default function ComparePortfolios() {
     if (!portfolio1 || !portfolio2) return;
 
     // getting the user's portfolio
-    console.log("this is portfolio1: ", portfolio1, " and this is portfolio2: ", portfolio2);
+    console.log(
+      "this is portfolio1: ",
+      portfolio1,
+      " and this is portfolio2: ",
+      portfolio2
+    );
     setPortfolio1Id(portfolio1);
     setPortfolio2Id(portfolio2);
-    
+
     const getPortfolioDetails = async (portfolioId) => {
       const response = await getPortfolioDetailsAPI(portfolioId);
       if (response.status != 200) {
@@ -119,14 +127,25 @@ export default function ComparePortfolios() {
         )}
         <div className="position-static mb-5 bg-body rounded pb-3">
           {/* Dashboard Cards */}
-          <div className="row py-2 px-4 mt-2">
+          <div className="row py-2 px-5 mt-2">
             {portfolio1Id && portfolio2Id && (
               <>
+                <div className="col">
+                  <DashboardCard
+                    title="Difference in Profits"
+                    value={1}
+                    colorClassName="success"
+                  />
+                </div>
+                <h4 className="pt-3">
+                  Portfolio 1: {portfolio1Details.portfolio_name}
+                </h4>
                 <PortfolioPerformanceSummary
-                  performanceSummary = {portfolio1PerformanceSummary}
+                  performanceSummary={portfolio1PerformanceSummary}
                 />
+                <h4>Portfolio 2: {portfolio2Details.portfolio_name}</h4>
                 <PortfolioPerformanceSummary
-                  performanceSummary = {portfolio2PerformanceSummary}
+                  performanceSummary={portfolio2PerformanceSummary}
                 />
               </>
             )}
@@ -190,7 +209,7 @@ export default function ComparePortfolios() {
                   startDate={portfolio1Details.start_date}
                   portfolio2Id={portfolio2Id}
                   startDate2={portfolio2Details.start_date}
-                  portfolioName2={portfolio2Details.portfolio_name}
+                  portfolio2Name={portfolio2Details.portfolio_name}
                 />
               )}
             </div>
