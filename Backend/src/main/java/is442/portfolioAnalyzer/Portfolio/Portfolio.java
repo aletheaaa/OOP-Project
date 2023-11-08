@@ -1,6 +1,5 @@
 package is442.portfolioAnalyzer.Portfolio;
 
-// import is442.portfolioAnalyzer.Stock.Stock;
 import jakarta.persistence.*;
 import lombok.Data;
 import is442.portfolioAnalyzer.Asset.*;
@@ -13,12 +12,11 @@ import java.util.List;
 @Table(name = "portfolios")
 
 public class Portfolio {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Use GenerationType.IDENTITY for auto-generated primary key
     @Column(name = "portfolio_id") // Name the primary key column
     private Integer portfolioId;
-
 
     @Column(name = "portfolio_name")
     private String portfolioName;
@@ -31,12 +29,9 @@ public class Portfolio {
     @JoinColumn(name = "id") // Name of the user_id column in the portfolios table
     private User user;
 
-
     @OneToMany
     @JoinColumn(name = "portfolio_id", referencedColumnName = "portfolio_id")
     private List<Asset> assets;
-
-
 
     
 

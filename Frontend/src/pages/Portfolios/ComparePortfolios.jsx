@@ -5,6 +5,7 @@ import {
   getAssetAllocationByIndustryAPI,
   getPortfolioDetailsAPI,
   getPortfolioPerformanceSummaryAPI,
+  getPortfolioDifferenceAPI,
   getAssetAllocationByCountryAPI,
 } from "../../api/portfolio";
 import { useParams } from "react-router-dom";
@@ -51,6 +52,7 @@ export default function ComparePortfolios() {
     });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [differenceInProfits, setDifferenceInProfits] = useState(0);
 
   const location = useLocation();
 
@@ -65,12 +67,6 @@ export default function ComparePortfolios() {
     if (!portfolio1 || !portfolio2) return;
 
     // getting the user's portfolio
-    console.log(
-      "this is portfolio1: ",
-      portfolio1,
-      " and this is portfolio2: ",
-      portfolio2
-    );
     setPortfolio1Id(portfolio1);
     setPortfolio2Id(portfolio2);
 
@@ -111,11 +107,18 @@ export default function ComparePortfolios() {
     };
     getPerformanceSummary(portfolio1);
     getPerformanceSummary(portfolio2);
-  }, [location.search]);
 
-  useEffect(() => {
-    console.log("this is portfolios details ", portfolio1Details);
-  }, [portfolio1Details]);
+    const getDifferenceInProfits = async () => {
+      let response = await getPortfolioDifferenceAPI(portfolio1, portfolio2);
+      if (response.status != 200) {
+        console.log("error getting difference in profits: ", response.data);
+        setErrorMessage(response.data);
+        return;
+      }
+      setDifferenceInProfits(response.data);
+    };
+    getDifferenceInProfits();
+  }, [location.search]);
 
   return (
     <>
@@ -133,7 +136,7 @@ export default function ComparePortfolios() {
                 <div className="col">
                   <DashboardCard
                     title="Difference in Profits"
-                    value={1}
+                    value={differenceInProfits.toFixed(2) + "%"}
                     colorClassName="success"
                   />
                 </div>

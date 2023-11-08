@@ -1,5 +1,5 @@
 
-package is442.portfolioAnalyzer.Asset;
+package is442.portfolioAnalyzer.AssetMonthlyPrice;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
