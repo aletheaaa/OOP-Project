@@ -117,13 +117,12 @@ function ComparePortfolios(props) {
               >
                 Close
               </button>
-              <button className="btn btn-primary" type="button" disabled>
-                <span
-                  className="spinner-border spinner-border-sm mr-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>{" "}
-                Loading...
+              <button
+                  type="submit"
+                  className="btn btn-block btn-primary"
+                  onClick={handleCompare}
+                >
+                  Compare
               </button>
             </div>
           </div>
