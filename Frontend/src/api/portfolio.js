@@ -285,7 +285,6 @@ export async function comparePortfolio(portfolio1Id, portfolio2Id) {
     let portfolio1Info = getPortfolioPerformanceSummaryAPI(portfolio1Id);
     let portfolio2Info = getPortfolioPerformanceSummaryAPI(portfolio2Id);
     let response = portfolio1Info.data;
-    console.log(response);
     return response;
   } catch (error) {
     console.log("Error in comparePortfolio API: ", error);
@@ -318,7 +317,7 @@ export async function updatePortfolioAPI(portfolioId, requestBody) {
 }
 
 // get the difference in portfolio values between portfolios
-export async function getPortfolioDifference(portfolio1Id, portfolio2Id) {
+export async function getPortfolioDifferenceAPI(portfolio1Id, portfolio2Id) {
   try {
     const config = {
       headers: {
@@ -328,7 +327,7 @@ export async function getPortfolioDifference(portfolio1Id, portfolio2Id) {
     };
     const response = await axios.get(
       BASE_URL +
-        "/portfolio/getDifferenceInPortfolioProfi/" +
+        "/portfolio/getDifferenceInPortfolioProfit/" +
         userId +
         "/" +
         portfolio1Id +
@@ -336,7 +335,7 @@ export async function getPortfolioDifference(portfolio1Id, portfolio2Id) {
         portfolio2Id,
       config
     );
-    console.log("this is reponse", response);
+    return response;
   } catch (error) {
     console.log("Error in getPortfolioDifference API: ", error);
     return {

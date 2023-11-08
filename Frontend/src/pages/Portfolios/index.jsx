@@ -280,6 +280,7 @@ export default function Portfolios() {
         )}
         <div className="d-flex justify-content-end px-4">
           <CreateOrEditPortfolioButton
+            className={"btn btn-secondary"}
             target="#portfolioIndexPageModal"
             mode="Edit"
             setModeOfModal={(val) => {
