@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getPortfolios } from "../../api/user";
+import { Link } from "react-router-dom";
+import DashboardCard from "../../components/Common/DashboardCard";
 import CreateOrEditPortfolioButton from "../../components/Portfolios/CreateOrEditPortfolioButton";
 import ChangePasswordModal from "../../components/User/ChangePasswordModal";
 import ComparePortfolios from "../../components/Portfolios/ComparePortfolios";
@@ -9,6 +11,7 @@ export default function Dashboard() {
   const [portfolios, setPortfolios] = useState([]);
   const [userName, setUserName] = useState("");
   const [bodyHeight, setBodyHeight] = useState(0);
+
   useEffect(() => {
     const getUserInfo = async () => {
       const portfolios = await getPortfolios();
@@ -39,18 +42,46 @@ export default function Dashboard() {
     };
     getBodyHeight();
   }, []);
+
   return portfolios && portfolios.length != 0 ? (
-    <div className="p-5">
-      Please select portfolio to view from side menu <ChangePasswordModal />
-      <ComparePortfolios portfolios={portfolios} />
-      <div>
-        Please create a new portfolio here{" "}
-        <CreateOrEditPortfolioButton
-          mode="Create"
-          className="btn btn-secondary mt-3"
-        />
-        <CreateOrEditPortfolioModal />
+    <div
+      className="container"
+      style={{ height: bodyHeight }}
+    >
+      <div className="row row-cols-2">
+        <div className="col">
+          <h2 className="mt-5 lh-base">
+            Select portfolio
+            or create one
+            <ChangePasswordModal />
+          </h2>
+          <div className="border-bottom border-dark border-3 w-75 mb-2"></div>
+        </div>
+        <div className="col"></div>
+        
+          {portfolios &&
+          portfolios.length &&
+          portfolios.map((portfolio) => (
+            <div className="col mb-3">
+            <Link to={`/portfolios/${portfolio.portfolioId}`}>
+            <DashboardCard
+              title={portfolio.portfolioId}
+              value={portfolio.portfolioName}
+              iconClassName="bi-cash-coin"
+              colorClassName="info"
+            />
+            </Link>
+            </div>
+          ))}
       </div>
+      <div className="text-center">
+          <ComparePortfolios portfolios={portfolios} />
+          <CreateOrEditPortfolioButton
+            mode="Create"
+            className="btn btn-secondary ms-3"
+          />
+          <CreateOrEditPortfolioModal />
+        </div>
     </div>
   ) : (
     <div
