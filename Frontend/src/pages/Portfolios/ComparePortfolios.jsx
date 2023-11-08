@@ -136,7 +136,7 @@ export default function ComparePortfolios() {
                 <div className="col">
                   <DashboardCard
                     title="Difference in Profits"
-                    value={differenceInProfits.toFixed(2) + "%"}
+                    value={"$" + differenceInProfits.toFixed(2)}
                     colorClassName="success"
                   />
                 </div>

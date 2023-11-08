@@ -11,7 +11,7 @@ function NavBarItem({ link, icon, text }) {
       <i className={"fs-4 " + icon}></i>{" "}
       <span
         className="text-white ps-1"
-        style={{ position: "relative", bottom: "5px" }}
+        style={{ position: "relative", bottom: "5px", fontWeight: "normal" }}
       >
         {text}
       </span>
